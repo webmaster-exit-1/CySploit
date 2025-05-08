@@ -47,6 +47,109 @@ jobs:
           
           # Output the directory structure for reference
           echo -e "\nDirectory Structure:"
+          find . -maxdepth 2 -type d -not -path "*/node_modules/*" -not -path "*/\.*" | sort
+    
+    outputs:
+      package_json_exists: ${{ steps.check_structure.outputs.package_json_exists }}
+  
+  build:
+    runs-on: ubuntu-latest
+    needs: check-project-structure
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies (if package.json exists)
+        if: needs.check-project-structure.outputs.package_json_exists == 'true'
+        run: npm ci
+      
+      - name: Build web app (if package.json exists)
+        if: needs.check-project-structure.outputs.package_json_exists == 'true'
+        run: |
+          if grep -q "\"build\"" package.json; then
+            npm run build
+          else
+            echo "No build script found in package.json, skipping"
+          fi
+      
+      - name: Create artifacts directory
+        run: mkdir -p ci-artifacts
+      
+      - name: Collect available artifacts
+        run: |
+          # Find and copy any build outputs to artifacts directory
+          find . -path "*/dist/*" -type f -exec cp -t ci-artifacts/ {} \; 2>/dev/null || true
+          find . -path "*/build/*" -type f -exec cp -t ci-artifacts/ {} \; 2>/dev/null || true
+          
+          # List what we found
+          echo "Collected artifacts:"
+          ls -la ci-artifacts/ || echo "No artifacts found"
+      
+      - name: Upload collected artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ci-build-artifacts
+          path: ci-artifacts/
+          if-no-files-found: ignore
+          retention-days: 
+
+
+###
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:
+
+jobs:
+  check-project-structure:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Check project structure
+        id: check_structure
+        run: |
+          echo "Project Structure Check:"
+          echo "======================="
+          
+          # Check for package.json
+          if [ -f "package.json" ]; then
+            echo "✅ package.json found"
+            echo "package_json_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ package.json not found in root directory"
+            echo "package_json_exists=false" >> $GITHUB_OUTPUT
+            
+            # Check possible locations
+            if find . -type f -name "package.json" | grep -q .; then
+              echo "Found package.json files in other directories:"
+              find . -type f -name "package.json" | sort
+            fi
+          fi
+          
+          # Check for key directories
+          for dir in "client" "server" "electron" "shared"; do
+            if [ -d "$dir" ]; then
+              echo "✅ $dir directory found"
+            else
+              echo "ℹ️ $dir directory not found"
+            fi
+          done
+          
+          # Output the directory structure for reference
+          echo -e "\nDirectory Structure:"
           find . -type d -not -path "*/node_modules/*" -not -path "*/\.*" | sort
     
     outputs:
