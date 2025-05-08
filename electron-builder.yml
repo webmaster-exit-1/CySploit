@@ -1,0 +1,52 @@
+appId: com.pentools.cysploit
+productName: CySploit
+copyright: Copyright © 2025 PenTools Security
+directories:
+  output: dist
+  buildResources: build-resources
+files:
+  - build/**/*
+  - electron/**/*
+  - node_modules/**/*
+  - package.json
+extraResources:
+  - from: server-build
+    to: server
+  - from: ./attached_assets
+    to: assets
+
+# Mac OS configuration
+mac:
+  category: public.app-category.developer-tools
+  target: 
+    - dmg
+    - zip
+  icon: build-resources/icon.icns
+  darkModeSupport: true
+  entitlements: build-resources/entitlements.mac.plist
+  entitlementsInherit: build-resources/entitlements.mac.plist
+
+# Windows configuration
+win:
+  target:
+    - nsis
+    - portable
+  icon: build-resources/icon.ico
+
+# Linux configuration
+linux:
+  target:
+    - AppImage
+    - deb
+    - rpm
+  category: Development;Security
+  icon: build-resources/icons
+  desktop:
+    Name: CySploit
+    Comment: Advanced Cybersecurity Suite
+    Categories: Development;Security
+    StartupWMClass: cysploit
+
+publish:
+  provider: github
+  releaseType: draft
