@@ -23,7 +23,7 @@ export const insertSettingsSchema = createInsertSchema(settings).omit({
 export const nmapScans = pgTable("nmap_scans", {
   id: serial("id").primaryKey(),
   command: text("command").notNull(),
-  target: text("target").notNull(), 
+  target: text("target").notNull(),
   startTime: timestamp("start_time").defaultNow(),
   endTime: timestamp("end_time"),
   status: text("status").notNull().default("running"),
@@ -37,11 +37,12 @@ export const insertNmapScanSchema = createInsertSchema(nmapScans).omit({
   endTime: true,
 });
 
-// Real hosts found by scanners
+// Add 'name' to the hosts table schema
 export const hosts = pgTable("hosts", {
   id: serial("id").primaryKey(),
   scanId: integer("scan_id").notNull(),
   ipAddress: text("ip_address").notNull(),
+  name: text("name"), // Add this line
   hostname: text("hostname"),
   state: text("state").default("unknown"), // Making this field have a default value
   lastSeen: timestamp("last_seen").defaultNow(),
