@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Vulnerability } from '@/types';
+// Update the import path below if your types are in a different location, e.g. '@/types/vulnerability'
+import { Vulnerability } from '@/lib/types';
 import TerminalConsole from '@/components/dashboard/TerminalConsole';
 import NeonBorder from '@/components/common/NeonBorder';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
