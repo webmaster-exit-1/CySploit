@@ -4,6 +4,8 @@ A cutting-edge cybersecurity web and desktop application that transforms network
 
 ![cysploit dashboard](cysploit_dashboard.jpg)
 
+![metasploit](metasploit.jpg)
+
 ## Features
 
 - **Web and Desktop Interface**: Use in browser or as a standalone application
@@ -26,6 +28,8 @@ A cutting-edge cybersecurity web and desktop application that transforms network
 - Shodan API integration
 - Tailwind CSS for styling
 - 3D visualization with A-Frame and Three.js
+
+![packet capture](packet_capture.jpg)
 
 ## Getting Started
 
