@@ -84,7 +84,7 @@ interface ShodanResult {
 }
 
 // Main ShodanSearch component
-const ShodanSearch: React.FC = () => {
+const ShodanSearch = (): JSX.Element => {
   const [location] = useLocation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Array<{ filter: string, description: string, example: string }>>([]);
@@ -93,6 +93,8 @@ const ShodanSearch: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState('search');
   const [hasApiKey, setHasApiKey] = useState(true);
+  const [apiKey, setApiKey] = useState(''); // Added for API key input
+  const [saveKeyLoading, setSaveKeyLoading] = useState(false); // Added for API key saving state
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -117,7 +119,7 @@ const ShodanSearch: React.FC = () => {
               <i className="ri-shield-keyhole-line mr-2"></i>
               <span>CySploit</span>
             </div>
-            
+
             <div className="hidden lg:flex space-x-1">
               {routes.map((route) => (
                 <Link key={route.path} href={route.path}>
@@ -136,13 +138,13 @@ const ShodanSearch: React.FC = () => {
               ))}
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="border-primary/50 text-primary hover:text-white hover:bg-primary/20 hover:border-primary neon-border-cyan"
                 >
                   <i className="ri-menu-3-line mr-1"></i> Menu
@@ -185,23 +187,23 @@ const ShodanSearch: React.FC = () => {
                     <i className="ri-folder-line mr-2 text-orange-400"></i> Sessions
                   </DropdownMenuItem>
                 </Link>
-                
+
                 {/* Resources Section */}
                 <DropdownMenuItem className="font-bold pt-2 pb-2 border-t border-primary/30 mt-1 mb-1 cursor-default text-primary">
                   <i className="ri-folder-shield-2-fill mr-2 text-primary"></i> Resources
                 </DropdownMenuItem>
-                
+
                 <Link href="/pentools">
                   <DropdownMenuItem className="cursor-pointer hover:bg-background/50 hover:text-primary rounded-sm mb-1">
                     <i className="ri-code-s-slash-line mr-2 text-green-400"></i> PenTools
                   </DropdownMenuItem>
                 </Link>
-                
+
                 {/* API Keys Section */}
                 <DropdownMenuItem className="font-bold pt-2 pb-2 border-t border-primary/30 mt-1 mb-1 cursor-default text-primary">
                   <i className="ri-key-2-fill mr-2 text-secondary"></i> API Integration
                 </DropdownMenuItem>
-                
+
                 <Link href="/shodan">
                   <DropdownMenuItem className="cursor-pointer hover:bg-background/50 hover:text-primary rounded-sm mb-1">
                     <i className="ri-spy-line mr-2 text-red-400"></i> Shodan API
@@ -264,12 +266,12 @@ const ShodanSearch: React.FC = () => {
     // Check if the input has a partial filter keyword for suggestions
     const words = value.split(' ');
     const lastWord = words[words.length - 1];
-    
+
     if (lastWord && lastWord.length > 0) {
       const matchingFilters = SHODAN_FILTERS.filter(
         filter => filter.filter.toLowerCase().startsWith(lastWord.toLowerCase())
       );
-      
+
       setSuggestions(matchingFilters);
       setShowSuggestions(matchingFilters.length > 0);
     } else {
@@ -281,12 +283,12 @@ const ShodanSearch: React.FC = () => {
   const applySuggestion = (suggestion: { filter: string, example: string }) => {
     const words = query.split(' ');
     words.pop(); // Remove the last partial word
-    
+
     // Add the suggested filter
     const newQuery = [...words, suggestion.filter].join(' ');
     setQuery(newQuery);
     setShowSuggestions(false);
-    
+
     // Focus the input after applying suggestion
     if (inputRef.current) {
       inputRef.current.focus();
@@ -306,10 +308,10 @@ const ShodanSearch: React.FC = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-    
+
     setIsLoading(true);
     setShowSuggestions(false);
-    
+
     // Make actual API call to backend which uses real Shodan API
     fetch('/api/shodan/search', {
       method: 'POST',
@@ -328,7 +330,7 @@ const ShodanSearch: React.FC = () => {
         if (data.error) {
           throw new Error(data.error);
         }
-        
+
         // Process real results from Shodan
         const results = data.matches?.map((match: any) => ({
           ip: match.ip_str,
@@ -343,9 +345,9 @@ const ShodanSearch: React.FC = () => {
           version: match.version,
           vulns: match.vulns
         })) || [];
-        
+
         setSearchResults(results);
-        
+
         // Show toast notification for search completion
         toast({
           title: "Search completed",
@@ -363,10 +365,53 @@ const ShodanSearch: React.FC = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  };
+  };  // Properly close the handleSearch function
 
   // Function removed - we no longer use mock data generation
   // Using real Shodan API endpoints instead
+
+  // Handle saving the API key
+  const handleSaveApiKey = () => {
+    if (!apiKey.trim()) {
+      toast({
+        title: "API Key Required",
+        description: "Please enter your Shodan API key.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSaveKeyLoading(true);
+    fetch('/api/shodan/save-key', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ apiKey }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          toast({
+            title: "API Key Saved",
+            description: "Your Shodan API key has been saved successfully.",
+          });
+          setHasApiKey(true); // Assume key is now valid and proceed
+        } else {
+          throw new Error(data.error || 'Failed to save API key');
+        }
+      })
+      .catch(error => {
+        console.error('Error saving Shodan API key:', error);
+        toast({
+          title: "Error Saving API Key",
+          description: error.message,
+          variant: "destructive",
+        });
+      })
+      .finally(() => {
+        setSaveKeyLoading(false);
+      });
+  };
 
   // Check if we need to prompt for API key
   if (!hasApiKey) {
@@ -380,22 +425,22 @@ const ShodanSearch: React.FC = () => {
               <h1 className="text-2xl font-bold text-white">Shodan API Setup</h1>
               <p className="text-gray-400 mt-2">To use Shodan search functionality, you need to provide your API key</p>
             </div>
-            
+
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="apiKey">Shodan API Key</Label>
-                <Input 
-                  id="apiKey" 
-                  type="text" 
-                  placeholder="Enter your Shodan API key" 
-                  value={apiKey} 
+                <Input
+                  id="apiKey"
+                  type="text"
+                  placeholder="Enter your Shodan API key"
+                  value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                 />
               </div>
-              
+
               <div className="pt-2">
-                <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700" 
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700"
                   onClick={handleSaveApiKey}
                   disabled={!apiKey.trim() || saveKeyLoading}
                 >
@@ -409,7 +454,7 @@ const ShodanSearch: React.FC = () => {
                   )}
                 </Button>
               </div>
-              
+
               <div className="text-xs text-gray-400 mt-4">
                 <p>Don't have a Shodan API key? <a href="https://account.shodan.io/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Sign up at Shodan.io</a></p>
               </div>
@@ -431,8 +476,8 @@ const ShodanSearch: React.FC = () => {
 
         <Tabs defaultValue="search" className="mb-6" onValueChange={setSelectedTab}>
           <TabsList className="w-full bg-background/90 border border-blue-600/30 neon-border-blue-subtle rounded-lg p-1">
-            <TabsTrigger 
-              value="search" 
+            <TabsTrigger
+              value="search"
               className={cn(
                 "rounded-md flex-1 font-semibold",
                 selectedTab === "search" && "data-[state=active]:bg-blue-900/50 data-[state=active]:text-blue-400"
@@ -440,8 +485,8 @@ const ShodanSearch: React.FC = () => {
             >
               <i className="ri-search-line mr-1"></i> Search
             </TabsTrigger>
-            <TabsTrigger 
-              value="presets" 
+            <TabsTrigger
+              value="presets"
               className={cn(
                 "rounded-md flex-1 font-semibold",
                 selectedTab === "presets" && "data-[state=active]:bg-blue-900/50 data-[state=active]:text-blue-400"
@@ -449,8 +494,8 @@ const ShodanSearch: React.FC = () => {
             >
               <i className="ri-list-check mr-1"></i> Search Presets
             </TabsTrigger>
-            <TabsTrigger 
-              value="cheatsheet" 
+            <TabsTrigger
+              value="cheatsheet"
               className={cn(
                 "rounded-md flex-1 font-semibold",
                 selectedTab === "cheatsheet" && "data-[state=active]:bg-blue-900/50 data-[state=active]:text-blue-400"
@@ -459,7 +504,7 @@ const ShodanSearch: React.FC = () => {
               <i className="ri-file-list-line mr-1"></i> Cheatsheet
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="search" className="mt-4 space-y-4">
             <form onSubmit={handleSearch} className="relative">
               <div className="flex gap-2">
@@ -481,9 +526,9 @@ const ShodanSearch: React.FC = () => {
                     </button>
                   )}
                 </div>
-                
-                <Button 
-                  type="submit" 
+
+                <Button
+                  type="submit"
                   className="bg-blue-700 hover:bg-blue-800 text-white min-w-[120px] py-6"
                   disabled={isLoading}
                 >
@@ -500,7 +545,7 @@ const ShodanSearch: React.FC = () => {
                   )}
                 </Button>
               </div>
-              
+
               {/* Search suggestions */}
               {showSuggestions && (
                 <div className="absolute mt-1 w-full bg-background border border-blue-600/30 neon-border-blue-subtle rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto">
@@ -521,7 +566,7 @@ const ShodanSearch: React.FC = () => {
                 </div>
               )}
             </form>
-            
+
             {/* Search results */}
             {searchResults.length > 0 && (
               <div className="bg-muted/50 border border-blue-600/30 neon-border-blue-subtle rounded-lg p-4">
@@ -529,7 +574,7 @@ const ShodanSearch: React.FC = () => {
                   <i className="ri-search-eye-line mr-2"></i>
                   Search Results ({searchResults.length})
                 </h2>
-                
+
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -544,8 +589,8 @@ const ShodanSearch: React.FC = () => {
                     </TableHeader>
                     <TableBody>
                       {searchResults.map((result, index) => (
-                        <TableRow 
-                          key={index} 
+                        <TableRow
+                          key={index}
                           className="border-b border-gray-800 hover:bg-muted/80 cursor-pointer"
                         >
                           <TableCell className="font-mono">
@@ -568,8 +613,8 @@ const ShodanSearch: React.FC = () => {
                             {result.vulns && result.vulns.length > 0 && (
                               <div className="mt-1 flex flex-wrap gap-1">
                                 {result.vulns.map((vuln, idx) => (
-                                  <span 
-                                    key={idx} 
+                                  <span
+                                    key={idx}
                                     className="px-1.5 py-0.5 bg-red-900/50 text-red-300 text-xs rounded-sm"
                                   >
                                     {vuln}
@@ -590,11 +635,11 @@ const ShodanSearch: React.FC = () => {
               </div>
             )}
           </TabsContent>
-          
+
           <TabsContent value="presets" className="mt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {SHODAN_PRESETS.map((preset, index) => (
-                <div 
+                <div
                   key={index}
                   className="bg-muted border border-blue-600/30 neon-border-blue-subtle rounded-lg p-4 hover:bg-muted/80 cursor-pointer transition-colors"
                   onClick={() => usePreset(preset)}
@@ -610,14 +655,14 @@ const ShodanSearch: React.FC = () => {
               ))}
             </div>
           </TabsContent>
-          
+
           <TabsContent value="cheatsheet" className="mt-4">
             <div className="bg-muted/50 border border-blue-600/30 neon-border-blue-subtle rounded-lg p-4">
               <h2 className="text-lg font-semibold mb-3 text-blue-400">
                 <i className="ri-file-list-line mr-2"></i>
                 Shodan Search Filters
               </h2>
-              
+
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -629,8 +674,8 @@ const ShodanSearch: React.FC = () => {
                   </TableHeader>
                   <TableBody>
                     {SHODAN_FILTERS.map((filter, index) => (
-                      <TableRow 
-                        key={index} 
+                      <TableRow
+                        key={index}
                         className="border-b border-gray-800 hover:bg-muted/80"
                       >
                         <TableCell className="font-mono font-medium text-white">{filter.filter}</TableCell>
@@ -642,7 +687,7 @@ const ShodanSearch: React.FC = () => {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <button 
+                                <button
                                   className="ml-2 text-gray-400 hover:text-blue-400"
                                   onClick={() => setQuery(filter.example)}
                                 >
