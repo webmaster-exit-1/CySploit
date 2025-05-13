@@ -1,0 +1,228 @@
+/**
+ * Metasploit Integration Service
+ * 
+ * This service provides integration with Metasploit Framework via its RPC API.
+ * It allows CySploit to leverage Metasploit's capabilities for vulnerability scanning,
+ * exploit execution, and penetration testing.
+ */
+
+import { getConnectionUrl } from '../utils/db';
+
+interface MetasploitConfig {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+}
+
+interface MetasploitApiResponse {
+  success: boolean;
+  data?: any;
+  error?: string;
+}
+
+// Store the authentication token after login
+let authToken: string | null = null;
+
+/**
+ * Initialize the database connection for Metasploit to use
+ * This allows Metasploit to store its results in our PostgreSQL database
+ */
+export async function initializeMetasploitDbConnection() {
+  try {
+    // Get the PostgreSQL connection details from environment variables
+    const connectionUrl = getConnectionUrl();
+    
+    console.log('Setting up Metasploit database connection...');
+    // We'll return the connection parameters that would be used in metasploit
+    return {
+      success: true,
+      connectionParams: {
+        host: process.env.PGHOST,
+        port: process.env.PGPORT,
+        dbname: process.env.PGDATABASE,
+        user: process.env.PGUSER,
+        password: process.env.PGPASSWORD,
+      }
+    };
+  } catch (error) {
+    console.error('Failed to initialize Metasploit database connection:', error);
+    return {
+      success: false,
+      error: 'Failed to initialize Metasploit database connection'
+    };
+  }
+}
+
+/**
+ * Connect to Metasploit RPC API
+ */
+export async function connectToMetasploit(config: MetasploitConfig): Promise<MetasploitApiResponse> {
+  try {
+    // In a real implementation, this would make an actual API call to Metasploit
+    // For this demonstration, we're simulating the connection
+    
+    // Metasploit RPC authentication endpoint would be: http://{host}:{port}/api/1.0/auth/login
+    console.log(`Connecting to Metasploit at ${config.host}:${config.port}`);
+    
+    // Simulate successful authentication
+    authToken = `msf-auth-token-${Date.now()}`;
+    
+    return {
+      success: true,
+      data: {
+        token: authToken,
+        message: 'Successfully connected to Metasploit RPC API'
+      }
+    };
+  } catch (error) {
+    console.error('Failed to connect to Metasploit:', error);
+    return {
+      success: false,
+      error: 'Failed to connect to Metasploit RPC API'
+    };
+  }
+}
+
+/**
+ * Run a Metasploit scan against a target
+ */
+export async function runMetasploitScan(target: string, scanType: string): Promise<MetasploitApiResponse> {
+  if (!authToken) {
+    return {
+      success: false,
+      error: 'Not authenticated with Metasploit'
+    };
+  }
+  
+  try {
+    console.log(`Running Metasploit ${scanType} scan against ${target}`);
+    
+    // Simulate a successful scan
+    return {
+      success: true,
+      data: {
+        scanId: `scan-${Date.now()}`,
+        target,
+        scanType,
+        status: 'completed',
+        findings: [
+          {
+            type: 'vulnerability',
+            name: 'Example Vulnerability',
+            severity: 'high',
+            description: 'This is a simulated vulnerability finding'
+          }
+        ]
+      }
+    };
+  } catch (error) {
+    console.error('Failed to run Metasploit scan:', error);
+    return {
+      success: false,
+      error: 'Failed to run Metasploit scan'
+    };
+  }
+}
+
+/**
+ * Execute a Metasploit module/exploit
+ */
+export async function executeMetasploitModule(
+  moduleType: string,
+  moduleName: string,
+  options: Record<string, any>
+): Promise<MetasploitApiResponse> {
+  if (!authToken) {
+    return {
+      success: false,
+      error: 'Not authenticated with Metasploit'
+    };
+  }
+  
+  try {
+    console.log(`Executing Metasploit module: ${moduleType}/${moduleName}`);
+    
+    // Simulate successful module execution
+    return {
+      success: true,
+      data: {
+        jobId: `job-${Date.now()}`,
+        moduleType,
+        moduleName,
+        status: 'running'
+      }
+    };
+  } catch (error) {
+    console.error('Failed to execute Metasploit module:', error);
+    return {
+      success: false,
+      error: 'Failed to execute Metasploit module'
+    };
+  }
+}
+
+/**
+ * Get available Metasploit modules
+ */
+export async function getMetasploitModules(moduleType?: string): Promise<MetasploitApiResponse> {
+  if (!authToken) {
+    return {
+      success: false,
+      error: 'Not authenticated with Metasploit'
+    };
+  }
+  
+  try {
+    console.log(`Getting Metasploit modules${moduleType ? ` of type ${moduleType}` : ''}`);
+    
+    // Simulate retrieving modules
+    return {
+      success: true,
+      data: {
+        modules: [
+          'exploit/windows/smb/ms17_010_eternalblue',
+          'exploit/multi/http/apache_log4j_rce',
+          'auxiliary/scanner/http/wordpress_login_enum',
+          'auxiliary/scanner/ssh/ssh_login'
+        ].filter(m => !moduleType || m.startsWith(moduleType))
+      }
+    };
+  } catch (error) {
+    console.error('Failed to get Metasploit modules:', error);
+    return {
+      success: false,
+      error: 'Failed to get Metasploit modules'
+    };
+  }
+}
+
+/**
+ * Get Metasploit session information
+ */
+export async function getMetasploitSessions(): Promise<MetasploitApiResponse> {
+  if (!authToken) {
+    return {
+      success: false,
+      error: 'Not authenticated with Metasploit'
+    };
+  }
+  
+  try {
+    console.log('Getting Metasploit sessions');
+    
+    // Simulate retrieving sessions
+    return {
+      success: true,
+      data: {
+        sessions: [] // Empty array since we don't have active sessions in this demo
+      }
+    };
+  } catch (error) {
+    console.error('Failed to get Metasploit sessions:', error);
+    return {
+      success: false,
+      error: 'Failed to get Metasploit sessions'
+    };
+  }
+}

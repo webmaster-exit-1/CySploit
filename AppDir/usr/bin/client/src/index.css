@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 230 14% 8%; /* #0D1117 */
+  --foreground: 0 0% 95%; /* #F1F1F1 */
+  
+  --muted: 223 12% 18%; /* #1E252E */
+  --muted-foreground: 220 8% 65%; /* #A0A4AB */
+  
+  --popover: 220 13% 11%; /* #161B22 */
+  --popover-foreground: 0 0% 95%; /* #F1F1F1 */
+  
+  --card: 223 12% 18%; /* #1E252E */
+  --card-foreground: 0 0% 95%; /* #F1F1F1 */
+  
+  --border: 222 14% 25%; /* #323B4F */
+  --input: 222 14% 25%; /* #323B4F */
+  
+  --primary: 180 100% 50%; /* #00FFFF - neon cyan */
+  --primary-foreground: 0 0% 0%; /* #000000 */
+  
+  --secondary: 300 100% 50%; /* #FF00FF - neon magenta */
+  --secondary-foreground: 0 0% 100%; /* #FFFFFF */
+  
+  --accent: 270 100% 50%; /* #9D00FF - neon purple */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF */
+  
+  --destructive: 350 100% 60%; /* #FF3366 - neon red */
+  --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+  
+  --ring: 180 100% 50%; /* #00FFFF - neon cyan */
+  
+  --radius: 0.5rem;
+  
+  /* Chart colors */
+  --chart-1: 180 100% 50%; /* Cyan */
+  --chart-2: 300 100% 50%; /* Magenta */
+  --chart-3: 270 100% 50%; /* Purple */
+  --chart-4: 120 100% 50%; /* Green */
+  --chart-5: 45 100% 50%; /* Yellow */
+  
+  /* Sidebar colors */
+  --sidebar-background: 220 13% 11%; /* #161B22 */
+  --sidebar-foreground: 0 0% 95%; /* #F1F1F1 */
+  --sidebar-primary: 180 100% 50%; /* #00FFFF */
+  --sidebar-primary-foreground: 0 0% 0%; /* #000000 */
+  --sidebar-accent: 270 100% 50%; /* #9D00FF */
+  --sidebar-accent-foreground: 0 0% 100%; /* #FFFFFF */
+  --sidebar-border: 222 14% 25%; /* #323B4F */
+  --sidebar-ring: 180 100% 50%; /* #00FFFF */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+  }
+  
+  /* Terminal text */
+  .font-mono {
+    font-family: 'Space Mono', monospace;
+  }
+  
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-popover;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-accent rounded-sm;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-secondary;
+  }
+}
+
+@layer components {
+  /* Neon borders */
+  .neon-border-cyan {
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5), 
+                0 0 10px rgba(0, 255, 255, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.8);
+  }
+  
+  .neon-border-magenta {
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.5), 
+                0 0 10px rgba(255, 0, 255, 0.3);
+    border: 1px solid rgba(255, 0, 255, 0.8);
+  }
+  
+  .neon-border-purple {
+    box-shadow: 0 0 5px rgba(157, 0, 255, 0.5), 
+                0 0 10px rgba(157, 0, 255, 0.3);
+    border: 1px solid rgba(157, 0, 255, 0.8);
+  }
+  
+  .neon-border-green {
+    box-shadow: 0 0 5px rgba(0, 255, 102, 0.5), 
+                0 0 10px rgba(0, 255, 102, 0.3);
+    border: 1px solid rgba(0, 255, 102, 0.8);
+  }
+  
+  /* Glowing elements */
+  .glow-cyan {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+  }
+  
+  .glow-magenta {
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+  }
+  
+  .glow-purple {
+    box-shadow: 0 0 15px rgba(157, 0, 255, 0.7);
+  }
+  
+  .glow-green {
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.7);
+  }
+  
+  /* Icon glow effects */
+  .icon-glow-cyan {
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.7));
+  }
+  
+  .icon-glow-magenta {
+    filter: drop-shadow(0 0 5px rgba(255, 0, 255, 0.7));
+  }
+  
+  .icon-glow-purple {
+    filter: drop-shadow(0 0 5px rgba(157, 0, 255, 0.7));
+  }
+  
+  .icon-glow-green {
+    filter: drop-shadow(0 0 5px rgba(0, 255, 102, 0.7));
+  }
+  
+  /* Accent color theme variants */
+  .theme-cyan {
+    --primary: 180 100% 50%; /* #00FFFF - neon cyan */
+    --primary-foreground: 0 0% 0%; /* #000000 */
+    --ring: 180 100% 50%; /* #00FFFF - neon cyan */
+  }
+  
+  .theme-magenta {
+    --primary: 300 100% 50%; /* #FF00FF - neon magenta */
+    --primary-foreground: 0 0% 0%; /* #000000 */
+    --ring: 300 100% 50%; /* #FF00FF - neon magenta */
+  }
+  
+  .theme-purple {
+    --primary: 270 100% 50%; /* #9D00FF - neon purple */
+    --primary-foreground: 0 0% 0%; /* #000000 */
+    --ring: 270 100% 50%; /* #9D00FF - neon purple */
+  }
+  
+  .theme-green {
+    --primary: 150 100% 40%; /* #00FF66 - neon green */
+    --primary-foreground: 0 0% 0%; /* #000000 */
+    --ring: 150 100% 40%; /* #00FF66 - neon green */
+  }
+  
+  /* Terminal cursor */
+  .terminal-cursor::after {
+    content: "│";
+    color: theme('colors.primary.DEFAULT');
+    animation: cursor .8s step-end infinite;
+  }
+  
+  @keyframes cursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
+  /* Page layout */
+  .page-container {
+    @apply flex flex-col min-h-screen;
+  }
+  
+  .content-container {
+    @apply flex-1 ml-0 transition-all pt-0;
+  }
+  
+  .content-container.no-sidebar {
+    @apply ml-0;
+  }
+
+  /* Navbar adjustments */
+  .page-container > nav {
+    @apply fixed top-0 left-0 right-0 z-50;
+  }
+  
+  /* Code styling for terminal output */
+  .terminal-output {
+    @apply font-mono text-sm leading-relaxed space-y-1;
+  }
+  
+  /* Dashboard section headers */
+  .section-header {
+    @apply text-xl font-bold flex items-center mb-4;
+  }
+  
+  .section-header i {
+    @apply mr-2;
+  }
+}

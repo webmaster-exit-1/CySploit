@@ -1,0 +1,72 @@
+# Custom Services File
+
+# Example custom service
+# my_custom_service 8080/tcp
+
+# Common web services
+http 80/tcp
+https 443/tcp
+http-alt 8080/tcp
+https-alt 8443/tcp
+
+# Database services
+mysql 3306/tcp
+postgresql 5432/tcp
+mssql 1433/tcp
+oracle 1521/tcp
+
+# SSH and Remote Access
+ssh 22/tcp
+rdp 3389/tcp
+vnc 5900/tcp
+
+# Email services
+smtp 25/tcp
+pop3 110/tcp
+imap 143/tcp
+smtps 465/tcp
+imaps 993/tcp
+pop3s 995/tcp
+
+# DNS
+domain 53/tcp
+domain 53/udp
+
+# Other common ports
+ftp-data 20/tcp
+ftp 21/tcp
+telnet 23/tcp
+smb 445/tcp
+netbios-ssn 139/tcp
+
+# Example UDP services
+snmp 161/udp
+syslog 514/udp
+
+#Port frequency information. This is necessary for port-ratio
+http 80/tcp 1000
+https 443/tcp 999
+ssh 22/tcp 998
+domain 53/udp 997
+domain 53/tcp 996
+mysql 3306/tcp 995
+mssql 1433/tcp 994
+oracle 1521/tcp 993
+smtp 25/tcp 992
+pop3 110/tcp 991
+imap 143/tcp 990
+ftp-data 20/tcp 989
+ftp 21/tcp 988
+telnet 23/tcp 987
+smb 445/tcp 986
+netbios-ssn 139/tcp 985
+snmp 161/udp 984
+syslog 514/udp 983
+rdp 3389/tcp 982
+vnc 5900/tcp 981
+http-alt 8080/tcp 980
+https-alt 8443/tcp 979
+postgresql 5432/tcp 978
+smtps 465/tcp 977
+imaps 993/tcp 976
+pop3s 995/tcp 975

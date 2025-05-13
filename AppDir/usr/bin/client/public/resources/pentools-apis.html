@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Penetration Testing Tools & API Keys</title>
+<style>
+  /* CSS for styling */
+  body {
+    margin: 0;
+    overflow-y: scroll; /* Allow scrolling for content */
+    background-color: #000;
+    color: #0F0;
+    font-family: monospace;
+  }
+  #matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Behind content */
+  }
+  .content {
+    position: relative;
+    z-index: 1; /* Above canvas */
+    padding: 20px 30px;
+    background-color: rgba(0, 0, 0, 0.75); /* Darker overlay */
+    max-width: 900px;
+    margin: 30px auto;
+    border: 1px solid #0F0;
+    border-radius: 5px;
+  }
+  h1, h2 {
+    color: #0F0;
+    text-align: center;
+  }
+  h1 {
+    margin-bottom: 30px;
+  }
+  h2 {
+    margin-top: 30px;
+    border-bottom: 1px solid #0F0;
+    padding-bottom: 5px;
+    text-align: left; /* Align category headers left */
+  }
+  ul {
+    list-style: none;
+    padding-left: 10px; /* Indent list slightly */
+  }
+  li {
+    margin-bottom: 12px; /* More space between items */
+    line-height: 1.4; /* Improve readability */
+  }
+  /* Style for the link wrapping the tool name */
+  li > a {
+    color: #4CAF50; /* Brighter green for links */
+    text-decoration: none;
+  }
+  li > a:hover {
+    color: #FFF;
+    text-decoration: underline;
+  }
+  /* Keep the strong tag white within the link */
+  li > a strong {
+     color: #FFF;
+  }
+  /* Style for the description text */
+  li > span {
+    color: #0F0; /* Standard green for description */
+  }
+
+  /* Table Styles */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9em;
+  }
+  th, td {
+    border: 1px solid #0F0;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: rgba(0, 50, 0, 0.5); /* Dark green background for headers */
+    color: #FFF;
+  }
+  /* Default Table links (used in Description column) */
+  td a {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  td a:hover {
+    color: #FFF;
+    text-decoration: underline;
+  }
+  /* Paragraph above table */
+  .content > p {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.1em;
+  }
+  .content > p em {
+    color: #FFF;
+    font-style: normal; /* Override italic */
+  }
+
+  /* ## API TYPE COLOR CODING ## */
+  /* Style for the 3rd cell (Type) in table body rows */
+  tbody tr td:nth-child(3).api-type-free {
+    color: cyan;
+    font-weight: bold;
+  }
+  tbody tr td:nth-child(3).api-type-tiered {
+    color: red;
+    font-weight: bold;
+  }
+  tbody tr td:nth-child(3).api-type-commercial {
+    color: #DA70D6; /* Orchid, a nice purple */
+    font-weight: bold;
+  }
+   /* Style for Tool type */
+  tbody tr td:nth-child(3).api-type-tool {
+      /* color: #0F0; */ /* Default green */
+      font-weight: bold;
+  }
+
+  /* ## NEW - Style API Names (1st Column) White & Bold ## */
+  tbody tr td:nth-child(1) {
+      color: #FFF; /* Style plain text in cell */
+      font-weight: bold;
+  }
+  tbody tr td:nth-child(1) a {
+      color: #FFF; /* Style links in cell */
+      font-weight: bold;
+      text-decoration: none; /* Remove underline from API name links */
+  }
+  tbody tr td:nth-child(1) a:hover {
+      color: #4CAF50; /* Change color on hover */
+      text-decoration: underline; /* Add underline on hover */
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+
+<div class="content">
+  <h1>Penetration Testing Tools & API Keys</h1>
+
+  <h2>General</h2>
+  <ul>
+    <li><a href="https://github.com/liorvh/Cheatsheets-1" target="_blank"><strong>Cheatsheets</strong></a> - <span>Penetration Testing/Security Cheatsheets</span></li>
+    <li><a href="https://github.com/Hack-with-Github/Awesome-Hacking" target="_blank"><strong>awesome-pentest</strong></a> - <span>penetration testing resources</span></li>
+    <li><a href="https://github.com/bluscreenofjeff/Red-Team-Infrastructure-Wiki" target="_blank"><strong>Red-Team-Infrastructure-Wiki</strong></a> - <span>Red Team infrastructure hardening resources</span></li>
+    <li><a href="https://github.com/rmusser01/Infosec_Reference" target="_blank"><strong>Infosec_Reference</strong></a> - <span>Information Security Reference</span></li>
+    <li><a href="https://github.com/yeyintminthuhtut/Awesome-Red-Teaming" target="_blank"><strong>Awesome-Red-Teaming</strong></a> - <span>List of Awesome Red Teaming Resources</span></li>
+    <li><a href="https://github.com/chryzsh/awesome-windows-security" target="_blank"><strong>awesome-windows-security</strong></a> - <span>List of Awesome Windows Security Resources</span></li>
+  </ul>
+
+  <h2>Web Services</h2>
+  <ul>
+    <li><a href="https://github.com/AppSecConsulting/Pentest-Tools" target="_blank"><strong>JettyBleed</strong></a> - <span>Jetty HttpParser Error Remote Memory Disclosure</span></li>
+    <li><a href="https://github.com/hatRiot/clusterd" target="_blank"><strong>clusterd</strong></a> - <span>Jboss/Coldfusion/WebLogic/Railo/Tomcat/Axis2/Glassfish</span></li>
+    <li><a href="https://github.com/Varbaek/xsser" target="_blank"><strong>xsser</strong></a> - <span>From XSS to RCE wordpress/joomla</span></li>
+    <li><a href="https://github.com/njfox/Java-Deserialization-Exploit" target="_blank"><strong>Java-Deserialization-Exploit</strong></a> - <span>weaponizes ysoserial code to gain a remote shell</span></li>
+    <li><a href="https://github.com/Dionach/CMSmap" target="_blank"><strong>CMSmap</strong></a> - <span>CMS scanner</span></li>
+    <li><a href="https://github.com/rastating/wordpress-exploit-framework" target="_blank"><strong>wordpress-exploit-framework</strong></a> - <span>penetration testing of WordPress</span></li>
+    <li><a href="https://github.com/compoterhacker/joomlol" target="_blank"><strong>joomlol</strong></a> - <span>Joomla User-Agent/X-Forwarded-For RCE</span></li>
+    <li><a href="https://github.com/rastating/joomlavs" target="_blank"><strong>joomlavs</strong></a> - <span>Joomla vulnerability scanner</span></li>
+    <li><a href="https://github.com/stampery/mongoaudit" target="_blank"><strong>mongoaudit</strong></a> - <span>MongoDB auditing and pentesting tool</span></li>
+    <li><a href="https://github.com/Graph-X/davscan" target="_blank"><strong>davscan</strong></a> - <span>Fingerprints servers, finds exploits, scans WebDAV</span></li>
+  </ul>
+
+  <h2>Web Applications</h2>
+  <ul>
+    <li><a href="https://github.com/vpnguy/HandyHeaderHacker" target="_blank"><strong>HandyHeaderHacker</strong></a> - <span>Examine HTTP response headers for common security issues</span></li>
+    <li><a href="https://github.com/stanislav-web/OpenDoor" target="_blank"><strong>OpenDoor</strong></a> - <span>OWASP Directory Access scanner</span></li>
+    <li><a href="https://github.com/AnonymousSecurityHackers/ASH-Keylogger" target="_blank"><strong>ASH-Keylogger</strong></a> - <span>simple keylogger application for XSS attack</span></li>
+    <li><a href="https://github.com/jhaddix/tbhm" target="_blank"><strong>tbhm</strong></a> - <span>The Bug Hunters Methodology</span></li>
+    <li><a href="https://github.com/commixproject/commix" target="_blank"><strong>commix</strong></a> - <span>command injection</span></li>
+    <li><a href="https://github.com/tcstool/NoSQLMap" target="_blank"><strong>NoSQLMap</strong></a> - <span>Mongo database and NoSQL</span></li>
+    <li><a href="https://github.com/mandatoryprogrammer/xsshunter" target="_blank"><strong>xsshunter</strong></a> - <span>Second order XSS</span></li>
+    <li><a href="https://github.com/GerbenJavado/LinkFinder" target="_blank"><strong>LinkFinder</strong></a> - <span>python script that finds endpoints in JavaScript files</span></li>
+   </ul>
+
+   <h2>Local privilege escalation</h2>
+   <ul>
+     <li><a href="https://github.com/b3rito/yodo" target="_blank"><strong>yodo</strong></a> - <span>become root via limited sudo permissions</span></li>
+     <li><a href="https://github.com/ShotokanZH/Pa-th-zuzu" target="_blank"><strong>Pa-th-zuzu</strong></a> - <span>Checks for PATH substitution vulnerabilities</span></li>
+     <li><a href="https://github.com/xorond/sudo-snooper" target="_blank"><strong>sudo-snooper</strong></a> - <span>acts like the original sudo binary to fool users</span></li>
+     <li><a href="https://github.com/foxglovesec/RottenPotato" target="_blank"><strong>RottenPotato</strong></a> - <span>local privilege escalation from service account</span></li>
+     <li><a href="https://github.com/hfiref0x/UACME" target="_blank"><strong>UACMe</strong></a> - <span>Windows AutoElevate backdoor</span></li>
+     <li><a href="https://github.com/enigma0x3/Invoke-LoginPrompt" target="_blank"><strong>Invoke-LoginPrompt</strong></a> - <span>Invokes a Windows Security Login Prompt</span></li>
+     <li><a href="https://github.com/Kabot/Unix-Privilege-Escalation-Exploits-Pack" target="_blank"><strong>Exploits-Pack</strong></a> - <span>Exploits for getting local root on Linux</span></li>
+     <li><a href="https://github.com/pentestmonkey/windows-privesc-check" target="_blank"><strong>windows-privesc-check</strong></a> - <span>Standalone Executable</span></li>
+     <li><a href="https://github.com/pentestmonkey/unix-privesc-check" target="_blank"><strong>unix-privesc-check</strong></a> - <span>simple privilege escalation vectors</span></li>
+     <li><a href="https://github.com/rebootuser/LinEnum" target="_blank"><strong>LinEnum</strong></a> - <span>local Linux Enumeration & Privilege Escalation Checks</span></li>
+     <li><a href="https://github.com/securifera/cowcron" target="_blank"><strong>cowcron</strong></a> - <span>Cronbased Dirty Cow Exploit</span></li>
+     <li><a href="https://github.com/abatchy17/WindowsExploits" target="_blank"><strong>WindowsExploits</strong></a> - <span>Precompiled Windows exploits</span></li>
+     <li><a href="https://github.com/AusJock/Privilege-Escalation" target="_blank"><strong>Privilege-Escalation</strong></a> - <span>common local exploits and enumeration scripts</span></li>
+     <li><a href="https://github.com/LukaSikic/Unix-Privilege-Escalation-Exploits-Pack" target="_blank"><strong>Unix-Privilege-Escalation-Exploits-Pack</strong></a> - <span></span></li>
+     <li><a href="https://github.com/rasta-mouse/Sherlock" target="_blank"><strong>Sherlock</strong></a> - <span>PowerShell script to quickly find missing software patches</span></li>
+     <li><a href="https://github.com/GTFOBins/GTFOBins.github.io" target="_blank"><strong>GTFOBins</strong></a> - <span>list of Unix binaries that can be exploited to bypass system security restrictions</span></li>
+     <li><a href="https://github.com/ohpe/juicy-potato" target="_blank"><strong>juicy-potato</strong></a> - <span>local privilege escalation from service account</span></li>
+   </ul>
+
+   <h2>Phishing</h2>
+   <ul>
+      <li><a href="https://github.com/phar/eyephish" target="_blank"><strong>eyephish</strong></a> - <span>find similar looking domain names</span></li>
+      <li><a href="https://github.com/ryhanson/phishery" target="_blank"><strong>phishery</strong></a> - <span>Basic Auth Credential Harvester with a Word Document Template URL Injector</span></li>
+      <li><a href="https://github.com/0x090x0/WordSteal" target="_blank"><strong>WordSteal</strong></a> - <span>steal NTLM hashes</span></li>
+      <li><a href="https://github.com/fireeye/ReelPhish" target="_blank"><strong>ReelPhish</strong></a> - <span>Real-Time Two-Factor Phishing Tool</span></li>
+      <li><a href="https://github.com/ustayready/CredSniper" target="_blank"><strong>CredSniper</strong></a> - <span>phishing framework (2FA)</span></li>
+      <li><a href="https://github.com/kgretzky/evilginx2" target="_blank"><strong>evilginx2</strong></a> - <span>for phishing login credentials along with session cookies</span></li>
+   </ul>
+
+   <h2>Open Source Intelligence</h2>
+   <ul>
+     <li><a href="https://github.com/dxa4481/truffleHog" target="_blank"><strong>truffleHog</strong></a> - <span>Searches through git repositories for high entropy strings</span></li>
+     <li><a href="https://github.com/infosec-au/altdns" target="_blank"><strong>Altdns</strong></a> - <span>Subdomain discovery</span></li>
+     <li><a href="https://github.com/techgaun/github-dorks" target="_blank"><strong>github-dorks</strong></a> - <span>reveal sensitive personal and/or organizational information</span></li>
+     <li><a href="https://github.com/michenriksen/gitrob" target="_blank"><strong>gitrob</strong></a> - <span>find sensitive information</span></li>
+     <li><a href="https://github.com/darryllane/Bluto" target="_blank"><strong>Bluto</strong></a> - <span>DNS Recon , Email Enumeration</span></li>
+     <li><a href="https://github.com/killswitch-GUI/SimplyEmail" target="_blank"><strong>SimplyEmail</strong></a> - <span>Email recon</span></li>
+     <li><a href="https://github.com/aboul3la/Sublist3r" target="_blank"><strong>Sublist3r</strong></a> - <span>Fast subdomains enumeration tool for penetration testers</span></li>
+     <li><a href="https://github.com/Smaash/snitch" target="_blank"><strong>snitch</strong></a> - <span>information gathering via dorks</span></li>
+     <li><a href="https://github.com/flipkart-incubator/RTA" target="_blank"><strong>RTA</strong></a> - <span>scan all company's online facing assets</span></li>
+     <li><a href="https://github.com/gojhonny/InSpy" target="_blank"><strong>InSpy</strong></a> - <span>LinkedIn enumeration tool</span></li>
+     <li><a href="https://github.com/mdsecactivebreach/LinkedInt" target="_blank"><strong>LinkedInt</strong></a> - <span>LinkedIn scraper for reconnaissance</span></li>
+     <li><a href="https://github.com/caffix/amass" target="_blank"><strong>amass</strong></a> - <span>In-Depth DNS Enumeration and Network Mapping</span></li>
+     <li><a href="https://github.com/evilpacket/DVCS-Pillage" target="_blank"><strong>DVCS-Pillage</strong></a> - <span>Pillage web accessible GIT, HG and BZR repositories</span></li>
+     <li><a href="https://github.com/Raikia/UhOh365" target="_blank"><strong>UhOh365</strong></a> - <span>Script that can see if an email address is valid in Office365</span></li>
+     <li><a href="https://github.com/0xZDH/o365spray" target="_blank"><strong>o365spray</strong></a> - <span>Username enumeration and password spraying tool</span></li>
+     <li><a href="https://github.com/0x09AL/raven" target="_blank"><strong>raven</strong></a> - <span>Linkedin information gathering tool</span></li>
+     <li><a href="https://github.com/lanjelot/patator" target="_blank"><strong>patator</strong></a> - <span>multi-purpose brute-forcer</span></li>
+   </ul>
+
+   <h2>Post-exploitation</h2>
+   <ul>
+     <li><a href="https://github.com/GDSSecurity/Windows-Exploit-Suggester" target="_blank"><strong>Windows-Exploit-Suggester</strong></a> - <span>patch levels against vulnerability database</span></li>
+     <li><a href="https://github.com/bhdresh/lazykatz" target="_blank"><strong>lazykatz</strong></a> - <span>xtract credentials from remote targets protected with AV</span></li>
+     <li><a href="https://github.com/artkond/Invoke-Vnc" target="_blank"><strong>Invoke-Vnc</strong></a> - <span>Powershell VNC injector</span></li>
+     <li><a href="https://github.com/trustedsec/spraywmi" target="_blank"><strong>spraywmi</strong></a> - <span>mass spraying Unicorn PowerShell injection</span></li>
+     <li><a href="https://github.com/nccgroup/redsnarf" target="_blank"><strong>redsnarf</strong></a> - <span>for retrieving hashes and credentials from Windows workstations</span></li>
+     <li><a href="https://github.com/dafthack/HostRecon" target="_blank"><strong>HostRecon</strong></a> - <span>situational awareness</span></li>
+     <li><a href="https://github.com/huntergregal/mimipenguin" target="_blank"><strong>mimipenguin</strong></a> - <span>login password from the current linux user</span></li>
+     <li><a href="https://github.com/artkond/rpivot" target="_blank"><strong>rpivot</strong></a> - <span>socks4 reverse proxy for penetration testing</span></li>
+     <li><a href="https://github.com/b4rtik/metasploit-execute-assembly" target="_blank"><strong>metasploit-execute-assembly</strong></a> - <span>In memory .NET assembly execution</span></li>
+     <li><a href="https://github.com/Kevin-Robertson/Inveigh" target="_blank"><strong>Inveigh</strong></a> - <span>PowerShell LLMNR/mDNS/NBNS spoofer/man-in-the-middle tool</span></li>
+     <li><a href="https://github.com/FortyNorthSecurity/WMIOps" target="_blank"><strong>WMIOps</strong></a> - <span>WMI Attack Tool</span></li>
+     <li><a href="https://github.com/nccgroup/WMIcmd" target="_blank"><strong>WMIcmd</strong></a> - <span>to generate Powershell scripts</span></li>
+     <li><a href="https://github.com/Ne0nd0g/merlin" target="_blank"><strong>Merlin</strong></a> - <span>cross-platform post-exploitation HTTP/2 C&C server and agent</span></li>
+     <li><a href="https://github.com/360-Linton-Lab/WMIHACKER" target="_blank"><strong>WMIHACKER</strong></a> - <span>Bypass anti-virus software</span></li>
+     <li><a href="https://github.com/1N3/PrivEsc" target="_blank"><strong>PrivEsc</strong></a> - <span> 5 in 1 Windows, Linux, MySQL, MSSQL, Oracle</span></li>
+     <li><a href="https://github.com/antonioCoco/RogueWinRM" target="_blank"><strong>RogueWinRM</strong></a> - <span>Windows local privilege escalation from service account</span></li>
+   </ul>
+
+   <h2>Command and Control</h2>
+   <ul>
+     <li><a href="https://github.com/Ne0nd0g/merlin" target="_blank"><strong>Merlin</strong></a> - <span>cross-platform post-exploitation HTTP/2 C&C server and agent</span></li>
+     <li><a href="https://github.com/nettitude/PoshC2" target="_blank"><strong>PoshC2</strong></a> - <span>proxy aware C2 framework</span></li>
+     <li><a href="https://github.com/lukebaggett/dnscat2-powershell" target="_blank"><strong>dnscat2-powershell</strong></a> - <span>encrypted DNS command and control tool</span></li>
+     <li><a href="https://github.com/zerosum0x0/koadic" target="_blank"><strong>Koadic</strong></a> - <span>JScript RAT</span></li>
+     <li><a href="https://github.com/n1nj4sec/pupy" target="_blank"><strong>Pupy</strong></a> - <span>cross-platform RAT written in python</span></li>
+     <li><a href="https://github.com/BishopFox/sliver" target="_blank"><strong>sliver</strong></a> - <span>Implant framework</span></li>
+     <li><a href="https://github.com/cobbr/Covenant" target="_blank"><strong>Covenant</strong></a> - <span>Covenant is a collaborative .NET C2</span></li>
+   </ul>
+
+   <h2>Cloud</h2>
+   <ul>
+     <li><a href="https://github.com/RhinoSecurityLabs/pacu" target="_blank"><strong>pacu</strong></a> - <span>The AWS exploitation framework</span></li>
+     <li><a href="https://github.com/carnal0wnage/weirdAAL" target="_blank"><strong>weirdAAL</strong></a> - <span>AWS Attack Library</span></li>
+     <li><a href="https://github.com/nccgroup/ScoutSuite" target="_blank"><strong>ScoutSuite</strong></a> - <span>Multi-Cloud Security Auditing Tool</span></li>
+     <li><a href="https://github.com/RhinoSecurityLabs/AWS-IAM-Privilege-Escalation" target="_blank"><strong>AWS-IAM-Privilege-Escalation</strong></a> - <span>AWS IAM privilege escalation methods</span></li>
+     <li><a href="https://github.com/andresriancho/nimbostratus" target="_blank"><strong>nimbostratus</strong></a> - <span>fingerprinting and exploiting Amazon cloud infrastructures</span></li>
+   </ul>
+
+   <h2>API Keys You Need</h2>
+   <p dir="auto">Many tools will require API keys <em>Get them.</em>.</p>
+   <table>
+     <thead>
+       <tr>
+         <th align="left">Name</th>
+         <th align="left">Description</th>
+         <th align="left">Type</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td align="left"><a href="https://app.abstractapi.com/" rel="nofollow">AbstractAPI</a></td>
+         <td align="left">Look up domain, phone and IP address information from AbstractAPI.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.abuse.ch" rel="nofollow">abuse.ch</a></td>
+         <td align="left">Check if a host/domain, IP address or netblock is malicious according to Abuse.ch.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.abuseipdb.com" rel="nofollow">AbuseIPDB</a></td>
+         <td align="left">Check if an IP address is malicious according to AbuseIPDB.com blacklist.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.alienvault.com/open-threat-exchange" rel="nofollow">AlienVault OTX</a></td>
+         <td align="left">Look up IP addresses in the AlienVault Open Threat Exchange.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://azure.microsoft.com/en-in/services/api-management/" rel="nofollow">Azure API Gateway</a></td>
+         <td align="left">Look up IP addresses in the Azure API Gateway.</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.binaryedge.io" rel="nofollow">BinaryEdge</a></td>
+         <td align="left">Obtain information from BinaryEdge.io Internet scanning systems.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.circl.lu/" rel="nofollow">CIRCL.LU</a></td>
+         <td align="left">Obtain information from CIRCL.LU's Passive DNS and Passive SSL databases.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://censys.io/" rel="nofollow">Censys</a></td>
+         <td align="left">Obtain information from Censys.io Internet scanning systems.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://shodan.io/" rel="nofollow">Shodan</a></td>
+         <td align="left">Obtain information from Shodan about identified IP addresses.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>    
+     </tbody>
+   </table>
+
+ </div>
+
+ <script>
+   // JavaScript for Matrix effect
+   const canvas = document.getElementById('matrix-canvas');
+   const ctx = canvas.getContext('2d');
+
+   let resizeTimeout;
+   function setCanvasSize() {
+       canvas.width = window.innerWidth;
+       canvas.height = window.innerHeight;
+       // Recalculate columns and reset drops on resize completion
+       clearTimeout(resizeTimeout);
+       resizeTimeout = setTimeout(setupMatrix, 100);
+   }
+
+   // Use Katakana characters or any characters you like
+   const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+   const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+   const nums = '0123456789';
+   const characters = katakana + latin + nums;
+
+   const fontSize = 16;
+   let columns;
+   let drops = [];
+
+   function setupMatrix() {
+       columns = Math.floor(canvas.width / fontSize);
+       drops = [];
+       for (let x = 0; x < columns; x++) {
+           // Randomize initial drop position for more organic look
+           drops[x] = Math.floor(Math.random() * (canvas.height / fontSize));
+       }
+   }
+
+
+   function drawMatrix() {
+       // Semi-transparent black background for fading effect
+       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+       ctx.fillStyle = '#0F0'; // Green text
+       ctx.font = fontSize + 'px monospace';
+
+       // Loop through the drops
+       for (let i = 0; i < drops.length; i++) {
+           // Get a random character
+           const text = characters.charAt(Math.floor(Math.random() * characters.length));
+           // x, y coordinates
+           ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+           // Send the drop back to the top randomly after it has crossed the screen
+           // or randomly reset it to add variety
+           if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+               drops[i] = 0;
+           }
+
+           // Increment the y coordinate
+           drops[i]++;
+       }
+   }
+
+   // Initial setup
+   setCanvasSize();
+   setupMatrix();
+
+   // Animation loop
+   const matrixInterval = setInterval(drawMatrix, 40); // Adjusted speed slightly
+
+   // Adjust canvas size on window resize
+   window.addEventListener('resize', setCanvasSize);
+
+ </script>
+
+ </body>
+ </html>

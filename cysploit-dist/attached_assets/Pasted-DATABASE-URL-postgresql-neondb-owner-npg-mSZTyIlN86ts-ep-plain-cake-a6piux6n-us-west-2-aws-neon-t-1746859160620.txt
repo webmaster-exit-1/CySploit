@@ -1,0 +1,342 @@
+DATABASE_URL="postgresql://neondb_owner:npg_mSZTyIlN86ts@ep-plain-cake-a6piux6n.us-west-2.aws.neon.tech/neondb?sslmode=require" npm run-script start
+
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+11:33:01 PM [express] serving on port 5000
+11:33:55 PM [express] GET /api/network/interfaces 200 in 5ms :: [{"name":"wlp0s29u1u6","address":"192…
+11:33:55 PM [express] GET /api/vulnerabilities 200 in 648ms :: []
+11:33:55 PM [express] GET /api/devices 200 in 685ms :: [{"id":1,"scanId":0,"ipAddress":"172.31.128.10…
+11:33:55 PM [express] GET /api/sessions 200 in 616ms :: [{"id":1,"interface":"Network Scan - 172.31.1…
+11:35:51 PM [express] PATCH /api/settings/shodan_api_key 200 in 4ms
+11:35:51 PM [express] PATCH /api/settings/services_file_path 200 in 3ms
+11:35:51 PM [express] PATCH /api/settings/metasploit_host 200 in 3ms
+11:35:51 PM [express] PATCH /api/settings/metasploit_port 200 in 5ms
+11:35:51 PM [express] PATCH /api/settings/metasploit_username 200 in 2ms
+11:35:51 PM [express] PATCH /api/settings/metasploit_password 200 in 2ms
+11:35:51 PM [express] PATCH /api/settings/metasploit_path 200 in 1ms
+11:35:58 PM [express] POST /api/metasploit/init-db 400 in 1ms :: {"success":false,"message":"Missing …
+11:36:15 PM [express] POST /api/metasploit/execute 400 in 2701ms :: {"success":false,"error":"Metaspl…
+11:37:11 PM [express] POST /api/metasploit/execute 400 in 219ms :: {"success":false,"error":"Metasplo…
+11:37:15 PM [express] POST /api/metasploit/execute 400 in 105ms :: {"success":false,"error":"Metasplo…
+Starting nmap network scan on 192.168.1.1/24...
+Running nmap ping scan on 192.168.1.1/24...
+Found 11 hosts in nmap scan
+Scanning discovered host: 192.168.1.1
+Starting comprehensive scan of 192.168.1.1...
+Error scanning host 192.168.1.1: error: null value in column "host_id" of relation "ports" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:228:19 {
+  length: 239,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (1, null, null, tcp, open, ssh, null, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'ports',
+  column: 'host_id',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.100
+Starting comprehensive scan of 192.168.1.100...
+Error scanning host 192.168.1.100: error: null value in column "state" of relation "hosts" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonPreparedQuery.execute (file:///home/mrgfy/CySploit/cysploit-dist/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:261:32 {
+  length: 276,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (3, 2, 192.168.1.100, null, null, 2025-05-10 06:37:46.684+00, {}, 08:bf:b8:12:a5:4c, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'hosts',
+  column: 'state',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.110
+Starting comprehensive scan of 192.168.1.110...
+Error scanning host 192.168.1.110: error: null value in column "host_id" of relation "ports" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:228:19 {
+  length: 243,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (2, null, null, tcp, open, netbios, null, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'ports',
+  column: 'host_id',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.128
+Starting comprehensive scan of 192.168.1.128...
+Error scanning host 192.168.1.128: error: null value in column "state" of relation "hosts" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonPreparedQuery.execute (file:///home/mrgfy/CySploit/cysploit-dist/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:261:32 {
+  length: 276,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (4, 2, 192.168.1.128, null, null, 2025-05-10 06:37:49.429+00, {}, f2:c3:a9:18:52:7d, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'hosts',
+  column: 'state',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.150
+Starting comprehensive scan of 192.168.1.150...
+Error scanning host 192.168.1.150: error: null value in column "host_id" of relation "ports" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:228:19 {
+  length: 241,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (3, null, null, tcp, open, ajp13, null, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'ports',
+  column: 'host_id',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.173
+Starting comprehensive scan of 192.168.1.173...
+Error scanning host 192.168.1.173: error: null value in column "host_id" of relation "ports" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:228:19 {
+  length: 240,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (4, null, null, tcp, open, http, null, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'ports',
+  column: 'host_id',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.181
+Starting comprehensive scan of 192.168.1.181...
+Error scanning host 192.168.1.181: error: null value in column "host_id" of relation "ports" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:228:19 {
+  length: 242,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (5, null, null, tcp, open, domain, null, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'ports',
+  column: 'host_id',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.203
+Starting comprehensive scan of 192.168.1.203...
+Error scanning host 192.168.1.203: error: null value in column "host_id" of relation "ports" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:228:19 {
+  length: 240,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (6, null, null, tcp, open, http, null, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'ports',
+  column: 'host_id',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.204
+Starting comprehensive scan of 192.168.1.204...
+Error scanning host 192.168.1.204: error: null value in column "state" of relation "hosts" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonPreparedQuery.execute (file:///home/mrgfy/CySploit/cysploit-dist/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:261:32 {
+  length: 276,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (5, 2, 192.168.1.204, null, null, 2025-05-10 06:37:55.238+00, {}, 22:23:51:0f:85:e0, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'hosts',
+  column: 'state',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.212
+Starting comprehensive scan of 192.168.1.212...
+Error scanning host 192.168.1.212: error: null value in column "state" of relation "hosts" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonPreparedQuery.execute (file:///home/mrgfy/CySploit/cysploit-dist/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:261:32 {
+  length: 276,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (6, 2, 192.168.1.212, null, null, 2025-05-10 06:37:55.629+00, {}, 22:23:51:0f:85:e0, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'hosts',
+  column: 'state',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Scanning discovered host: 192.168.1.248
+Starting comprehensive scan of 192.168.1.248...
+Error scanning host 192.168.1.248: error: null value in column "host_id" of relation "ports" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:228:19 {
+  length: 240,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (7, null, null, tcp, open, http, null, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'ports',
+  column: 'host_id',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Adding local interface wlp0s29u1u6 (192.168.1.110) to results
+Error during network scan: error: null value in column "state" of relation "hosts" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonPreparedQuery.execute (file:///home/mrgfy/CySploit/cysploit-dist/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:284:26 {
+  length: 279,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (7, 2, 192.168.1.110, localhost-wlp0s29u1u6, null, 2025-05-10 06:37:57.37+00, {}, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'hosts',
+  column: 'state',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+Failed to scan network: error: null value in column "state" of relation "hosts" violates not-null constraint
+    at file:///home/mrgfy/CySploit/cysploit-dist/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonPreparedQuery.execute (file:///home/mrgfy/CySploit/cysploit-dist/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+    at async file:///home/mrgfy/CySploit/cysploit-dist/dist/index.js:284:26 {
+  length: 279,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (7, 2, 192.168.1.110, localhost-wlp0s29u1u6, null, 2025-05-10 06:37:57.37+00, {}, null, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'hosts',
+  column: 'state',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2006',
+  routine: 'ExecConstraints'
+}
+11:37:57 PM [express] POST /api/scan/network 500 in 17216ms :: {"message":"Failed to scan network","e…
+
+

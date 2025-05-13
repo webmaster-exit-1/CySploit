@@ -1,0 +1,21 @@
+#!/bin/bash
+SELF=$(readlink -f "$0")
+HERE=${SELF%/*}
+export PATH="${HERE}/usr/bin:${PATH}"
+export NODE_PATH="${HERE}/usr/lib/node_modules"
+export ELECTRON_DISABLE_SECURITY_WARNINGS=true
+export DATABASE_URL=${DATABASE_URL:-"postgresql://neondb_owner:npg_mSZTyIlN86ts@ep-plain-cake-a6piux6n.us-west-2.aws.neon.tech/neondb?sslmode=require"}
+
+# Make sure we have all directories needed
+mkdir -p "${HERE}/usr/bin/client"
+
+# Start the Electron app
+cd "${HERE}/usr/bin"
+ELECTRON_DIR="${HERE}/usr/bin/electron"
+
+# Debug information - remove this in production
+echo "Starting application from: ${HERE}"
+echo "Electron directory: ${ELECTRON_DIR}"
+ls -la "${ELECTRON_DIR}"
+
+electron "${ELECTRON_DIR}/main.js" "$@"

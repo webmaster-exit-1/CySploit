@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Penetration Testing Tools & API Keys</title>
+<style>
+  /* CSS for styling */
+  body {
+    margin: 0;
+    overflow-y: scroll; /* Allow scrolling for content */
+    background-color: #000;
+    color: #0F0;
+    font-family: monospace;
+  }
+  #matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Behind content */
+  }
+  .content {
+    position: relative;
+    z-index: 1; /* Above canvas */
+    padding: 20px 30px;
+    background-color: rgba(0, 0, 0, 0.75); /* Darker overlay */
+    max-width: 900px;
+    margin: 30px auto;
+    border: 1px solid #0F0;
+    border-radius: 5px;
+  }
+  h1, h2 {
+    color: #0F0;
+    text-align: center;
+  }
+  h1 {
+    margin-bottom: 30px;
+  }
+  h2 {
+    margin-top: 30px;
+    border-bottom: 1px solid #0F0;
+    padding-bottom: 5px;
+    text-align: left; /* Align category headers left */
+  }
+  ul {
+    list-style: none;
+    padding-left: 10px; /* Indent list slightly */
+  }
+  li {
+    margin-bottom: 12px; /* More space between items */
+    line-height: 1.4; /* Improve readability */
+  }
+  /* Style for the link wrapping the tool name */
+  li > a {
+    color: #4CAF50; /* Brighter green for links */
+    text-decoration: none;
+  }
+  li > a:hover {
+    color: #FFF;
+    text-decoration: underline;
+  }
+  /* Keep the strong tag white within the link */
+  li > a strong {
+     color: #FFF;
+  }
+  /* Style for the description text */
+  li > span {
+    color: #0F0; /* Standard green for description */
+  }
+
+  /* Table Styles */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9em;
+  }
+  th, td {
+    border: 1px solid #0F0;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: rgba(0, 50, 0, 0.5); /* Dark green background for headers */
+    color: #FFF;
+  }
+  /* Default Table links (used in Description column) */
+  td a {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  td a:hover {
+    color: #FFF;
+    text-decoration: underline;
+  }
+  /* Paragraph above table */
+  .content > p {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.1em;
+  }
+  .content > p em {
+    color: #FFF;
+    font-style: normal; /* Override italic */
+  }
+
+  /* ## API TYPE COLOR CODING ## */
+  /* Style for the 3rd cell (Type) in table body rows */
+  tbody tr td:nth-child(3).api-type-free {
+    color: cyan;
+    font-weight: bold;
+  }
+  tbody tr td:nth-child(3).api-type-tiered {
+    color: red;
+    font-weight: bold;
+  }
+  tbody tr td:nth-child(3).api-type-commercial {
+    color: #DA70D6; /* Orchid, a nice purple */
+    font-weight: bold;
+  }
+   /* Style for Tool type */
+  tbody tr td:nth-child(3).api-type-tool {
+      /* color: #0F0; */ /* Default green */
+      font-weight: bold;
+  }
+
+  /* ## NEW - Style API Names (1st Column) White & Bold ## */
+  tbody tr td:nth-child(1) {
+      color: #FFF; /* Style plain text in cell */
+      font-weight: bold;
+  }
+  tbody tr td:nth-child(1) a {
+      color: #FFF; /* Style links in cell */
+      font-weight: bold;
+      text-decoration: none; /* Remove underline from API name links */
+  }
+  tbody tr td:nth-child(1) a:hover {
+      color: #4CAF50; /* Change color on hover */
+      text-decoration: underline; /* Add underline on hover */
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+
+<div class="content">
+  <h1>Penetration Testing Tools & API Keys</h1>
+
+  <h2>General</h2>
+  <ul>
+    <li><a href="https://github.com/liorvh/Cheatsheets-1" target="_blank"><strong>Cheatsheets</strong></a> - <span>Penetration Testing/Security Cheatsheets</span></li>
+    <li><a href="https://github.com/Hack-with-Github/Awesome-Hacking" target="_blank"><strong>awesome-pentest</strong></a> - <span>penetration testing resources</span></li>
+    <li><a href="https://github.com/bluscreenofjeff/Red-Team-Infrastructure-Wiki" target="_blank"><strong>Red-Team-Infrastructure-Wiki</strong></a> - <span>Red Team infrastructure hardening resources</span></li>
+    <li><a href="https://github.com/rmusser01/Infosec_Reference" target="_blank"><strong>Infosec_Reference</strong></a> - <span>Information Security Reference</span></li>
+    <li><a href="https://github.com/yeyintminthuhtut/Awesome-Red-Teaming" target="_blank"><strong>Awesome-Red-Teaming</strong></a> - <span>List of Awesome Red Teaming Resources</span></li>
+    <li><a href="https://github.com/chryzsh/awesome-windows-security" target="_blank"><strong>awesome-windows-security</strong></a> - <span>List of Awesome Windows Security Resources</span></li>
+  </ul>
+
+  <h2>Web Services</h2>
+  <ul>
+    <li><a href="https://github.com/AppSecConsulting/Pentest-Tools" target="_blank"><strong>JettyBleed</strong></a> - <span>Jetty HttpParser Error Remote Memory Disclosure</span></li>
+    <li><a href="https://github.com/hatRiot/clusterd" target="_blank"><strong>clusterd</strong></a> - <span>Jboss/Coldfusion/WebLogic/Railo/Tomcat/Axis2/Glassfish</span></li>
+    <li><a href="https://github.com/Varbaek/xsser" target="_blank"><strong>xsser</strong></a> - <span>From XSS to RCE wordpress/joomla</span></li>
+    <li><a href="https://github.com/njfox/Java-Deserialization-Exploit" target="_blank"><strong>Java-Deserialization-Exploit</strong></a> - <span>weaponizes ysoserial code to gain a remote shell</span></li>
+    <li><a href="https://github.com/Dionach/CMSmap" target="_blank"><strong>CMSmap</strong></a> - <span>CMS scanner</span></li>
+    <li><a href="https://github.com/rastating/wordpress-exploit-framework" target="_blank"><strong>wordpress-exploit-framework</strong></a> - <span>penetration testing of WordPress</span></li>
+    <li><a href="https://github.com/compoterhacker/joomlol" target="_blank"><strong>joomlol</strong></a> - <span>Joomla User-Agent/X-Forwarded-For RCE</span></li>
+    <li><a href="https://github.com/rastating/joomlavs" target="_blank"><strong>joomlavs</strong></a> - <span>Joomla vulnerability scanner</span></li>
+    <li><a href="https://github.com/stampery/mongoaudit" target="_blank"><strong>mongoaudit</strong></a> - <span>MongoDB auditing and pentesting tool</span></li>
+    <li><a href="https://github.com/Graph-X/davscan" target="_blank"><strong>davscan</strong></a> - <span>Fingerprints servers, finds exploits, scans WebDAV</span></li>
+  </ul>
+
+  <h2>Web Applications</h2>
+  <ul>
+    <li><a href="https://github.com/vpnguy/HandyHeaderHacker" target="_blank"><strong>HandyHeaderHacker</strong></a> - <span>Examine HTTP response headers for common security issues</span></li>
+    <li><a href="https://github.com/stanislav-web/OpenDoor" target="_blank"><strong>OpenDoor</strong></a> - <span>OWASP Directory Access scanner</span></li>
+    <li><a href="https://github.com/AnonymousSecurityHackers/ASH-Keylogger" target="_blank"><strong>ASH-Keylogger</strong></a> - <span>simple keylogger application for XSS attack</span></li>
+    <li><a href="https://github.com/jhaddix/tbhm" target="_blank"><strong>tbhm</strong></a> - <span>The Bug Hunters Methodology</span></li>
+    <li><a href="https://github.com/commixproject/commix" target="_blank"><strong>commix</strong></a> - <span>command injection</span></li>
+    <li><a href="https://github.com/tcstool/NoSQLMap" target="_blank"><strong>NoSQLMap</strong></a> - <span>Mongo database and NoSQL</span></li>
+    <li><a href="https://github.com/mandatoryprogrammer/xsshunter" target="_blank"><strong>xsshunter</strong></a> - <span>Second order XSS</span></li>
+    <li><a href="https://github.com/GerbenJavado/LinkFinder" target="_blank"><strong>LinkFinder</strong></a> - <span>python script that finds endpoints in JavaScript files</span></li>
+   </ul>
+
+   <h2>Local privilege escalation</h2>
+   <ul>
+     <li><a href="https://github.com/b3rito/yodo" target="_blank"><strong>yodo</strong></a> - <span>become root via limited sudo permissions</span></li>
+     <li><a href="https://github.com/ShotokanZH/Pa-th-zuzu" target="_blank"><strong>Pa-th-zuzu</strong></a> - <span>Checks for PATH substitution vulnerabilities</span></li>
+     <li><a href="https://github.com/xorond/sudo-snooper" target="_blank"><strong>sudo-snooper</strong></a> - <span>acts like the original sudo binary to fool users</span></li>
+     <li><a href="https://github.com/foxglovesec/RottenPotato" target="_blank"><strong>RottenPotato</strong></a> - <span>local privilege escalation from service account</span></li>
+     <li><a href="https://github.com/hfiref0x/UACME" target="_blank"><strong>UACMe</strong></a> - <span>Windows AutoElevate backdoor</span></li>
+     <li><a href="https://github.com/enigma0x3/Invoke-LoginPrompt" target="_blank"><strong>Invoke-LoginPrompt</strong></a> - <span>Invokes a Windows Security Login Prompt</span></li>
+     <li><a href="https://github.com/Kabot/Unix-Privilege-Escalation-Exploits-Pack" target="_blank"><strong>Exploits-Pack</strong></a> - <span>Exploits for getting local root on Linux</span></li>
+     <li><a href="https://github.com/pentestmonkey/windows-privesc-check" target="_blank"><strong>windows-privesc-check</strong></a> - <span>Standalone Executable</span></li>
+     <li><a href="https://github.com/pentestmonkey/unix-privesc-check" target="_blank"><strong>unix-privesc-check</strong></a> - <span>simple privilege escalation vectors</span></li>
+     <li><a href="https://github.com/rebootuser/LinEnum" target="_blank"><strong>LinEnum</strong></a> - <span>local Linux Enumeration & Privilege Escalation Checks</span></li>
+     <li><a href="https://github.com/securifera/cowcron" target="_blank"><strong>cowcron</strong></a> - <span>Cronbased Dirty Cow Exploit</span></li>
+     <li><a href="https://github.com/abatchy17/WindowsExploits" target="_blank"><strong>WindowsExploits</strong></a> - <span>Precompiled Windows exploits</span></li>
+     <li><a href="https://github.com/AusJock/Privilege-Escalation" target="_blank"><strong>Privilege-Escalation</strong></a> - <span>common local exploits and enumeration scripts</span></li>
+     <li><a href="https://github.com/LukaSikic/Unix-Privilege-Escalation-Exploits-Pack" target="_blank"><strong>Unix-Privilege-Escalation-Exploits-Pack</strong></a> - <span></span></li>
+     <li><a href="https://github.com/rasta-mouse/Sherlock" target="_blank"><strong>Sherlock</strong></a> - <span>PowerShell script to quickly find missing software patches</span></li>
+     <li><a href="https://github.com/GTFOBins/GTFOBins.github.io" target="_blank"><strong>GTFOBins</strong></a> - <span>list of Unix binaries that can be exploited to bypass system security restrictions</span></li>
+     <li><a href="https://github.com/ohpe/juicy-potato" target="_blank"><strong>juicy-potato</strong></a> - <span>local privilege escalation from service account</span></li>
+   </ul>
+
+   <h2>Phishing</h2>
+   <ul>
+      <li><a href="https://github.com/phar/eyephish" target="_blank"><strong>eyephish</strong></a> - <span>find similar looking domain names</span></li>
+      <li><a href="https://github.com/ryhanson/phishery" target="_blank"><strong>phishery</strong></a> - <span>Basic Auth Credential Harvester with a Word Document Template URL Injector</span></li>
+      <li><a href="https://github.com/0x090x0/WordSteal" target="_blank"><strong>WordSteal</strong></a> - <span>steal NTLM hashes</span></li>
+      <li><a href="https://github.com/fireeye/ReelPhish" target="_blank"><strong>ReelPhish</strong></a> - <span>Real-Time Two-Factor Phishing Tool</span></li>
+      <li><a href="https://github.com/ustayready/CredSniper" target="_blank"><strong>CredSniper</strong></a> - <span>phishing framework (2FA)</span></li>
+      <li><a href="https://github.com/kgretzky/evilginx2" target="_blank"><strong>evilginx2</strong></a> - <span>for phishing login credentials along with session cookies</span></li>
+   </ul>
+
+   <h2>Open Source Intelligence</h2>
+   <ul>
+     <li><a href="https://github.com/dxa4481/truffleHog" target="_blank"><strong>truffleHog</strong></a> - <span>Searches through git repositories for high entropy strings</span></li>
+     <li><a href="https://github.com/infosec-au/altdns" target="_blank"><strong>Altdns</strong></a> - <span>Subdomain discovery</span></li>
+     <li><a href="https://github.com/techgaun/github-dorks" target="_blank"><strong>github-dorks</strong></a> - <span>reveal sensitive personal and/or organizational information</span></li>
+     <li><a href="https://github.com/michenriksen/gitrob" target="_blank"><strong>gitrob</strong></a> - <span>find sensitive information</span></li>
+     <li><a href="https://github.com/darryllane/Bluto" target="_blank"><strong>Bluto</strong></a> - <span>DNS Recon , Email Enumeration</span></li>
+     <li><a href="https://github.com/killswitch-GUI/SimplyEmail" target="_blank"><strong>SimplyEmail</strong></a> - <span>Email recon</span></li>
+     <li><a href="https://github.com/aboul3la/Sublist3r" target="_blank"><strong>Sublist3r</strong></a> - <span>Fast subdomains enumeration tool for penetration testers</span></li>
+     <li><a href="https://github.com/Smaash/snitch" target="_blank"><strong>snitch</strong></a> - <span>information gathering via dorks</span></li>
+     <li><a href="https://github.com/flipkart-incubator/RTA" target="_blank"><strong>RTA</strong></a> - <span>scan all company's online facing assets</span></li>
+     <li><a href="https://github.com/gojhonny/InSpy" target="_blank"><strong>InSpy</strong></a> - <span>LinkedIn enumeration tool</span></li>
+     <li><a href="https://github.com/mdsecactivebreach/LinkedInt" target="_blank"><strong>LinkedInt</strong></a> - <span>LinkedIn scraper for reconnaissance</span></li>
+     <li><a href="https://github.com/caffix/amass" target="_blank"><strong>amass</strong></a> - <span>In-Depth DNS Enumeration and Network Mapping</span></li>
+     <li><a href="https://github.com/evilpacket/DVCS-Pillage" target="_blank"><strong>DVCS-Pillage</strong></a> - <span>Pillage web accessible GIT, HG and BZR repositories</span></li>
+     <li><a href="https://github.com/Raikia/UhOh365" target="_blank"><strong>UhOh365</strong></a> - <span>Script that can see if an email address is valid in Office365</span></li>
+     <li><a href="https://github.com/0xZDH/o365spray" target="_blank"><strong>o365spray</strong></a> - <span>Username enumeration and password spraying tool</span></li>
+     <li><a href="https://github.com/0x09AL/raven" target="_blank"><strong>raven</strong></a> - <span>Linkedin information gathering tool</span></li>
+     <li><a href="https://github.com/lanjelot/patator" target="_blank"><strong>patator</strong></a> - <span>multi-purpose brute-forcer</span></li>
+   </ul>
+
+   <h2>Post-exploitation</h2>
+   <ul>
+     <li><a href="https://github.com/GDSSecurity/Windows-Exploit-Suggester" target="_blank"><strong>Windows-Exploit-Suggester</strong></a> - <span>patch levels against vulnerability database</span></li>
+     <li><a href="https://github.com/bhdresh/lazykatz" target="_blank"><strong>lazykatz</strong></a> - <span>xtract credentials from remote targets protected with AV</span></li>
+     <li><a href="https://github.com/artkond/Invoke-Vnc" target="_blank"><strong>Invoke-Vnc</strong></a> - <span>Powershell VNC injector</span></li>
+     <li><a href="https://github.com/trustedsec/spraywmi" target="_blank"><strong>spraywmi</strong></a> - <span>mass spraying Unicorn PowerShell injection</span></li>
+     <li><a href="https://github.com/nccgroup/redsnarf" target="_blank"><strong>redsnarf</strong></a> - <span>for retrieving hashes and credentials from Windows workstations</span></li>
+     <li><a href="https://github.com/dafthack/HostRecon" target="_blank"><strong>HostRecon</strong></a> - <span>situational awareness</span></li>
+     <li><a href="https://github.com/huntergregal/mimipenguin" target="_blank"><strong>mimipenguin</strong></a> - <span>login password from the current linux user</span></li>
+     <li><a href="https://github.com/artkond/rpivot" target="_blank"><strong>rpivot</strong></a> - <span>socks4 reverse proxy for penetration testing</span></li>
+     <li><a href="https://github.com/b4rtik/metasploit-execute-assembly" target="_blank"><strong>metasploit-execute-assembly</strong></a> - <span>Metasploit post module to executing a .NET Assembly</span></li>
+     <li><a href="https://github.com/NytroRST/NetRipper" target="_blank"><strong>NetRipper</strong></a> - <span>Smart traffic sniffing</span></li>
+     <li><a href="https://github.com/nccgroup/memscan" target="_blank"><strong>memscan</strong></a> - <span>Searches for strings, regex, credit card numbers</span></li>
+     <li><a href="https://github.com/skelsec/pypykatz" target="_blank"><strong>pypykatz</strong></a> - <span>Mimikatz implementation in pure Python</span></li>
+     <li><a href="https://github.com/Kevin-Robertson/Invoke-TheHash" target="_blank"><strong>Invoke-TheHash</strong></a> - <span>PowerShell Pass The Hash Utils</span></li>
+   </ul>
+
+   <h2>Looting</h2>
+   <ul>
+     <li><a href="https://github.com/rash2kool/cookie_stealer" target="_blank"><strong>cookie_stealer</strong></a> - <span>steal cookies from firefox cookies database</span></li>
+     <li><a href="https://github.com/Viralmaniar/Wifi-Dumper" target="_blank"><strong>Wifi-Dumper</strong></a> - <span>dump the wifi profiles and cleartext passwords of the connected access points</span></li>
+     <li><a href="https://github.com/NetSPI/WebLogicPasswordDecryptor" target="_blank"><strong>WebLogicPasswordDecryptor</strong></a> - <span>decrypt WebLogic passwords</span></li>
+     <li><a href="https://github.com/tweksteen/jenkins-decrypt" target="_blank"><strong>jenkins-decrypt</strong></a> - <span>Credentials dumper for Jenkins</span></li>
+     <li><a href="https://github.com/putterpanda/mimikittenz" target="_blank"><strong>mimikittenz</strong></a> - <span>ReadProcessMemory() in order to extract plain-text passwords</span></li>
+     <li><a href="https://github.com/AlessandroZ/LaZagne" target="_blank"><strong>LaZagne</strong></a> - <span>Credentials recovery project</span></li>
+     <li><a href="https://github.com/fireeye/SessionGopher" target="_blank"><strong>SessionGopher</strong></a> - <span>extract WinSCP, PuTTY, SuperPuTTY, FileZilla, and Microsoft Remote Desktop</span></li>
+     <li><a href="https://github.com/sekirkity/BrowserGather" target="_blank"><strong>BrowserGather</strong></a> - <span>Fileless web browser information extraction</span></li>
+     <li><a href="https://github.com/ropnop/windows_sshagent_extract" target="_blank"><strong>windows_sshagent_extract</strong></a> - <span>extract private keys from Windows 10 ssh-agent service</span></li>
+     <li><a href="https://github.com/dafthack/MailSniper" target="_blank"><strong>MailSniper</strong></a> - <span>searching through email in a Microsoft Exchange</span></li>
+     <li><a href="https://github.com/fox-it/Invoke-CredentialPhisher" target="_blank"><strong>Invoke-CredentialPhisher</strong></a> - <span>powershell script to send toast notifications</span></li>
+     <li><a href="https://github.com/abednarek/Multipass" target="_blank"><strong>Multipass</strong></a> - <span>Password manager credential recovery tool</span></li>
+     <li><a href="https://github.com/sosdave/KeyTabExtract" target="_blank"><strong>KeyTabExtract</strong></a> - <span>Extracts Key Values from .keytab files</span></li>
+     <li><a href="https://github.com/patins/sus_ssh" target="_blank"><strong>sus_ssh</strong></a> - <span>Phishing SSH Key Passphrases</span></li>
+   </ul>
+
+   <h2>Network Hunting</h2>
+   <ul>
+     <li><a href="https://github.com/linuz/Sticky-Keys-Slayer" target="_blank"><strong>Sticky-Keys-Slayer</strong></a> - <span>Scans for accessibility tools backdoors via RDP</span></li>
+     <li><a href="https://github.com/dafthack/DomainPasswordSpray" target="_blank"><strong>DomainPasswordSpray</strong></a> - <span>password spray attack against users of a domain</span></li>
+     <li><a href="https://github.com/adaptivethreat/BloodHound" target="_blank"><strong>BloodHound</strong></a> - <span>reveal relationships within an Active Directory</span></li>
+     <li><a href="https://github.com/Raikia/CredNinja" target="_blank"><strong>CredNinja</strong></a> - <span>identify if credentials are valid</span></li>
+     <li><a href="https://github.com/ChrisTruncer/EyeWitness" target="_blank"><strong>EyeWitness</strong></a> - <span>take screenshots of websites</span></li>
+     <li><a href="https://github.com/sensepost/gowitness" target="_blank"><strong>gowitness</strong></a> - <span>a golang, web screenshot utility</span></li>
+     <li><a href="https://github.com/NetSPI/PowerUpSQL" target="_blank"><strong>PowerUpSQL</strong></a> - <span>PowerShell Toolkit for Attacking SQL Server</span></li>
+     <li><a href="https://github.com/SECFORCE/sparta" target="_blank"><strong>sparta</strong></a> - <span>scanning and enumeration</span></li>
+     <li><a href="https://github.com/1N3/Sn1per" target="_blank"><strong>Sn1per</strong></a> - <span>Automated Pentest Recon Scanner</span></li>
+     <li><a href="https://github.com/lgandx/PCredz" target="_blank"><strong>PCredz</strong></a> - <span>This tool extracts creds from a pcap file or from a live interface</span></li>
+     <li><a href="https://github.com/skorov/ridrelay" target="_blank"><strong>ridrelay</strong></a> - <span>Enumerate usernames on a domain where you have no creds</span></li>
+     <li><a href="https://github.com/NetSPI/goddi" target="_blank"><strong>goddi</strong></a> - <span>dumps Active Directory domain information</span></li>
+     <li><a href="https://github.com/byt3bl33d3r/SprayingToolkit" target="_blank"><strong>SprayingToolkit</strong></a> - <span>Scripts to make password spraying attacks</span></li>
+     <li><a href="https://github.com/aslarchergore/exchange_hunter2" target="_blank"><strong>exchange_hunter2</strong></a> - <span>Hunting for Microsoft Exchange the LDAP Way</span></li>
+     <li><a href="https://github.com/dirkjanm/adidnsdump" target="_blank"><strong>adidnsdump</strong></a> - <span>Active Directory Integrated DNS dumping</span></li>
+     <li><a href="https://github.com/dirkjanm/PrivExchange" target="_blank"><strong>PrivExchange</strong></a> - <span>Exchange your privileges for Domain Admin</span></li>
+     <li><a href="https://github.com/dirkjanm/ldapdomaindump" target="_blank"><strong>ldapdomaindump</strong></a> - <span>Active Directory information dumper via LDAP</span></li>
+     <li><a href="https://github.com/ropnop/impacket_static_binaries" target="_blank"><strong>impacket_static_binaries</strong></a> - <span>Standalone binaries</span></li>
+     <li><a href="https://github.com/Ridter/Exchange2domain" target="_blank"><strong>Exchange2domain</strong></a> - <span>All in One tools of privexchange</span></li>
+   </ul>
+
+   <h2>Wireless</h2>
+   <ul>
+     <li><a href="https://github.com/Wh1t3Rh1n0/air-hammer" target="_blank"><strong>air-hammer</strong></a> - <span>WPA Enterprise horizontal brute-force</span></li>
+     <li><a href="https://github.com/sensepost/mana" target="_blank"><strong>mana</strong></a> - <span>toolkit for wifi rogue AP attacks</span></li>
+     <li><a href="https://github.com/Shellntel/scripts" target="_blank"><strong>crEAP</strong></a> - <span>Harvesting Users on Enterprise Wireless Networks</span></li>
+     <li><a href="https://github.com/sophron/wifiphisher" target="_blank"><strong>wifiphisher</strong></a> - <span>phishing attacks against Wi-Fi clients</span></li>
+     <li><a href="https://github.com/NickSanzotta/WiFiSuite" target="_blank"><strong>WiFiSuite</strong></a> - <span>consolidating the most common tools</span></li>
+   </ul>
+
+   <h2>Man in the Middle</h2>
+   <ul>
+     <li><a href="https://github.com/mitmproxy/mitmproxy" target="_blank"><strong>mitmproxy</strong></a> - <span>An interactive TLS-capable intercepting HTTP proxy</span></li>
+     <li><a href="https://github.com/evilsocket/bettercap" target="_blank"><strong>bettercap</strong></a> - <span>bettercap</span></li>
+     <li><a href="https://github.com/byt3bl33d3r/MITMf" target="_blank"><strong>MITMf</strong></a> - <span>Framework for Man-In-The-Middle attacks</span></li>
+     <li><a href="https://github.com/Gifts/Responder" target="_blank"><strong>Gifts/Responder</strong></a> - <span>Responder for old python</span></li>
+     <li><a href="https://github.com/fox-it/mitm6" target="_blank"><strong>mitm6</strong></a> - <span>pwning IPv4 via IPv6</span></li>
+     <li><a href="https://github.com/emptymonkey/shelljack" target="_blank"><strong>shelljack</strong></a> - <span>man-in-the-middle pseudoterminal injection</span></li>
+     <li><a href="https://github.com/quickbreach/SMBetray" target="_blank"><strong>SMBetray</strong></a> - <span>SMB MiTM tool</span></li>
+   </ul>
+
+   <h2>Physical</h2>
+   <ul>
+     <li><a href="https://github.com/Screetsec/Brutal" target="_blank"><strong>Brutal</strong></a> - <span>Payload for teensy</span></li>
+     <li><a href="https://github.com/samyk/poisontap" target="_blank"><strong>poisontap</strong></a> - <span>Exploits locked/password protected computers over USB</span></li>
+     <li><a href="https://github.com/RedLectroid/OverThruster" target="_blank"><strong>OverThruster</strong></a> - <span>HID attack payload generator for Arduinos</span></li>
+     <li><a href="https://github.com/Ozuru/Paensy" target="_blank"><strong>Paensy</strong></a> - <span>An attacker-oriented library for the Teensy 3.1 microcontroller</span></li>
+     <li><a href="https://github.com/samratashok/Kautilya" target="_blank"><strong>Kautilya</strong></a> - <span>Payloads for a Human Interface Device</span></li>
+   </ul>
+
+   <h2>Payloads</h2>
+   <ul>
+     <li><a href="https://github.com/quantumvm/JavaReverseTCPShell" target="_blank"><strong>JavaReverseTCPShell</strong></a> - <span>Spawns a reverse TCP shell in Java</span></li>
+     <li><a href="https://github.com/TBGSecurity/splunk_shells" target="_blank"><strong>splunk_shells</strong></a> - <span>Splunk with reverse and bind shells</span></li>
+     <li><a href="https://github.com/praetorian-inc/pyshell" target="_blank"><strong>pyshell</strong></a> - <span>shellify Your HTTP Command Injection</span></li>
+     <li><a href="https://github.com/danielmiessler/RobotsDisallowed" target="_blank"><strong>RobotsDisallowed</strong></a> - <span>harvest of the Disallowed directories</span></li>
+     <li><a href="https://github.com/danielmiessler/SecLists" target="_blank"><strong>SecLists</strong></a> - <span>collection of multiple types of lists</span></li>
+     <li><a href="https://github.com/berzerk0/Probable-Wordlists" target="_blank"><strong>Probable-Wordlists</strong></a> - <span>Wordlists sorted by probability</span></li>
+     <li><a href="https://github.com/EgeBalci/ARCANUS" target="_blank"><strong>ARCANUS</strong></a> - <span>payload generator/handler.</span></li>
+     <li><a href="https://github.com/epinna/weevely3" target="_blank"><strong>weevely3</strong></a> - <span>Weaponized web shell</span></li>
+     <li><a href="https://github.com/fuzzdb-project/fuzzdb" target="_blank"><strong>fuzzdb</strong></a> - <span>Dictionary of attack patterns</span></li>
+     <li><a href="https://github.com/foospidy/payloads" target="_blank"><strong>payloads</strong></a> - <span>web attack payloads</span></li>
+     <li><a href="https://github.com/gabemarshall/Brosec" target="_blank"><strong>Brosec</strong></a> - <span>An interactive reference tool for payloads</span></li>
+     <li><a href="https://github.com/nccgroup/demiguise" target="_blank"><strong>Demiguise</strong></a> - <span>HTA encryption tool</span></li>
+     <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings" target="_blank"><strong>PayloadsAllTheThings</strong></a> - <span>A list of useful payloads</span></li>
+     <li><a href="https://github.com/insidetrust/statistically-likely-usernames" target="_blank"><strong>statistically-likely-usernames</strong></a> - <span>statistically likely username lists</span></li>
+     <li><a href="https://github.com/pwntester/ysoserial.net" target="_blank"><strong>ysoserial.net</strong></a> - <span>Deserialization payload generator for .NET</span></li>
+   </ul>
+
+   <h2>Droppers</h2>
+   <ul>
+     <li><a href="https://github.com/EgeBalci/HERCULES" target="_blank"><strong>HERCULES</strong></a> - <span>payload generator that can bypass antivirus</span></li>
+     <li><a href="https://github.com/khr0x40sh/MacroShop" target="_blank"><strong>MacroShop</strong></a> - <span>delivering payloads via Office Macros</span></li>
+     <li><a href="https://github.com/Mr-Un1k0d3r/ClickOnceGenerator" target="_blank"><strong>ClickOnceGenerator</strong></a> - <span>Quick Malicious ClickOnceGenerator</span></li>
+     <li><a href="https://github.com/Shellntel/luckystrike" target="_blank"><strong>luckystrike</strong></a> - <span>A PowerShell based utility for the creation of malicious Office macro documents</span></li>
+     <li><a href="https://github.com/4w4k3/Insanity-Framework" target="_blank"><strong>Insanity-Framework</strong></a> - <span>Generate Payloads</span></li>
+     <li><a href="https://github.com/nccgroup/Winpayloads" target="_blank"><strong>Winpayloads</strong></a> - <span>Undetectable Windows Payload Generation</span></li>
+     <li><a href="https://github.com/UndeadSec/Enigma" target="_blank"><strong>Enigma</strong></a> - <span>Multiplatform payload dropper</span></li>
+     <li><a href="https://github.com/gen0cide/gscript" target="_blank"><strong>Gscript</strong></a> - <span>framework to rapidly implement custom droppers</span></li>
+     <li><a href="https://github.com/blacknbunny/mcreator" target="_blank"><strong>mcreator</strong></a> - <span>Encoded Reverse Shell Generator</span></li>
+     <li><a href="https://github.com/oddcod3/Phantom-Evasion" target="_blank"><strong>Phantom-Evasion</strong></a> - <span>Python AV evasion tool</span></li>
+     <li><a href="https://github.com/lesnuages/hershell" target="_blank"><strong>hershell</strong></a> - <span>Multiplatform reverse shell generator</span></li>
+     <li><a href="https://github.com/ghost123gg/wep" target="_blank"><strong>wep</strong></a> - <span>Weaponize Macro payloads</span></li>
+     <li><a href="https://github.com/outflanknl/EvilClippy" target="_blank"><strong>EvilClippy</strong></a> - <span>creating malicious MS Office documents</span></li>
+     <li><a href="https://github.com/sevagas/macro_pack" target="_blank"><strong>macro_pack</strong></a> - <span>MS Office documents or VBS</span></li>
+     <li><a href="https://github.com/Ch0pin/AVIator" target="_blank"><strong>AVIator</strong></a> - <span>backdoor generator utility</span></li>
+     <li><a href="https://github.com/Mr-Un1k0d3r/MaliciousMacroGenerator" target="_blank"><strong>MaliciousMacroGenerator</strong></a> - <span>Malicious Macro Generator</span></li>
+     <li><a href="https://github.com/TheWover/donut" target="_blank"><strong>donut</strong></a> - <span>shellcode that loads .NET Assemblies, PE files</span></li>
+   </ul>
+
+   <h2>Apple</h2>
+   <ul>
+     <li><a href="https://github.com/manwhoami/MMeTokenDecrypt" target="_blank"><strong>MMeTokenDecrypt</strong></a> - <span>Decrypts and extracts iCloud and MMe authorization tokens</span></li>
+     <li><a href="https://github.com/manwhoami/OSXChromeDecrypt" target="_blank"><strong>OSXChromeDecrypt</strong></a> - <span>Decrypt Google Chrome and Chromium Passwords on Mac OS X</span></li>
+     <li><a href="https://github.com/neoneggplant/EggShell" target="_blank"><strong>EggShell</strong></a> - <span>iOS and OS X Surveillance Tool</span></li>
+     <li><a href="https://github.com/watson/bonjour-browser" target="_blank"><strong>bonjour-browser</strong></a> - <span>command line tool to browse for Bonjour</span></li>
+     <li><a href="https://github.com/SlEePlEs5/logKext" target="_blank"><strong>logKext</strong></a> - <span>open source keylogger for Mac OS X</span></li>
+     <li><a href="https://github.com/jipegit/OSXAuditor" target="_blank"><strong>OSXAuditor</strong></a> - <span>OS X computer forensics tool</span></li>
+     <li><a href="https://github.com/octomagon/davegrohl" target="_blank"><strong>davegrohl</strong></a> - <span>Password Cracker for OS X</span></li>
+     <li><a href="https://github.com/n0fate/chainbreaker" target="_blank"><strong>chainbreaker</strong></a> - <span>Mac OS X Keychain Forensic Tool</span></li>
+     <li><a href="https://github.com/fuzzynop/FiveOnceInYourLife" target="_blank"><strong>FiveOnceInYourLife</strong></a> - <span>Local osx dialog box phishing</span></li>
+     <li><a href="https://github.com/ygini/ARD-Inspector" target="_blank"><strong>ARD-Inspector</strong></a> - <span>ecrypt the Apple Remote Desktop database</span></li>
+     <li><a href="https://github.com/juuso/keychaindump" target="_blank"><strong>keychaindump</strong></a> - <span>reading OS X keychain passwords</span></li>
+     <li><a href="https://github.com/manwhoami/Bella" target="_blank"><strong>Bella</strong></a> - <span>python, post-exploitation, data mining tool</span></li>
+     <li><a href="https://github.com/Marten4n6/EvilOSX" target="_blank"><strong>EvilOSX</strong></a> - <span>pure python, post-exploitation, RAT</span></li>
+     <li><a href="https://github.com/its-a-feature/Apfell" target="_blank"><strong>Apfell</strong></a> - <span>A macOS, post-exploit, red teaming framework</span></li>
+   </ul>
+
+   <h2>Captive Portals</h2>
+   <ul>
+     <li><a href="https://github.com/codewatchorg/cpscam" target="_blank"><strong>cpscam</strong></a> - <span>Bypass captive portals by impersonating inactive users</span></li>
+   </ul>
+
+   <h2>Passwords</h2>
+   <ul>
+     <li><a href="https://github.com/digininja/pipal" target="_blank"><strong>pipal</strong></a> - <span>password analyser</span></li>
+     <li><a href="https://github.com/skahwah/wordsmith" target="_blank"><strong>wordsmith</strong></a> - <span>assist with creating tailored wordlists</span></li>
+     <li><a href="https://github.com/ubeeri/Invoke-PWAudit" target="_blank"><strong>Invoke-PWAudit</strong></a> - <span>discover similarly named accounts with shared passwords in AD</span></li>
+   </ul>
+
+   <h2>Obfuscation</h2>
+   <ul>
+     <li><a href="https://github.com/cobbr/ObfuscatedEmpire" target="_blank"><strong>ObfuscatedEmpire</strong></a> - <span>fork of Empire with Invoke-Obfuscation integrated directly in</span></li>
+     <li><a href="https://github.com/jamcut/obfuscate_launcher" target="_blank"><strong>obfuscate_launcher</strong></a> - <span>Simple script for obfuscating payload launchers</span></li>
+     <li><a href="https://github.com/danielbohannon/Invoke-CradleCrafter" target="_blank"><strong>Invoke-CradleCrafter</strong></a> - <span>Download Cradle Generator & Obfuscator</span></li>
+     <li><a href="https://github.com/danielbohannon/Invoke-Obfuscation" target="_blank"><strong>Invoke-Obfuscation</strong></a> - <span>PowerShell Obfuscator</span></li>
+     <li><a href="https://github.com/trustedsec/nps_payload" target="_blank"><strong>nps_payload</strong></a> - <span>payloads for basic intrusion detection avoidance</span></li>
+   </ul>
+
+   <h2>C# Tooling</h2>
+   <ul>
+     <li><a href="https://github.com/djhohnstein/SharpWeb" target="_blank"><strong>SharpWeb</strong></a> - <span>.NET 2.0 CLR project to retrieve saved browser credentials</span></li>
+     <li><a href="https://github.com/stufus/reconerator" target="_blank"><strong>reconerator</strong></a> - <span>C# Targeted Attack Reconnissance Tools</span></li>
+     <li><a href="https://github.com/GhostPack/SafetyKatz" target="_blank"><strong>SafetyKatz</strong></a> - <span>create a minidump of LSASS</span></li>
+     <li><a href="https://github.com/mdsecactivebreach/SharpShooter" target="_blank"><strong>SharpShooter</strong></a> - <span>framework for the retrieval and execution of arbitrary CSharp source code</span></li>
+     <li><a href="https://github.com/anthemtotheego/SharpCradle" target="_blank"><strong>SharpCradle</strong></a> - <span>download and execute .NET binaries into memory</span></li>
+     <li><a href="https://github.com/checkymander/Sharp-WMIExec" target="_blank"><strong>Sharp-WMIExec</strong></a> - <span>C# conversion of Invoke-WMIExec</span></li>
+     <li><a href="https://github.com/checkymander/Sharp-SMBExec" target="_blank"><strong>Sharp-SMBExec</strong></a> - <span>C# conversion of Invoke-SMBExec</span></li>
+     <li><a href="https://github.com/chrismaddalena/SharpCloud" target="_blank"><strong>SharpCloud</strong></a> - <span>Collecting AWS, Microsoft Azure, and Google Compute creds</span></li>
+     <li><a href="https://github.com/tevora-threat/SharpView" target="_blank"><strong>SharpView</strong></a> - <span>C# implementation of PowerView</span></li>
+     <li><a href="https://github.com/BloodHoundAD/SharpHound" target="_blank"><strong>SharpHound</strong></a> - <span>The BloodHound C# Ingestor</span></li>
+     <li><a href="https://github.com/cobbr/SharpGen" target="_blank"><strong>SharpGen</strong></a> - <span>C# compiler to cross-compile .NET console applications or libraries.</span></li>
+     <li><a href="https://github.com/Kevin-Robertson/InveighZero" target="_blank"><strong>InveighZero</strong></a> - <span>C# LLMNR/NBNS spoofer</span></li>
+     <li><a href="https://github.com/anthemtotheego/SharpSploitConsole" target="_blank"><strong>SharpSploitConsole</strong></a> - <span>Console Application designed to interact with SharpSploit</span></li>
+     <li><a href="https://github.com/HunnicCyber/SharpSniper" target="_blank"><strong>SharpSniper</strong></a> - <span>Find specific users in active directory via username and IP address</span></li>
+     <li><a href="https://github.com/fireeye/SharPersist" target="_blank"><strong>SharPersist</strong></a> - <span>Windows persistence toolkit</span></li>
+     <li><a href="https://github.com/Mr-Un1k0d3r/RedTeamCSharpScripts" target="_blank"><strong>RedTeamCSharpScripts</strong></a> - <span>C# Script used for Red Team</span></li>
+     <li><a href="https://github.com/antonioCoco/SharPyShell" target="_blank"><strong>SharPyShell</strong></a> - <span>iny and obfuscated ASP.NET webshell for C#</span></li>
+   </ul>
+
+   <h2>Not Powershell</h2>
+   <ul>
+     <li><a href="https://github.com/p3nt4/PowerShdll" target="_blank"><strong>PowerShdll</strong></a> - <span>Run PowerShell with rundll32</span></li>
+     <li><a href="https://github.com/fullmetalcache/PowerLine" target="_blank"><strong>PowerLine</strong></a>- <span>Powershell Scripts in a binary</span></li>
+     <li><a href="https://github.com/fdiskyou/PowerOPS" target="_blank"><strong>PowerOPS</strong></a> - <span>C# that runs PowerShell commands and functions</span></li>
+     <li><a href="https://github.com/Ben0xA/nps" target="_blank"><strong>nps</strong></a> - <span>Not PowerShell</span></li>
+     <li><a href="https://github.com/AdrianVollmer/PowerHub" target="_blank"><strong>PowerHub</strong></a> - <span>post exploitation tool</span></li>
+   </ul>
+
+   <h2>RATs</h2>
+   <ul>
+     <li><a href="https://github.com/byt3bl33d3r/SILENTTRINITY" target="_blank"><strong>SILENTTRINITY</strong></a> - <span>post-exploitation agent powered by Python, IronPython, C# and .NET's DLR</span></li>
+     <li><a href="https://github.com/SpiderLabs/DoHC2" target="_blank"><strong>DoHC2</strong></a> - <span>command and control (C2) via DNS over HTTPS (DoH)</span></li>
+     <li><a href="https://github.com/xorrior/RemoteRecon" target="_blank"><strong>RemoteRecon</strong></a> - <span>Remote Recon and Collection</span></li>
+     <li><a href="https://github.com/Ne0nd0g/merlin" target="_blank"><strong>Mertin</strong></a> - <span>cross-platform post-exploitation HTTP/2 Command & Control</span></li>
+     <li><a href="https://github.com/lukebaggett/dnscat2-powershell" target="_blank"><strong>dnscat2-powershell</strong></a> - <span>encrypted DNS command and control tool</span></li>
+     <li><a href="https://github.com/zerosum0x0/koadic" target="_blank"><strong>Koadic</strong></a> - <span>JScript RAT</span></li>
+     <li><a href="https://github.com/n1nj4sec/pupy" target="_blank"><strong>Pupy</strong></a> - <span>cross-platform RAT written in python</span></li>
+     <li><a href="https://github.com/BishopFox/sliver" target="_blank"><strong>sliver</strong></a> - <span>Implant framework</span></li>
+     <li><a href="https://github.com/cobbr/Covenant" target="_blank"><strong>Covenant</strong></a> - <span>Covenant is a collaborative .NET C2</span></li>
+   </ul>
+
+   <h2>Cloud</h2>
+   <ul>
+     <li><a href="https://github.com/RhinoSecurityLabs/pacu" target="_blank"><strong>pacu</strong></a> - <span>The AWS exploitation framework</span></li>
+     <li><a href="https://github.com/carnal0wnage/weirdAAL" target="_blank"><strong>weirdAAL</strong></a> - <span>AWS Attack Library</span></li>
+     <li><a href="https://github.com/nccgroup/ScoutSuite" target="_blank"><strong>ScoutSuite</strong></a> - <span>Multi-Cloud Security Auditing Tool</span></li>
+     <li><a href="https://github.com/RhinoSecurityLabs/AWS-IAM-Privilege-Escalation" target="_blank"><strong>AWS-IAM-Privilege-Escalation</strong></a> - <span>AWS IAM privilege escalation methods</span></li>
+     <li><a href="https://github.com/andresriancho/nimbostratus" target="_blank"><strong>nimbostratus</strong></a> - <span>fingerprinting and exploiting Amazon cloud infrastructures</span></li>
+   </ul>
+
+   <h2>API Keys You Need</h2>
+   <p dir="auto">Many tools will require API keys <em>Get them.</em>.</p>
+   <table>
+     <thead>
+       <tr>
+         <th align="left">Name</th>
+         <th align="left">Description</th>
+         <th align="left">Type</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td align="left"><a href="https://app.abstractapi.com/" rel="nofollow">AbstractAPI</a></td>
+         <td align="left">Look up domain, phone and IP address information from AbstractAPI.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.abuse.ch" rel="nofollow">abuse.ch</a></td>
+         <td align="left">Check if a host/domain, IP address or netblock is malicious according to Abuse.ch.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.abuseipdb.com" rel="nofollow">AbuseIPDB</a></td>
+         <td align="left">Check if an IP address is malicious according to AbuseIPDB.com blacklist.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://abusix.org/" rel="nofollow">Abusix Mail Intelligence</a></td>
+         <td align="left">Check if a netblock or IP address is in the Abusix Mail Intelligence blacklist.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+          <td align="left">Account Finder</td>
+         <td align="left">Look for possible associated accounts on nearly 200 websites like Ebay, Slashdot, reddit, etc.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://adblockplus.org/" rel="nofollow">AdBlock Check</a></td>
+         <td align="left">Check if linked pages would be blocked by AdBlock Plus.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+        <tr>
+         <td align="left"><a href="https://adguard.com/" rel="nofollow">AdGuard DNS</a></td>
+         <td align="left">Check if a host would be blocked by AdGuard DNS.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://ahmia.fi/" rel="nofollow">Ahmia</a></td>
+         <td align="left">Search Tor 'Ahmia' search engine for mentions of the target.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://cybersecurity.att.com/" rel="nofollow">AlienVault IP Reputation</a></td>
+         <td align="left">Check if an IP or netblock is malicious according to the AlienVault IP Reputation database.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://otx.alienvault.com/" rel="nofollow">AlienVault OTX</a></td>
+         <td align="left">Obtain information from AlienVault Open Threat Exchange (OTX)</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://aws.amazon.com/s3/" rel="nofollow">Amazon S3 Bucket Finder</a></td>
+         <td align="left">Search for potential Amazon S3 buckets associated with the target and attempt to list their contents.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://itunes.apple.com/" rel="nofollow">Apple iTunes</a></td>
+         <td align="left">Search Apple iTunes for mobile apps.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://archive.org/" rel="nofollow">Archive.org</a></td>
+         <td align="left">Identifies historic versions of interesting files/pages from the Wayback Machine.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.arin.net/" rel="nofollow">ARIN</a></td>
+         <td align="left">Queries ARIN registry for contact information.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://azure.microsoft.com/en-in/services/storage/blobs/" rel="nofollow">Azure Blob Finder</a></td>
+         <td align="left">Search for potential Azure blobs associated with the target and attempt to list their contents.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://badpackets.net" rel="nofollow">Bad Packets</a></td>
+         <td align="left">Obtain information about any malicious activities involving IP addresses found</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left">Base64 Decoder</td>
+         <td align="left">Identify Base64-encoded strings in URLs, often revealing interesting hidden information.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://bgpview.io/" rel="nofollow">BGPView</a></td>
+         <td align="left">Obtain network information from BGPView API.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+         <td align="left">Binary String Extractor</td>
+         <td align="left">Attempt to identify strings in binary content.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://www.binaryedge.io/" rel="nofollow">BinaryEdge</a></td>
+         <td align="left">Obtain information from BinaryEdge.io Internet scanning systems, including breaches, vulnerabilities, torrents and passive DNS.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.bing.com/" rel="nofollow">Bing (Shared IPs)</a></td>
+         <td align="left">Search Bing for hosts sharing the same IP.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.bing.com/" rel="nofollow">Bing</a></td>
+         <td align="left">Obtain information from bing to identify sub-domains and links.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">Bitcoin Finder</td>
+         <td align="left">Identify bitcoin addresses in scraped webpages.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://bitcoinwhoswho.com/" rel="nofollow">Bitcoin Who's Who</a></td>
+         <td align="left">Check for Bitcoin addresses against the Bitcoin Who's Who database of suspect/malicious addresses.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.bitcoinabuse.com/" rel="nofollow">BitcoinAbuse</a></td>
+         <td align="left">Check Bitcoin addresses against the bitcoinabuse.com database of suspect/malicious addresses.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.blockchain.com/" rel="nofollow">Blockchain</a></td>
+         <td align="left">Queries blockchain.info to find the balance of identified bitcoin wallet addresses.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="http://www.blocklist.de/en/index.html" rel="nofollow">blocklist.de</a></td>
+         <td align="left">Check if a netblock or IP is malicious according to blocklist.de.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://botscout.com/" rel="nofollow">BotScout</a></td>
+         <td align="left">Searches BotScout.com's database of spam-bot IP addresses and e-mail addresses.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://botvrij.eu/" rel="nofollow">botvrij.eu</a></td>
+         <td align="left">Check if a domain is malicious according to botvrij.eu.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://builtwith.com/" rel="nofollow">BuiltWith</a></td>
+         <td align="left">Query BuiltWith.com's Domain API for information about your target's web technology stack, e-mail addresses and more.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://api.c99.nl/" rel="nofollow">C99</a></td>
+         <td align="left">Queries the C99 API which offers various data (geo location, proxy detection, phone lookup, etc).</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="http://callername.com/" rel="nofollow">CallerName</a></td>
+         <td align="left">Lookup US phone number location and reputation information.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://censys.io/" rel="nofollow">Censys</a></td>
+         <td align="left">Obtain host information from Censys.io.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://crt.sh/" rel="nofollow">Certificate Transparency</a></td>
+         <td align="left">Gather hostnames from historical certificates in crt.sh.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://sslmate.com/certspotter/" rel="nofollow">CertSpotter</a></td>
+         <td align="left">Gather information about SSL certificates from SSLMate CertSpotter API.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://cinsscore.com/" rel="nofollow">CINS Army List</a></td>
+         <td align="left">Check if a netblock or IP address is malicious according to Collective Intelligence Network Security (CINS) Army list.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.circl.lu/" rel="nofollow">CIRCL.LU</a></td>
+         <td align="left">Obtain information from CIRCL.LU's Passive DNS and Passive SSL databases.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://cleanBrowse.org/" rel="nofollow">CleanBrowse.org</a></td>
+         <td align="left">Check if a host would be blocked by CleanBrowse.org DNS content filters.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://cleantalk.org" rel="nofollow">CleanTalk Spam List</a></td>
+         <td align="left">Check if a netblock or IP address is on CleanTalk.org's spam IP list.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://clearbit.com/" rel="nofollow">Clearbit</a></td>
+         <td align="left">Check for names, addresses, domains and more based on lookups of e-mail addresses on clearbit.com.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.cloudflare.com/" rel="nofollow">CloudFlare DNS</a></td>
+         <td align="left">Check if a host would be blocked by CloudFlare DNS.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://zerodot1.gitlab.io/CoinBlockerListsWeb/" rel="nofollow">CoinBlocker Lists</a></td>
+         <td align="left">Check if a domain appears on CoinBlocker lists.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://commoncrawl.org/" rel="nofollow">CommonCrawl</a></td>
+         <td align="left">Searches for URLs found through CommonCrawl.org.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.comodo.com/secure-dns/" rel="nofollow">Comodo Secure DNS</a></td>
+         <td align="left">Check if a host would be blocked by Comodo Secure DNS.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">Company Name Extractor</td>
+         <td align="left">Identify company names in any obtained data.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Cookie Extractor</td>
+         <td align="left">Extract Cookies from HTTP headers.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Country Name Extractor</td>
+         <td align="left">Identify country names in any obtained data.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Credit Card Number Extractor</td>
+         <td align="left">Identify Credit Card Numbers in any data</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://sonar.omnisint.io/" rel="nofollow">Crobat API</a></td>
+         <td align="left">Search Crobat API for subdomains.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">Cross-Referencer</td>
+         <td align="left">Identify whether other domains are associated ('Affiliates') of the target by looking for links back to the target site(s).</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://crxcavator.io/" rel="nofollow">CRXcavator</a></td>
+         <td align="left">Search CRXcavator for Chrome extensions.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">Custom Threat Feed</td>
+         <td align="left">Check if a host/domain, netblock, ASN or IP is malicious according to your custom feed.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://cybercrime-tracker.net/" rel="nofollow">CyberCrime-Tracker.net</a></td>
+         <td align="left">Check if a host/domain or IP address is malicious according to CyberCrime-Tracker.net.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+         <td align="left"><a href="https://darksearch.io/" rel="nofollow">Darksearch</a></td>
+         <td align="left">Search the Darksearch.io Tor search engine for mentions of the target domain.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://debounce.io/" rel="nofollow">Debounce</a></td>
+         <td align="left">Check whether an email is disposable</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.dehashed.com/" rel="nofollow">Dehashed</a></td>
+         <td align="left">Gather breach data from Dehashed API.</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.digitalocean.com/products/spaces/" rel="nofollow">Digital Ocean Space Finder</a></td>
+         <td align="left">Search for potential Digital Ocean Spaces associated with the target and attempt to list their contents.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">DNS Brute-forcer</td>
+         <td align="left">Attempts to identify hostnames through brute-forcing common names and iterations.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">DNS Common SRV</td>
+         <td align="left">Attempts to identify hostnames through brute-forcing common DNS SRV records.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://dnsforfamily.com/" rel="nofollow">DNS for Family</a></td>
+         <td align="left">Check if a host would be blocked by DNS for Family.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+         <td align="left">DNS Look-aside</td>
+         <td align="left">Attempt to reverse-resolve the IP addresses next to your target to see if they are related.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">DNS Raw Records</td>
+         <td align="left">Retrieves raw DNS records such as MX, TXT and others.</td>
+          <td></td> </tr>
+       <tr>
+          <td align="left">DNS Resolver</td>
+         <td align="left">Resolves hosts and IP addresses identified, also extracted from raw content.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">DNS Zone Transfer</td>
+         <td align="left">Attempts to perform a full DNS zone transfer.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://www.farsightsecurity.com" rel="nofollow">DNSDB</a></td>
+         <td align="left">Query FarSight's DNSDB for historical and passive DNS data.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://dnsdumpster.com/" rel="nofollow">DNSDumpster</a></td>
+         <td align="left">Passive subdomain enumeration using HackerTarget's DNSDumpster</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://opendata.rapid7.com/" rel="nofollow">DNSGrep</a></td>
+         <td align="left">Obtain Passive DNS information from Rapid7 Sonar Project using DNSGrep API.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://dronebl.org/" rel="nofollow">DroneBL</a></td>
+         <td align="left">Query the DroneBL database for open relays, open proxies, vulnerable servers, etc.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://duckduckgo.com/" rel="nofollow">DuckDuckGo</a></td>
+         <td align="left">Query DuckDuckGo's API for descriptive information about your target.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">E-Mail Address Extractor</td>
+         <td align="left">Identify e-mail addresses in any obtained data.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://emailcrawlr.com/" rel="nofollow">EmailCrawlr</a></td>
+         <td align="left">Search EmailCrawlr for email addresses and phone numbers associated with a domain.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.email-format.com/" rel="nofollow">EmailFormat</a></td>
+         <td align="left">Look up e-mail addresses on email-format.com.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://emailrep.io/" rel="nofollow">EmailRep</a></td>
+          <td align="left">Search EmailRep.io for email address reputation.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://rules.emergingthreats.net/" rel="nofollow">Emerging Threats</a></td>
+         <td align="left">Check if a netblock or IP address is malicious according to EmergingThreats.net.</td>
+         <td align="left" class="api-type-free">Free API</td>
+        </tr>
+       <tr>
+         <td align="left">Error String Extractor</td>
+         <td align="left">Identify common error messages in content like SQL errors, etc.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Ethereum Address Extractor</td>
+         <td align="left">Identify ethereum addresses in scraped webpages.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://etherscan.io" rel="nofollow">Etherscan</a></td>
+          <td align="left">Queries etherscan.io to find the balance of identified ethereum wallet addresses.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">File Metadata Extractor</td>
+         <td align="left">Extracts meta data from documents and images.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://www.flickr.com/" rel="nofollow">Flickr</a></td>
+          <td align="left">Search Flickr for domains, URLs and emails related to the specified domain.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://focsec.com/" rel="nofollow">Focsec</a></td>
+         <td align="left">Look up IP address information from Focsec.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.fortiguard.com/" rel="nofollow">FortiGuard Antispam</a></td>
+          <td align="left">Check if an IP address is malicious according to FortiGuard Antispam.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://fraudguard.io/" rel="nofollow">Fraudguard</a></td>
+         <td align="left">Obtain threat information from Fraudguard.io</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://riddler.io/" rel="nofollow">F-Secure Riddler.io</a></td>
+          <td align="left">Obtain network information from F-Secure Riddler.io API.</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.fullcontact.com" rel="nofollow">FullContact</a></td>
+         <td align="left">Gather domain and e-mail information from FullContact.com API.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://fullhunt.io/" rel="nofollow">FullHunt</a></td>
+         <td align="left">Identify domain attack surface using FullHunt API.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://github.com/">Github</a></td>
+         <td align="left">Identify associated public code repositories on Github.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://search.gleif.org/" rel="nofollow">GLEIF</a></td>
+         <td align="left">Look up company information from Global Legal Entity Identifier Foundation (GLEIF).</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://cloud.google.com/maps-platform/" rel="nofollow">Google Maps</a></td>
+         <td align="left">Identifies potential physical addresses and latitude/longitude coordinates.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://cloud.google.com/storage" rel="nofollow">Google Object Storage Finder</a></td>
+         <td align="left">Search for potential Google Object Storage buckets associated with the target and attempt to list their contents.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+         <td align="left"><a href="https://developers.google.com/safe-Browse/v4/lookup-api" rel="nofollow">Google SafeBrowse</a></td>
+         <td align="left">Check if the URL is included on any of the Safe Browse lists.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://developers.google.com/custom-search" rel="nofollow">Google</a></td>
+          <td align="left">Obtain information from the Google Custom Search API to identify sub-domains and links.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://secure.gravatar.com/" rel="nofollow">Gravatar</a></td>
+         <td align="left">Retrieve user information from Gravatar API.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://buckets.grayhatwarfare.com/" rel="nofollow">Grayhat Warfare</a></td>
+         <td align="left">Find bucket names matching the keyword extracted from a domain from Grayhat API.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://greensnow.co/" rel="nofollow">Greensnow</a></td>
+         <td align="left">Check if a netblock or IP address is malicious according to greensnow.co.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://grep.app/" rel="nofollow">grep.app</a></td>
+         <td align="left">Search grep.app API for links and emails related to the specified domain.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://greynoise.io/" rel="nofollow">GreyNoise</a></td>
+         <td align="left">Obtain IP enrichment data from GreyNoise</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="http://www.nobbd.de/" rel="nofollow">HackerOne (Unofficial)</a></td>
+         <td align="left">Check external vulnerability scanning/reporting service h1.nobbd.de to see if the target is listed.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://hackertarget.com/" rel="nofollow">HackerTarget</a></td>
+         <td align="left">Search HackerTarget.com for hosts sharing the same IP.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">Hash Extractor</td>
+         <td align="left">Identify MD5 and SHA hashes in web content, files and more.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://haveibeenpwned.com/" rel="nofollow">HaveIBeenPwned</a></td>
+         <td align="left">Check HaveIBeenPwned.com for hacked e-mail addresses identified in breaches.</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+          <td align="left">Hosting Provider Identifier</td>
+         <td align="left">Find out if any IP addresses identified fall within known 3rd party hosting ranges, e.g. Amazon, Azure, etc.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://host.io" rel="nofollow">Host.io</a></td>
+         <td align="left">Obtain information about domain names from host.io.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">Human Name Extractor</td>
+         <td align="left">Attempt to identify human names in fetched content.</td>
+          <td></td> </tr>
+        <tr>
+         <td align="left"><a href="https://hunter.io/" rel="nofollow">Hunter.io</a></td>
+         <td align="left">Check for e-mail addresses and names on hunter.io.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.hybrid-analysis.com" rel="nofollow">Hybrid Analysis</a></td>
+         <td align="left">Search Hybrid Analysis for domains and URLs related to the target.</td>
+          <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">IBAN Number Extractor</td>
+         <td align="left">Identify International Bank Account Numbers (IBANs) in any data.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://iknowwhatyoudownload.com/en/peer/" rel="nofollow">Iknowwhatyoudownload.com</a></td>
+         <td align="left">Check iknowwhatyoudownload.com for IP addresses that have been using torrents.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.instagram.com/" rel="nofollow">Instagram</a></td>
+         <td align="left">Gather information from Instagram profiles.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://intelx.io/" rel="nofollow">IntelligenceX</a></td>
+         <td align="left">Obtain information from IntelligenceX about identified IP addresses, domains, e-mail addresses and phone numbers.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">Interesting File Finder</td>
+         <td align="left">Identifies potential files of interest, e.g. office documents, zip files.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://isc.sans.edu" rel="nofollow">Internet Storm Center</a></td>
+         <td align="left">Check if an IP address is malicious according to SANS ISC.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://ipapi.co/" rel="nofollow">ipapi.co</a></td>
+         <td align="left">Queries ipapi.co to identify geolocation of IP Addresses using ipapi.co API</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://ipapi.com/" rel="nofollow">ipapi.com</a></td>
+         <td align="left">Queries ipapi.com to identify geolocation of IP Addresses using ipapi.com API</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+          <td align="left"><a href="https://ipinfo.io" rel="nofollow">IPInfo.io</a></td>
+         <td align="left">Identifies the physical location of IP addresses identified using ipinfo.io.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.ipqualityscore.com/" rel="nofollow">IPQualityScore</a></td>
+         <td align="left">Determine if target is malicious using IPQualityScore API</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://ipregistry.co/" rel="nofollow">ipregistry</a></td>
+         <td align="left">Query the ipregistry.co database for reputation and geo-location.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://ipstack.com/" rel="nofollow">ipstack</a></td>
+         <td align="left">Identifies the physical location of IP addresses identified using ipstack.com.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://jsonwhois.com" rel="nofollow">JsonWHOIS.com</a></td>
+         <td align="left">Search JsonWHOIS.com for WHOIS records associated with a domain.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">Junk File Finder</td>
+         <td align="left">Looks for old/temporary and other similar files.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://keybase.io/" rel="nofollow">Keybase</a></td>
+         <td align="left">Obtain additional information about domain names and identified usernames.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://koodous.com/apks/" rel="nofollow">Koodous</a></td>
+         <td align="left">Search Koodous for mobile apps.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://leakix.net/" rel="nofollow">LeakIX</a></td>
+         <td align="left">Search LeakIX for host data leaks, open ports, software and geoip.</td>
+          <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://leak-lookup.com/" rel="nofollow">Leak-Lookup</a></td>
+         <td align="left">Searches Leak-Lookup.com's database of breaches.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://maltiverse.com" rel="nofollow">Maltiverse</a></td>
+         <td align="left">Obtain information about any malicious activities involving IP addresses</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.malwarepatrol.net/" rel="nofollow">MalwarePatrol</a></td>
+         <td align="left">Searches malwarepatrol.net's database of malicious URLs/IPs.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://metadefender.opswat.com/" rel="nofollow">MetaDefender</a></td>
+          <td align="left">Search MetaDefender API for IP address and domain IP reputation.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.mnemonic.no" rel="nofollow">Mnemonic PassiveDNS</a></td>
+         <td align="left">Obtain Passive DNS information from PassiveDNS.mnemonic.no.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+          <td align="left"><a href="https://multiproxy.org/" rel="nofollow">multiproxy.org Open Proxies</a></td>
+         <td align="left">Check if an IP address is an open proxy according to multiproxy.org open proxy list.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://myspace.com/" rel="nofollow">MySpace</a></td>
+         <td align="left">Gather username and location from MySpace.com profiles.</td>
+          <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.nameapi.org/" rel="nofollow">NameAPI</a></td>
+         <td align="left">Check whether an email is disposable</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://networksdb.io/" rel="nofollow">NetworksDB</a></td>
+         <td align="left">Search NetworksDB.io API for IP address and domain information.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.neutrinoapi.com/" rel="nofollow">NeutrinoAPI</a></td>
+         <td align="left">Search NeutrinoAPI for phone location information, IP address information, and host reputation.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="http://numverify.com/" rel="nofollow">numverify</a></td>
+         <td align="left">Lookup phone number location and carrier information from numverify.com.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://onion.link/" rel="nofollow">Onion.link</a></td>
+         <td align="left">Search Tor 'Onion City' search engine for mentions of the target domain using Google Custom Search.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+          <td align="left"><a href="https://as.onionsearchengine.com" rel="nofollow">Onionsearchengine.com</a></td>
+         <td align="left">Search Tor onionsearchengine.com for mentions of the target domain.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.onyphe.io" rel="nofollow">Onyphe</a></td>
+         <td align="left">Check Onyphe data (threat list, geo-location, pastries, vulnerabilities) about a given IP.</td>
+          <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.openbugbounty.org/" rel="nofollow">Open Bug Bounty</a></td>
+         <td align="left">Check external vulnerability scanning/reporting service openbugbounty.org to see if the target is listed.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+          <td align="left"><a href="http://pdns.daloo.de/" rel="nofollow">Open Passive DNS Database</a></td>
+         <td align="left">Obtain passive DNS information from pdns.daloo.de Open passive DNS database.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://opencorporates.com" rel="nofollow">OpenCorporates</a></td>
+         <td align="left">Look up company information from OpenCorporates.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.opendns.com/" rel="nofollow">OpenDNS</a></td>
+         <td align="left">Check if a host would be blocked by OpenDNS.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.opennic.org/" rel="nofollow">OpenNIC DNS</a></td>
+         <td align="left">Resolves host names in the OpenNIC alternative DNS system.</td>
+          <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://openphish.com/" rel="nofollow">OpenPhish</a></td>
+         <td align="left">Check if a host/domain is malicious according to OpenPhish.com.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.openstreetmap.org/" rel="nofollow">OpenStreetMap</a></td>
+         <td align="left">Retrieves latitude/longitude coordinates for physical addresses from OpenStreetMap API.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">Page Information</td>
+         <td align="left">Obtain information about web pages (do they take passwords, do they contain forms, etc.)</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://pastebin.com/" rel="nofollow">PasteBin</a></td>
+          <td align="left">PasteBin search (via Google Search API) to identify related content.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">PGP Key Servers</td>
+         <td align="left">Look up e-mail addresses in PGP public key servers.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://phishstats.info/" rel="nofollow">PhishStats</a></td>
+         <td align="left">Check if a netblock or IP address is malicious according to PhishStats.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://phishtank.com/" rel="nofollow">PhishTank</a></td>
+         <td align="left">Check if a host/domain is malicious according to PhishTank.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">Phone Number Extractor</td>
+         <td align="left">Identify phone numbers in scraped webpages.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Port Scanner - TCP</td>
+         <td align="left">Scans for commonly open TCP ports on Internet-facing systems.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://www.projecthoneypot.org/" rel="nofollow">Project Honey Pot</a></td>
+         <td align="left">Query the Project Honey Pot database for IP addresses.</td>
+          <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://chaos.projectdiscovery.io" rel="nofollow">ProjectDiscovery Chaos</a></td>
+         <td align="left">Search for hosts/subdomains using chaos.projectdiscovery.io</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://psbdmp.cc/" rel="nofollow">Psbdmp</a></td>
+         <td align="left">Check psbdmp.cc (PasteBin Dump) for potentially hacked e-mails and domains.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://pulsedive.com/" rel="nofollow">Pulsedive</a></td>
+         <td align="left">Obtain information from Pulsedive's API.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://punkspider.io/" rel="nofollow">PunkSpider</a></td>
+         <td align="left">Check the QOMPLX punkspider.io service to see if the target is listed as vulnerable.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://quad9.net/" rel="nofollow">Quad9</a></td>
+         <td align="left">Check if a host would be blocked by Quad9 DNS.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+          <td align="left"><a href="https://recon.dev" rel="nofollow">Recon.dev</a></td>
+         <td align="left">Search Recon.dev for subdomains.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.reversewhois.io/" rel="nofollow">ReverseWhois</a></td>
+         <td align="left">Reverse Whois lookups using reversewhois.io.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.ripe.net/" rel="nofollow">RIPE</a></td>
+          <td align="left">Queries the RIPE registry (includes ARIN data) to identify netblocks and other info.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://community.riskiq.com/" rel="nofollow">RiskIQ</a></td>
+         <td align="left">Obtain information from RiskIQ's (formerly PassiveTotal) Passive DNS and Passive SSL databases.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+        </tr>
+       <tr>
+         <td align="left"><a href="https://www.robtex.com/" rel="nofollow">Robtex</a></td>
+         <td align="left">Search Robtex.com for hosts sharing the same IP.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://scylla.so/" rel="nofollow">Scylla</a></td>
+         <td align="left">Gather breach data from Scylla API.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+         <td align="left"><a href="https://searchcode.com/" rel="nofollow">searchcode</a></td>
+         <td align="left">Search searchcode for code repositories mentioning the target domain.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://securitytrails.com/" rel="nofollow">SecurityTrails</a></td>
+         <td align="left">Obtain Passive DNS and other information from SecurityTrails</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+        </tr>
+       <tr>
+         <td align="left"><a href="https://seon.io/" rel="nofollow">Seon</a></td>
+         <td align="left">Queries seon.io to gather intelligence about IP Addresses, email addresses, and phone numbers</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.shodan.io/" rel="nofollow">SHODAN</a></td>
+         <td align="left">Obtain information from SHODAN about identified IP addresses.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">Similar Domain Finder</td>
+         <td align="left">Search various sources to identify similar looking domain names, for instance squatted domains.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="http://www.skymem.info/" rel="nofollow">Skymem</a></td>
+         <td align="left">Look up e-mail addresses on Skymem.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.slideshare.net" rel="nofollow">SlideShare</a></td>
+         <td align="left">Gather name and location from SlideShare profiles.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://snov.io/" rel="nofollow">Snov</a></td>
+         <td align="left">Gather available email IDs from identified domains</td>
+          <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://sociallinks.io/" rel="nofollow">Social Links</a></td>
+         <td align="left">Queries SocialLinks.io to gather intelligence from social media platforms and dark web.</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://developers.google.com/custom-search" rel="nofollow">Social Media Profile Finder</a></td>
+         <td align="left">Tries to discover the social media profiles for human names identified.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">Social Network Identifier</td>
+         <td align="left">Identify presence on social media networks such as LinkedIn, Twitter and others.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="http://www.sorbs.net/" rel="nofollow">SORBS</a></td>
+         <td align="left">Query the SORBS database for open relays, open proxies, vulnerable servers, etc.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.spamcop.net/" rel="nofollow">SpamCop</a></td>
+         <td align="left">Check if a netblock or IP address is in the SpamCop database.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.spamhaus.org/" rel="nofollow">Spamhaus Zen</a></td>
+         <td align="left">Check if a netblock or IP address is in the Spamhaus Zen database.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://spur.us/" rel="nofollow">spur.us</a></td>
+         <td align="left">Obtain information about any malicious activities involving IP addresses found</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+        <tr>
+         <td align="left"><a href="http://spyonweb.com/" rel="nofollow">SpyOnWeb</a></td>
+         <td align="left">Search SpyOnWeb for hosts sharing the same IP address, Google Analytics code, or Google Adsense code.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://spyse.com" rel="nofollow">Spyse</a></td>
+         <td align="left">Search Spyse.com Internet assets registry for information about domains, IP addresses, host info, potential vulnerabilities, passive DNS, etc.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left">SSL Certificate Analyzer</td>
+         <td align="left">Gather information about SSL certificates used by the target's HTTPS sites.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://www.stackexchange.com" rel="nofollow">StackOverflow</a></td>
+         <td align="left">Search StackOverflow for any mentions of a target domain. Returns potentially related information.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://github.com/StevenBlack/hosts">Steven Black Hosts</a></td>
+         <td align="left">Check if a domain is malicious (malware or adware) according to Steven Black Hosts list.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+         <td align="left">Strange Header Identifier</td>
+         <td align="left">Obtain non-standard HTTP headers returned by web servers.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Subdomain Takeover Checker</td>
+         <td align="left">Check if affiliated subdomains are vulnerable to takeover.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://api.sublist3r.com" rel="nofollow">Sublist3r PassiveDNS</a></td>
+          <td align="left">Passive subdomain enumeration using Sublist3r's API</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="http://www.surbl.org/" rel="nofollow">SURBL</a></td>
+         <td align="left">Check if a netblock, IP address or domain is in the SURBL blacklist.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://talosintelligence.com/" rel="nofollow">Talos Intelligence</a></td>
+         <td align="left">Check if a netblock or IP address is malicious according to TalosIntelligence.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.textmagic.com/" rel="nofollow">TextMagic</a></td>
+         <td align="left">Obtain phone number type from TextMagic API</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+        </tr>
+       <tr>
+         <td align="left"><a href="https://www.threatcrowd.org" rel="nofollow">ThreatCrowd</a></td>
+         <td align="left">Obtain information from ThreatCrowd about identified IP addresses, domains and e-mail addresses.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://threatfox.abuse.ch" rel="nofollow">ThreatFox</a></td>
+         <td align="left">Check if an IP address is malicious according to ThreatFox.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.threatminer.org/" rel="nofollow">ThreatMiner</a></td>
+         <td align="left">Obtain information from ThreatMiner's database for passive DNS and threat intelligence.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">TLD Searcher</td>
+          <td align="left">Search all Internet TLDs for domains with the same name as the target (this can be very slow.)</td>
+           <td></td> </tr>
+       <tr>
+         <td align="left">Tool - CMSeeK</td>
+         <td align="left">Identify what Content Management System (CMS) might be used.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+          <td align="left">Tool - DNSTwist</td>
+         <td align="left">Identify bit-squatting, typo and other similar domains to the target using a local DNSTwist installation.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+         <td align="left">Tool - nbtscan</td>
+         <td align="left">Scans for open NETBIOS nameservers on your target's network.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+        <tr>
+         <td align="left">Tool - Nmap</td>
+         <td align="left">Identify what Operating System might be used.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+         <td align="left">Tool - Nuclei</td>
+         <td align="left">Fast and customisable vulnerability scanner.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+        <tr>
+         <td align="left">Tool - onesixtyone</td>
+         <td align="left">Fast scanner to find publicly exposed SNMP services.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+         <td align="left">Tool - Retire.js</td>
+         <td align="left">Scanner detecting the use of JavaScript libraries with known vulnerabilities</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+        <tr>
+         <td align="left">Tool - snallygaster</td>
+         <td align="left">Finds file leaks and other security problems on HTTP servers.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+         <td align="left">Tool - testssl.sh</td>
+         <td align="left">Identify various TLS/SSL weaknesses, including Heartbleed, CRIME and ROBOT.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+         <td align="left">Tool - TruffleHog</td>
+         <td align="left">Searches through git repositories for high entropy strings and secrets, digging deep into commit history.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+         <td align="left">Tool - WAFW00F</td>
+          <td align="left">Identify what web application firewall (WAF) is in use on the specified website.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+         <td align="left">Tool - Wappalyzer</td>
+         <td align="left">Wappalyzer indentifies technologies on websites.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+        <tr>
+          <td align="left">Tool - WhatWeb</td>
+         <td align="left">Identify what software is in use on the specified website.</td>
+         <td align="left" class="api-type-tool">Tool</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://metrics.torproject.org/" rel="nofollow">TOR Exit Nodes</a></td>
+         <td align="left">Check if an IP adddress or netblock appears on the Tor Metrics exit node list.</td>
+          <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://torchsearch.wordpress.com/" rel="nofollow">TORCH</a></td>
+         <td align="left">Search Tor 'TORCH' search engine for mentions of the target domain.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://got-hacked.wtf" rel="nofollow">Trashpanda</a></td>
+         <td align="left">Queries Trashpanda to gather intelligence about mentions of target in pastesites</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://trumail.io/" rel="nofollow">Trumail</a></td>
+         <td align="left">Check whether an email is disposable</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.twilio.com/" rel="nofollow">Twilio</a></td>
+         <td align="left">Obtain information from Twilio about phone numbers. Ensure you have the Caller Name add-on installed in Twilio.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://twitter.com/" rel="nofollow">Twitter</a></td>
+         <td align="left">Gather name and location from Twitter profiles.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+          <td align="left"><a href="http://www.uceprotect.net/" rel="nofollow">UCEPROTECT</a></td>
+         <td align="left">Check if a netblock or IP address is in the UCEPROTECT database.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://urlscan.io/" rel="nofollow">URLScan.io</a></td>
+         <td align="left">Search URLScan.io cache for domain information.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+          <td align="left"><a href="https://venmo.com/" rel="nofollow">Venmo</a></td>
+         <td align="left">Gather user information from Venmo API.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://viewdns.info/" rel="nofollow">ViewDNS.info</a></td>
+         <td align="left">Identify co-hosted websites and perform reverse Whois lookups using ViewDNS.info.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+        <tr>
+          <td align="left"><a href="https://www.virustotal.com/" rel="nofollow">VirusTotal</a></td>
+         <td align="left">Obtain information from VirusTotal about identified IP addresses.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://voipbl.org/" rel="nofollow">VoIP Blacklist (VoIPBL)</a></td>
+         <td align="left">Check if an IP address or netblock is malicious according to VoIP Blacklist (VoIPBL).</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="http://vxvault.net/" rel="nofollow">VXVault.net</a></td>
+         <td align="left">Check if a domain or IP address is malicious according to VXVault.net.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left">Web Analytics Extractor</td>
+         <td align="left">Identify web analytics IDs in scraped webpages and DNS TXT records.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Web Framework Identifier</td>
+         <td align="left">Identify the usage of popular web frameworks like jQuery, YUI and others.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Web Server Identifier</td>
+         <td align="left">Obtain web server banners to identify versions of web servers being used.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left">Web Spider</td>
+         <td align="left">Spidering of web-pages to extract content for searching.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://whatcms.org/" rel="nofollow">WhatCMS</a></td>
+         <td align="left">Check web technology using WhatCMS.org API.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+        <tr>
+          <td align="left"><a href="https://whoisology.com/" rel="nofollow">Whoisology</a></td>
+         <td align="left">Reverse Whois lookups using Whoisology.com.</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left">Whois</td>
+         <td align="left">Perform a WHOIS look-up on domain names and owned netblocks.</td>
+          <td></td> </tr>
+       <tr>
+         <td align="left"><a href="https://www.whoxy.com/" rel="nofollow">Whoxy</a></td>
+          <td align="left">Reverse Whois lookups using Whoxy.com.</td>
+         <td align="left" class="api-type-commercial">Commercial API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://wigle.net/" rel="nofollow">WiGLE</a></td>
+         <td align="left">Query WiGLE to identify nearby WiFi access points.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://wikileaks.org/" rel="nofollow">Wikileaks</a></td>
+         <td align="left">Search Wikileaks for mentions of domain names and e-mail addresses.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://www.wikipedia.org/" rel="nofollow">Wikipedia Edits</a></td>
+         <td align="left">Identify edits to Wikipedia articles made from a given IP address or username.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+        <tr>
+         <td align="left"><a href="https://exchange.xforce.ibmcloud.com/" rel="nofollow">XForce Exchange</a></td>
+         <td align="left">Obtain IP reputation and passive DNS information from IBM X-Force Exchange.</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://yandex.com/" rel="nofollow">Yandex DNS</a></td>
+         <td align="left">Check if a host would be blocked by Yandex DNS.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://zetalytics.com/" rel="nofollow">Zetalytics</a></td>
+         <td align="left">Query the Zetalytics database for hosts on your target domain(s).</td>
+         <td align="left" class="api-type-tiered">Tiered API</td>
+       </tr>
+       <tr>
+         <td align="left"><a href="https://zone-h.org/" rel="nofollow">Zone-H Defacement Check</a></td>
+         <td align="left">Check if a hostname/domain appears on the zone-h.org 'special defacements' RSS feed.</td>
+         <td align="left" class="api-type-free">Free API</td>
+       </tr>
+     </tbody>
+   </table>
+
+ </div>
+
+ <script>
+   // JavaScript for Matrix effect
+   const canvas = document.getElementById('matrix-canvas');
+   const ctx = canvas.getContext('2d');
+
+   let resizeTimeout;
+   function setCanvasSize() {
+       canvas.width = window.innerWidth;
+       canvas.height = window.innerHeight;
+       // Recalculate columns and reset drops on resize completion
+       clearTimeout(resizeTimeout);
+       resizeTimeout = setTimeout(setupMatrix, 100);
+   }
+
+   // Use Katakana characters or any characters you like
+   const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+   const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+   const nums = '0123456789';
+   const characters = katakana + latin + nums;
+
+   const fontSize = 16;
+   let columns;
+   let drops = [];
+
+   function setupMatrix() {
+       columns = Math.floor(canvas.width / fontSize);
+       drops = [];
+       for (let x = 0; x < columns; x++) {
+           // Randomize initial drop position for more organic look
+           drops[x] = Math.floor(Math.random() * (canvas.height / fontSize));
+       }
+   }
+
+
+   function drawMatrix() {
+       // Semi-transparent black background for fading effect
+       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+       ctx.fillStyle = '#0F0'; // Green text
+       ctx.font = fontSize + 'px monospace';
+
+       // Loop through the drops
+       for (let i = 0; i < drops.length; i++) {
+           // Get a random character
+           const text = characters.charAt(Math.floor(Math.random() * characters.length));
+           // x, y coordinates
+           ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+           // Send the drop back to the top randomly after it has crossed the screen
+           // or randomly reset it to add variety
+           if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+               drops[i] = 0;
+           }
+
+           // Increment the y coordinate
+           drops[i]++;
+       }
+   }
+
+   // Initial setup
+   setCanvasSize();
+   setupMatrix();
+
+   // Animation loop
+   const matrixInterval = setInterval(drawMatrix, 40); // Adjusted speed slightly
+
+   // Adjust canvas size on window resize
+   window.addEventListener('resize', setCanvasSize);
+
+ </script>
+
+ </body>
+ </html>

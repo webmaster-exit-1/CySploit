@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+    <svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+      <rect width="256" height="256" fill="#000033"/>
+      <circle cx="128" cy="128" r="100" fill="none" stroke="#00ffff" stroke-width="4"/>
+      <circle cx="128" cy="128" r="60" fill="none" stroke="#ff00ff" stroke-width="3"/>
+      <text x="128" y="135" font-family="Arial" font-size="32" fill="#ffffff" text-anchor="middle">CySploit</text>
+    </svg>

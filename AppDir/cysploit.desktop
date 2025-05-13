@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=CySploit
+Comment=A cutting-edge cybersecurity platform
+Exec=AppRun
+Terminal=false
+Type=Application
+Icon=cysploit
+Categories=Security;Development;
+StartupWMClass=cysploit
