@@ -2,6 +2,8 @@
 
 A cutting-edge cybersecurity web and desktop application that transforms network security assessment into an immersive, interactive experience with advanced scanning and cross-platform capabilities.
 
+![cysploit dashboard](cysploit_dashboard.jpg)
+
 ## Features
 
 - **Web and Desktop Interface**: Use in browser or as a standalone application
@@ -12,6 +14,8 @@ A cutting-edge cybersecurity web and desktop application that transforms network
 - **Metasploit Integration**: Connect to Metasploit for advanced penetration testing
 - **3D Visualization**: View network data in an immersive 3D environment
 - **Reporting**: Generate comprehensive security reports
+
+![shodan](Shodan.jpg)
 
 ## Technologies
 
