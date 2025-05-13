@@ -11,7 +11,6 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 const Terminal: React.FC = () => {
-const Terminal: React.FC = () => {
   const { devices } = useNetworkScanner();
   const { vulnerabilities, getVulnerabilityCounts } = useVulnerabilityScanner();
   // Get vulnerability counts
@@ -56,7 +55,7 @@ const Terminal: React.FC = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Devices:</span>
                   <Badge variant="outline" className="font-mono">
-                    {devices?.length || 0}
+                    {Array.isArray(devices) ? devices.length : 0}
                   </Badge>
                 </div>
 
