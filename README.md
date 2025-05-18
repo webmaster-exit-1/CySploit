@@ -1,6 +1,9 @@
-# CySploit - Cybersecurity Analysis Platform
-
-<img src="cysploit_dashboard.jpg" alt="cysploit_dashboard" width="1080"/>
+<div align="center">
+  <h1>CySploit - Cybersecurity Analysis Platform</h1>
+</div>
+<div align="center">
+  <img src="cysploit_dashboard.jpg" alt="cysploit_dashboard" width="800" style="max-height:180px; object-fit:contain;" />
+</div>
 
 *"A cutting-edge cybersecurity platform designed to simplify network security assessment through advanced, interactive scanning and analysis tools."* - Anonymous User
 
@@ -12,11 +15,6 @@
 - **3D Visualization**: Visualize security data in interactive 3D maps
 - **Shodan Integration**: Enhance reconnaissance with Shodan API data
 - **Metasploit Integration**: Connect directly to Metasploit for penetration testing
-<img src="packet_capture.jpg" alt="packet_capture" width="512"/>
-
-<img src="Shodan.jpg" alt="Shodan" width="512"/>
-
-<img src="metasploit.jpg" alt="metasploit" width="512"/>
 
 ## Technology Stack
 
@@ -97,8 +95,6 @@ You can build CySploit as a standalone desktop application for Linux, Windows, o
   npx electron-builder build --mac --publish never
   ```
 
-**Note:** When running the desktop version, you'll have full access to scan your actual local network, unlike the web preview version which is limited to the Replit environment.
-
 ## Configuration
 
 ### Shodan API
@@ -134,7 +130,7 @@ You can build CySploit as a standalone desktop application for Linux, Windows, o
 
 ## License
 
-Copyright © 2024 CySploit Team - All rights reserved
+Copyright © 2025 CySploit Team - All rights reserved
 
 ## Acknowledgments
 
