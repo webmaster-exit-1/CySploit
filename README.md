@@ -1,6 +1,7 @@
 # CySploit - Cybersecurity Analysis Platform
+![cysploit_dashboard](cysploit_dashboard.jpg)
 
-A cutting-edge cybersecurity platform designed to simplify network security assessment through advanced, interactive scanning and analysis tools.
+*"A cutting-edge cybersecurity platform designed to simplify network security assessment through advanced, interactive scanning and analysis tools."* - Anonymous User
 
 ## Features
 
@@ -10,7 +11,9 @@ A cutting-edge cybersecurity platform designed to simplify network security asse
 - **3D Visualization**: Visualize security data in interactive 3D maps
 - **Shodan Integration**: Enhance reconnaissance with Shodan API data
 - **Metasploit Integration**: Connect directly to Metasploit for penetration testing
-
+![packet_capture](packet_capture.jpg)
+![Shodan](Shodan.jpg)
+![metasploit](metasploit.jpg)
 ## Technology Stack
 
 - React.js with TypeScript for the frontend
