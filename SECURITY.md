@@ -18,7 +18,7 @@ We take the security of CySploit seriously. If you believe you've found a securi
 For vulnerabilities that could lead to remote code execution, exposure of sensitive user data, or other high-severity issues:
 
 1. **Do not** disclose the vulnerability publicly or to any third parties
-2. Email details of the vulnerability to security@example.com
+2. Email details of the vulnerability to echohellosuperuser@member.fsf.org
 3. Include as much information as possible, including:
    - A detailed description of the vulnerability
    - Steps to reproduce the issue
