@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+// Update the import path below if your types are in a different location, e.g. '@/types/vulnerability'
+import { Vulnerability } from '@/lib/types';
 import TerminalConsole from '@/components/dashboard/TerminalConsole';
 import NeonBorder from '@/components/common/NeonBorder';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -12,34 +14,33 @@ import { cn } from '@/lib/utils';
 const Terminal: React.FC = () => {
   const { devices } = useNetworkScanner();
   const { vulnerabilities, getVulnerabilityCounts } = useVulnerabilityScanner();
-  
   // Get vulnerability counts
-  const vulnCounts = getVulnerabilityCounts(vulnerabilities);
-  
+  const vulnCounts = getVulnerabilityCounts(vulnerabilities as Vulnerability[] | undefined);
+
   // Set page title
   useEffect(() => {
     document.title = 'Terminal | CySploit';
   }, []);
-  
+
   return (
     <>
       <Helmet>
         <title>Terminal | CySploit</title>
         <meta name="description" content="Interactive command line interface for network security analysis and management" />
       </Helmet>
-      
+
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-rajdhani text-white mb-2">Interactive <span className="text-primary">Terminal</span></h1>
         <p className="text-gray-400">Command-line interface for advanced network security operations</p>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Terminal Console - Main area */}
         <div className="lg:col-span-2">
           <TerminalConsole maxHeight="h-[600px]" />
         </div>
-        
+
         {/* Help and Statistics */}
         <div className="space-y-6">
           {/* Quick Stats */}
@@ -55,10 +56,10 @@ const Terminal: React.FC = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Devices:</span>
                   <Badge variant="outline" className="font-mono">
-                    {devices?.length || 0}
+                    {Array.isArray(devices) ? devices.length : 0}
                   </Badge>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Vulnerabilities:</span>
                   <div className="flex space-x-2">
@@ -70,14 +71,14 @@ const Terminal: React.FC = () => {
                     </Badge>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Traffic:</span>
                   <Badge variant="outline" className="font-mono">
                     1.8 GB
                   </Badge>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Last scan:</span>
                   <Badge variant="outline" className="font-mono">
@@ -87,7 +88,7 @@ const Terminal: React.FC = () => {
               </div>
             </CardContent>
           </NeonBorder>
-          
+
           {/* Command Help */}
           <NeonBorder color="cyan">
             <Tabs defaultValue="basic">
@@ -110,46 +111,46 @@ const Terminal: React.FC = () => {
                       <div className="font-mono text-primary mb-1">scan -target [ip/cidr]</div>
                       <div className="text-xs text-gray-400">Scan network or specific device</div>
                     </div>
-                    
+
                     <div className="bg-black p-2 rounded">
                       <div className="font-mono text-primary mb-1">vuln-scan -target [ip]</div>
                       <div className="text-xs text-gray-400">Scan for vulnerabilities</div>
                     </div>
-                    
+
                     <div className="bg-black p-2 rounded">
                       <div className="font-mono text-primary mb-1">show devices</div>
                       <div className="text-xs text-gray-400">List all discovered devices</div>
                     </div>
-                    
+
                     <div className="bg-black p-2 rounded">
                       <div className="font-mono text-primary mb-1">show vulns</div>
                       <div className="text-xs text-gray-400">List all vulnerabilities</div>
                     </div>
-                    
+
                     <div className="bg-black p-2 rounded">
                       <div className="font-mono text-primary mb-1">help</div>
                       <div className="text-xs text-gray-400">Show all available commands</div>
                     </div>
                   </div>
                 </TabsContent>
-                
+
                 <TabsContent value="advanced">
                   <div className="space-y-3">
                     <div className="bg-black p-2 rounded">
                       <div className="font-mono text-primary mb-1">packet-capture -i [interface] -f [filter]</div>
                       <div className="text-xs text-gray-400">Capture network packets</div>
                     </div>
-                    
+
                     <div className="bg-black p-2 rounded">
                       <div className="font-mono text-primary mb-1">stop-capture -s [session_id]</div>
                       <div className="text-xs text-gray-400">Stop packet capture</div>
                     </div>
-                    
+
                     <div className="bg-black p-2 rounded">
                       <div className="font-mono text-primary mb-1">network-map</div>
                       <div className="text-xs text-gray-400">Generate network map</div>
                     </div>
-                    
+
                     <div className="bg-black p-2 rounded">
                       <div className="font-mono text-primary mb-1">show interfaces</div>
                       <div className="text-xs text-gray-400">List network interfaces</div>
@@ -161,7 +162,7 @@ const Terminal: React.FC = () => {
           </NeonBorder>
         </div>
       </div>
-      
+
       {/* Command History */}
       <NeonBorder color="magenta" className="mb-8">
         <CardHeader>
@@ -186,7 +187,7 @@ const Terminal: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="bg-black bg-opacity-50 p-3 rounded-lg">
               <div className="flex items-start">
                 <span className={cn("text-xs px-1.5 py-0.5 rounded mr-2", "bg-secondary bg-opacity-20 text-secondary")}>
@@ -201,7 +202,7 @@ const Terminal: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="bg-black bg-opacity-50 p-3 rounded-lg">
               <div className="flex items-start">
                 <span className={cn("text-xs px-1.5 py-0.5 rounded mr-2", "bg-accent bg-opacity-20 text-accent")}>
@@ -216,7 +217,7 @@ const Terminal: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="bg-black bg-opacity-50 p-3 rounded-lg">
               <div className="flex items-start">
                 <span className={cn("text-xs px-1.5 py-0.5 rounded mr-2", "bg-green-500 bg-opacity-20 text-green-500")}>

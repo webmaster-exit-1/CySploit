@@ -1,0 +1,17 @@
+    # docker-compose.yml
+    version: '3.8'
+    services:
+      db:
+        image: postgres:17.4 # Updated to PostgreSQL version 17.4
+        restart: always
+        environment:
+          POSTGRES_USER: cysploit
+          POSTGRES_PASSWORD: cysploit
+          POSTGRES_DB: cysploit_db
+        ports:
+          - "5432:5432" # Map local port 5432 to container port 5432
+        volumes:
+          - postgres_data:/var/lib/postgresql/data # Persist data
+
+    volumes:
+      postgres_data: # Defines a named volume for data persistence

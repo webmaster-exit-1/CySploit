@@ -3,25 +3,26 @@ productName: CySploit
 copyright: Copyright © 2025 PenTools Security
 directories:
   output: dist
-  buildResources: build-resources
+  buildResources: build-resources # Root for resource files
+asar: false # Temporarily disable asar packaging for easier debugging
 files:
-  - build/**/*
-  - electron/**/*
-  - node_modules/**/*
-  - package.json
+  - dist/public/**/* # Client build (Vite output)
+  - electron/**/* # Electron-specific main/preload scripts
+  - node_modules/**/* # Project dependencies
+  - package.json       # App's package.json (must be included!)
 extraResources:
-  - from: server-build
+  - from: server-build # Server built by esbuild
     to: server
-  - from: ./attached_assets
+  - from: ./cysploit-dist/attached_assets # Corrected asset path
     to: assets
 
 # Mac OS configuration
 mac:
   category: public.app-category.developer-tools
-  target: 
+  target:
     - dmg
     - zip
-  icon: build-resources/icon.icns
+  icon: build-resources/icon.icns # Assumes build-resources/icon.icns exists
   darkModeSupport: true
   entitlements: build-resources/entitlements.mac.plist
   entitlementsInherit: build-resources/entitlements.mac.plist
@@ -31,7 +32,7 @@ win:
   target:
     - nsis
     - portable
-  icon: build-resources/icon.ico
+  icon: build-resources/icon.ico # Assumes build-resources/icon.ico exists
 
 # Linux configuration
 linux:
@@ -40,12 +41,15 @@ linux:
     - deb
     - rpm
   category: Development;Security
-  icon: build-resources/icons
+  icon: icon.png # CORRECTED: Points to build-resources/icon.png (relative to buildResources dir)
+                 # Assumes you have a file named 'icon.png' in your 'build-resources' directory.
+                 # If your icon is in 'build-resources/icons/icon.png', use 'icons/icon.png'
   desktop:
-    Name: CySploit
-    Comment: Advanced Cybersecurity Suite
-    Categories: Development;Security
-    StartupWMClass: cysploit
+    entry:
+      Name: CySploit
+      Comment: Advanced Cybersecurity Suite
+      Categories: Development;Security
+      StartupWMClass: cysploit
 
 publish:
   provider: github

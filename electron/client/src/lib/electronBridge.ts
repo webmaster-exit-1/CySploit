@@ -47,21 +47,21 @@ const getElectronAPI = (): ElectronAPI | null => {
 };
 
 // Utilities for running nmap scans in desktop mode
-export const runNmapScan = (options: { 
-  scanType: 'quick' | 'full' | 'os' | 'ports' | 'comprehensive'; 
+export const runNmapScan = (options: {
+  scanType: 'quick' | 'full' | 'os' | 'ports' | 'comprehensive';
   target: string;
   ports?: string;
 }): Promise<any> => {
   return new Promise((resolve, reject) => {
     const api = getElectronAPI();
-    
+
     if (!api) {
       reject(new Error('Not running in desktop mode'));
       return;
     }
-    
+
     let resultsReceived = false;
-    
+
     // Set up result handler
     api.receive('nmapResults', (results) => {
       if (results.type === 'complete') {
@@ -73,7 +73,7 @@ export const runNmapScan = (options: {
       }
       // Progress updates are ignored in the promise
     });
-    
+
     // Send the scan request
     api.send('runNmap', options);
   });
@@ -87,12 +87,12 @@ export const capturePackets = (options: {
 }): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     const api = getElectronAPI();
-    
+
     if (!api) {
       reject(new Error('Not running in desktop mode'));
       return;
     }
-    
+
     api.receive('packetCaptureStarted', (result) => {
       if (result.success) {
         resolve(true);
@@ -100,7 +100,7 @@ export const capturePackets = (options: {
         reject(new Error(result.error));
       }
     });
-    
+
     api.send('capturePackets', options);
   });
 };
@@ -109,12 +109,12 @@ export const capturePackets = (options: {
 export const stopPacketCapture = (): Promise<any> => {
   return new Promise((resolve, reject) => {
     const api = getElectronAPI();
-    
+
     if (!api) {
       reject(new Error('Not running in desktop mode'));
       return;
     }
-    
+
     api.receive('packetCaptureStopped', (result) => {
       if (result.success) {
         resolve(result);
@@ -122,8 +122,8 @@ export const stopPacketCapture = (): Promise<any> => {
         reject(new Error(result.error));
       }
     });
-    
-    api.send('stopPacketCapture');
+
+    api.send('stopPacketCapture', {});
   });
 };
 
@@ -133,14 +133,14 @@ export const runVulnerabilityScan = (options: {
 }): Promise<any> => {
   return new Promise((resolve, reject) => {
     const api = getElectronAPI();
-    
+
     if (!api) {
       reject(new Error('Not running in desktop mode'));
       return;
     }
-    
+
     let resultsReceived = false;
-    
+
     api.receive('vulnerabilityScanResults', (results) => {
       if (results.type === 'complete') {
         resultsReceived = true;
@@ -151,7 +151,7 @@ export const runVulnerabilityScan = (options: {
       }
       // Progress updates are ignored in the promise
     });
-    
+
     api.send('runVulnerabilityScan', options);
   });
 };
@@ -160,18 +160,18 @@ export const runVulnerabilityScan = (options: {
 export const checkMetasploitAvailability = (): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     const api = getElectronAPI();
-    
+
     if (!api) {
       // If not in desktop mode, we assume Metasploit is not available locally
       // But can still be available via API
       resolve(false);
       return;
     }
-    
+
     api.receive('metasploitConnected', (result) => {
       resolve(result.success);
     });
-    
+
     api.send('connectMetasploit', {});
   });
 };
@@ -185,25 +185,25 @@ export const isDesktopMode = (): boolean => {
 // Get available network interfaces
 export const getNetworkInterfaces = (): Record<string, any[]> => {
   const api = getElectronAPI();
-  
+
   if (!api) {
     return {};
   }
-  
+
   return api.getNetworkInterfaces();
 };
 
 // Get version information
 export const getVersionInfo = () => {
   const api = getElectronAPI();
-  
+
   if (!api) {
     return {
       app: '2.0.1',
       isDesktop: false
     };
   }
-  
+
   const versions = api.getVersions();
   return {
     ...versions,
@@ -218,7 +218,7 @@ export const checkToolsAvailability = async (): Promise<{
   metasploit: boolean;
 }> => {
   const api = getElectronAPI();
-  
+
   if (!api) {
     // In web mode, tools are on the server
     return {
@@ -227,7 +227,7 @@ export const checkToolsAvailability = async (): Promise<{
       metasploit: true
     };
   }
-  
+
   return await api.checkToolAvailability();
 };
 

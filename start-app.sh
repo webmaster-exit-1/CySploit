@@ -30,7 +30,8 @@ fi
 
 # Set database URL if not already set
 if [ -z "$DATABASE_URL" ]; then
-  export DATABASE_URL="postgresql://neondb_owner:npg_mSZTyIlN86ts@ep-plain-cake-a6piux6n.us-west-2.aws.neon.tech/neondb?sslmode=require"
+  export DATABASE_URL="postgresql://cysploit:cysploit@localhost:5432/cysploit_db"
+
   echo "Setting database connection to: $DATABASE_URL"
 fi
 

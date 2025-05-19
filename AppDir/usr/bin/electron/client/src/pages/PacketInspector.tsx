@@ -18,9 +18,9 @@ import { useToast } from '@/hooks/use-toast';
 
 const PacketInspector: React.FC = () => {
   const { networkInterfaces, isLoadingInterfaces } = useNetworkScanner();
-  const { 
-    startCaptureMutation, 
-    stopCaptureMutation, 
+  const {
+    startCaptureMutation,
+    stopCaptureMutation,
     getSessionPackets,
     formatPacketForDisplay,
     analyzeTrafficMutation,
@@ -29,26 +29,26 @@ const PacketInspector: React.FC = () => {
     generatePacketMutation
   } = usePacketAnalyzer();
   const { sessions, getSession, isLoadingSessions } = useSessions();
-  
+
   const [selectedInterface, setSelectedInterface] = useState<string>('');
   const [captureFilter, setCaptureFilter] = useState<string>('');
   const [selectedSessionId, setSelectedSessionId] = useState<number | null>(null);
   const [packetAnalysis, setPacketAnalysis] = useState<TrafficAnalysis | null>(null);
   const [selectedPacket, setSelectedPacket] = useState<Packet | null>(null);
-  
+
   const { toast } = useToast();
-  
+
   // Get session packets when session is selected
-  const { 
-    data: sessionPackets, 
-    isLoading: isLoadingPackets 
+  const {
+    data: sessionPackets,
+    isLoading: isLoadingPackets
   } = getSessionPackets(selectedSessionId || 0);
-  
+
   // Set page title
   useEffect(() => {
     document.title = 'Packet Inspector | CySploit';
   }, []);
-  
+
   const handleStartCapture = async () => {
     if (!selectedInterface) {
       toast({
@@ -58,16 +58,16 @@ const PacketInspector: React.FC = () => {
       });
       return;
     }
-    
+
     try {
       const result = await startCaptureMutation.mutateAsync({
         interface_: selectedInterface,
         filter: captureFilter,
         sessionName: `Packet Capture - ${selectedInterface}${captureFilter ? ` (${captureFilter})` : ''}`
       });
-      
+
       setSelectedSessionId(result.sessionId);
-      
+
       toast({
         title: "Capture Started",
         description: `Session ID: ${result.sessionId}`
@@ -80,7 +80,7 @@ const PacketInspector: React.FC = () => {
       });
     }
   };
-  
+
   const handleStopCapture = async () => {
     if (!selectedSessionId) {
       toast({
@@ -90,10 +90,10 @@ const PacketInspector: React.FC = () => {
       });
       return;
     }
-    
+
     try {
       const result = await stopCaptureMutation.mutateAsync(selectedSessionId);
-      
+
       toast({
         title: "Capture Stopped",
         description: `Session ID: ${result.sessionId}`
@@ -106,7 +106,7 @@ const PacketInspector: React.FC = () => {
       });
     }
   };
-  
+
   const handleAnalyzeTraffic = async () => {
     if (!selectedSessionId) {
       toast({
@@ -116,11 +116,11 @@ const PacketInspector: React.FC = () => {
       });
       return;
     }
-    
+
     try {
       const result = await analyzeTrafficMutation.mutateAsync(selectedSessionId);
       setPacketAnalysis(result);
-      
+
       toast({
         title: "Traffic Analysis Complete",
         description: `Found ${result.anomalies.length} anomalies`
@@ -133,22 +133,22 @@ const PacketInspector: React.FC = () => {
       });
     }
   };
-  
+
   const handlePacketClick = (packet: Packet) => {
     setSelectedPacket(packet);
   };
-  
+
   // Prepare protocol distribution data for chart
   const prepareProtocolData = () => {
     if (!packetAnalysis) return [];
-    
+
     return Object.entries(packetAnalysis.statistics.protocolDistribution).map(([protocol, count]) => ({
       name: protocol,
       value: count,
       color: getProtocolColor(protocol)
     }));
   };
-  
+
   // Get color for protocol
   const getProtocolColor = (protocol: string) => {
     const colors: Record<string, string> = {
@@ -159,21 +159,21 @@ const PacketInspector: React.FC = () => {
       'DNS': '#FFCC00', // yellow
       'ICMP': '#FF3366'  // red
     };
-    
+
     return colors[protocol] || '#AAAAAA';
   };
-  
+
   // Format protocols
   const formatProtocol = (protocol: string) => {
     if (!protocol) return 'Unknown';
-    
+
     // If protocol is already uppercase, return it
     if (protocol === protocol.toUpperCase()) return protocol;
-    
+
     // Otherwise, capitalize first letter
     return protocol.charAt(0).toUpperCase() + protocol.slice(1);
   };
-  
+
   const protocolChartData = prepareProtocolData();
 
   return (
@@ -182,13 +182,13 @@ const PacketInspector: React.FC = () => {
         <title>Packet Inspector | CySploit</title>
         <meta name="description" content="Inspect and analyze network traffic packets with real-time capture and visualization" />
       </Helmet>
-      
+
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-rajdhani text-white mb-2">Packet <span className="text-primary">Inspector</span></h1>
         <p className="text-gray-400">Capture and analyze network traffic packets in real-time</p>
       </div>
-      
+
       {/* Capture Controls */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <NeonBorder color="cyan" className="lg:col-span-2">
@@ -209,7 +209,7 @@ const PacketInspector: React.FC = () => {
                   <SelectContent>
                     {isLoadingInterfaces ? (
                       <SelectItem value="loading" disabled>Loading interfaces...</SelectItem>
-                    ) : networkInterfaces && networkInterfaces.length > 0 ? (
+                    ) : Array.isArray(networkInterfaces) && networkInterfaces.length > 0 ? (
                       networkInterfaces.map((iface: any) => (
                         <SelectItem key={iface.name} value={iface.name}>
                           {iface.name} ({iface.address})
@@ -221,7 +221,7 @@ const PacketInspector: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <label className="text-sm text-gray-400 mb-2 block">Capture Filter (Optional)</label>
                 <Input
@@ -232,17 +232,17 @@ const PacketInspector: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <div className="flex justify-between">
-              <Button 
-                onClick={handleStartCapture} 
+              <Button
+                onClick={handleStartCapture}
                 disabled={!selectedInterface || captureInProgress}
                 className="flex-1 mr-2"
               >
                 <i className="ri-play-circle-line mr-2"></i>
                 Start Capture
               </Button>
-              
+
               <Button
                 onClick={handleStopCapture}
                 disabled={!captureInProgress || !selectedSessionId}
@@ -255,7 +255,7 @@ const PacketInspector: React.FC = () => {
             </div>
           </CardContent>
         </NeonBorder>
-        
+
         <NeonBorder color="magenta">
           <CardHeader>
             <CardTitle className="font-rajdhani">Sessions</CardTitle>
@@ -264,8 +264,8 @@ const PacketInspector: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Select 
-              value={selectedSessionId?.toString() || ""} 
+            <Select
+              value={selectedSessionId?.toString() || ""}
               onValueChange={(value) => setSelectedSessionId(parseInt(value))}
             >
               <SelectTrigger>
@@ -285,9 +285,9 @@ const PacketInspector: React.FC = () => {
                 )}
               </SelectContent>
             </Select>
-            
-            <Button 
-              onClick={handleAnalyzeTraffic} 
+
+            <Button
+              onClick={handleAnalyzeTraffic}
               disabled={!selectedSessionId}
               className="w-full mt-4"
               variant="outline"
@@ -298,7 +298,7 @@ const PacketInspector: React.FC = () => {
           </CardContent>
         </NeonBorder>
       </div>
-      
+
       {/* Packet Capture Results */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Packet List */}
@@ -319,17 +319,17 @@ const PacketInspector: React.FC = () => {
                 </div>
               )}
               <div className="text-sm text-gray-400">
-                {sessionPackets ? sessionPackets.length : 0} packets
+                {Array.isArray(sessionPackets) ? sessionPackets.length : 0} packets
               </div>
             </div>
           </div>
-          
+
           <ScrollArea className="h-80">
             {isLoadingPackets ? (
               <div className="flex justify-center items-center h-full">
                 <p className="text-gray-400">Loading packets...</p>
               </div>
-            ) : sessionPackets && sessionPackets.length > 0 ? (
+            ) : Array.isArray(sessionPackets) && sessionPackets.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -345,8 +345,8 @@ const PacketInspector: React.FC = () => {
                   {sessionPackets.map((packet: Packet) => {
                     const formattedPacket = formatPacketForDisplay(packet);
                     return (
-                      <TableRow 
-                        key={packet.id} 
+                      <TableRow
+                        key={packet.id}
                         className={cn(
                           "cursor-pointer hover:bg-background transition-colors",
                           selectedPacket?.id === packet.id && "bg-background"
@@ -358,9 +358,9 @@ const PacketInspector: React.FC = () => {
                         <TableCell>{packet.sourceIp}:{packet.sourcePort}</TableCell>
                         <TableCell>{packet.destinationIp}:{packet.destinationPort}</TableCell>
                         <TableCell>
-                          <Badge 
-                            variant="outline" 
-                            style={{ 
+                          <Badge
+                            variant="outline"
+                            style={{
                               color: getProtocolColor(packet.protocol || ''),
                               borderColor: getProtocolColor(packet.protocol || '')
                             }}
@@ -381,7 +381,7 @@ const PacketInspector: React.FC = () => {
             )}
           </ScrollArea>
         </NeonBorder>
-        
+
         {/* Packet Details */}
         <NeonBorder color="cyan">
           <div className="p-4 border-b border-gray-800">
@@ -390,7 +390,7 @@ const PacketInspector: React.FC = () => {
               Packet Details
             </h2>
           </div>
-          
+
           <ScrollArea className="h-80 p-4">
             {selectedPacket ? (
               <div className="space-y-4">
@@ -423,7 +423,7 @@ const PacketInspector: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {selectedPacket.data && (
                   <div className="bg-background p-3 rounded-lg">
                     <h3 className="text-sm text-gray-400 mb-1">Packet Data</h3>
@@ -441,7 +441,7 @@ const PacketInspector: React.FC = () => {
           </ScrollArea>
         </NeonBorder>
       </div>
-      
+
       {/* Traffic Analysis */}
       {packetAnalysis && (
         <NeonBorder color="magenta" className="mb-8">
@@ -472,10 +472,10 @@ const PacketInspector: React.FC = () => {
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip 
+                      <Tooltip
                         formatter={(value: number) => [`${value} packets`, 'Count']}
-                        contentStyle={{ 
-                          backgroundColor: 'rgba(13, 17, 23, 0.9)', 
+                        contentStyle={{
+                          backgroundColor: 'rgba(13, 17, 23, 0.9)',
                           border: '1px solid #323B4F',
                           borderRadius: '0.25rem'
                         }}
@@ -489,11 +489,11 @@ const PacketInspector: React.FC = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Top Destinations */}
               <div className="bg-background p-4 rounded-lg">
                 <h3 className="text-lg font-medium mb-2">Top Destinations</h3>
-                {packetAnalysis.statistics.topDestinations && 
+                {packetAnalysis.statistics.topDestinations &&
                  packetAnalysis.statistics.topDestinations.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart
@@ -503,16 +503,16 @@ const PacketInspector: React.FC = () => {
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(50, 59, 79, 0.5)" />
                       <XAxis type="number" />
-                      <YAxis 
-                        dataKey="ip" 
-                        type="category" 
+                      <YAxis
+                        dataKey="ip"
+                        type="category"
                         width={100}
-                        tick={{ fontSize: 10 }} 
+                        tick={{ fontSize: 10 }}
                       />
-                      <Tooltip 
+                      <Tooltip
                         formatter={(value: number) => [`${value} packets`, 'Count']}
-                        contentStyle={{ 
-                          backgroundColor: 'rgba(13, 17, 23, 0.9)', 
+                        contentStyle={{
+                          backgroundColor: 'rgba(13, 17, 23, 0.9)',
                           border: '1px solid #323B4F',
                           borderRadius: '0.25rem'
                         }}
@@ -526,7 +526,7 @@ const PacketInspector: React.FC = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Anomalies */}
               <div className="bg-background p-4 rounded-lg">
                 <h3 className="text-lg font-medium mb-2">Detected Anomalies</h3>
@@ -544,7 +544,7 @@ const PacketInspector: React.FC = () => {
                     <p className="text-gray-400">No anomalies detected</p>
                   </div>
                 )}
-                
+
                 <div className="mt-4 pt-4 border-t border-gray-800">
                   <h4 className="text-sm font-medium mb-2">Summary</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">

@@ -15,11 +15,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { isDesktopMode } from '@/lib/electronBridge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Laptop, Shield, Info } from 'lucide-react';
+import { Laptop, Info } from 'lucide-react';
 
 const NetworkDiscovery: React.FC = () => {
-  const { 
-    networkInterfaces, 
+  const {
+    networkInterfaces,
     isLoadingInterfaces,
     scanNetworkMutation,
     scanDeviceMutation,
@@ -28,31 +28,34 @@ const NetworkDiscovery: React.FC = () => {
     scanInProgress,
     getSuggestedCidrRange
   } = useNetworkScanner();
-  
+
+  // Ensure networkInterfaces is treated as an array
+  const interfaces = Array.isArray(networkInterfaces) ? networkInterfaces : [];
+
   const { toast } = useToast();
   const [selectedInterface, setSelectedInterface] = useState<string>('');
   const [cidrRange, setCidrRange] = useState<string>('192.168.1.0/24');
   const [singleIpToScan, setSingleIpToScan] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<string>("network");
   const [scanResults, setScanResults] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<string>('network');
-  
+
   // Update CIDR range when interface is selected
   useEffect(() => {
-    if (networkInterfaces && networkInterfaces.length > 0) {
+    if (interfaces && interfaces.length > 0) {
       if (selectedInterface) {
-        const iface = networkInterfaces.find((i: any) => i.name === selectedInterface);
+        const iface = interfaces.find((i: any) => i.name === selectedInterface);
         if (iface) {
           setCidrRange(getSuggestedCidrRange(iface));
         }
       }
     }
-  }, [selectedInterface, networkInterfaces, getSuggestedCidrRange]);
-  
+  }, [selectedInterface, interfaces, getSuggestedCidrRange]);
+
   // Set page title
   useEffect(() => {
     document.title = 'Network Discovery | CySploit';
   }, []);
-  
+
   const handleScanNetwork = async () => {
     if (!cidrRange) {
       toast({
@@ -62,11 +65,11 @@ const NetworkDiscovery: React.FC = () => {
       });
       return;
     }
-    
+
     try {
       const result = await scanNetworkMutation.mutateAsync(cidrRange);
       setScanResults(result);
-      
+
       toast({
         title: "Network Scan Complete",
         description: `Found ${result.devicesFound} devices`
@@ -79,7 +82,7 @@ const NetworkDiscovery: React.FC = () => {
       });
     }
   };
-  
+
   const handleScanSingleDevice = async () => {
     if (!singleIpToScan) {
       toast({
@@ -89,10 +92,10 @@ const NetworkDiscovery: React.FC = () => {
       });
       return;
     }
-    
+
     try {
       const result = await scanDeviceMutation.mutateAsync(singleIpToScan);
-      
+
       if (result.isOnline) {
         toast({
           title: "Device Scan Complete",
@@ -113,7 +116,7 @@ const NetworkDiscovery: React.FC = () => {
       });
     }
   };
-  
+
   const renderDeviceType = (type?: string) => {
     const types: Record<string, { icon: string, color: string }> = {
       router: { icon: 'ri-router-line', color: 'text-primary' },
@@ -122,9 +125,9 @@ const NetworkDiscovery: React.FC = () => {
       iot: { icon: 'ri-device-line', color: 'text-green-500' },
       smartphone: { icon: 'ri-smartphone-line', color: 'text-yellow-500' }
     };
-    
+
     const device = types[type || ''] || { icon: 'ri-question-line', color: 'text-gray-400' };
-    
+
     return (
       <div className="flex items-center">
         <i className={cn(device.icon, device.color, "mr-2")}></i>
@@ -139,24 +142,24 @@ const NetworkDiscovery: React.FC = () => {
         <title>Network Discovery | CySploit</title>
         <meta name="description" content="Scan and discover devices on your network with detailed information about each device" />
       </Helmet>
-      
+
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-rajdhani text-white mb-2">Network <span className="text-primary">Discovery</span></h1>
         <p className="text-gray-400">Scan your network to discover and identify connected devices</p>
-        
+
         {/* Desktop Mode Indicator */}
         {isDesktopMode() && (
           <Alert className="mt-4 border-green-500 bg-green-500/10">
             <Laptop className="h-4 w-4 text-green-500" />
             <AlertTitle className="text-green-500">Desktop Mode Enabled</AlertTitle>
             <AlertDescription>
-              You're running in desktop mode with access to local network scanning tools. 
+              You're running in desktop mode with access to local network scanning tools.
               This allows you to scan your actual network directly.
             </AlertDescription>
           </Alert>
         )}
-        
+
         {!isDesktopMode() && (
           <Alert className="mt-4 border-orange-500 bg-orange-500/10">
             <Info className="h-4 w-4 text-orange-500" />
@@ -168,7 +171,7 @@ const NetworkDiscovery: React.FC = () => {
           </Alert>
         )}
       </div>
-      
+
       {/* Scan Controls */}
       <NeonBorder color="cyan" className="mb-8">
         <Tabs defaultValue="network" value={activeTab} onValueChange={setActiveTab}>
@@ -178,21 +181,20 @@ const NetworkDiscovery: React.FC = () => {
               <TabsTrigger value="device">Device Scan</TabsTrigger>
             </TabsList>
           </div>
-          
+
           <TabsContent value="network">
             <div className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="text-sm text-gray-400 mb-2 block">Network Interface</label>
                   {isLoadingInterfaces ? (
                     <Skeleton className="h-10 w-full" />
                   ) : (
                     <Select value={selectedInterface} onValueChange={setSelectedInterface}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select network interface" />
+                        <SelectValue placeholder="Select an interface" />
                       </SelectTrigger>
                       <SelectContent>
-                        {networkInterfaces && networkInterfaces.map((iface: any) => (
+                        {interfaces && interfaces.map((iface: any) => (
                           <SelectItem key={iface.name} value={iface.name}>
                             {iface.name} ({iface.address})
                           </SelectItem>
@@ -201,19 +203,19 @@ const NetworkDiscovery: React.FC = () => {
                     </Select>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="text-sm text-gray-400 mb-2 block">CIDR Range</label>
-                  <Input 
-                    value={cidrRange} 
-                    onChange={(e) => setCidrRange(e.target.value)} 
-                    placeholder="e.g. 192.168.1.0/24" 
+                  <Input
+                    value={cidrRange}
+                    onChange={(e) => setCidrRange(e.target.value)}
+                    placeholder="e.g. 192.168.1.0/24"
                   />
                 </div>
               </div>
-              
-              <Button 
-                onClick={handleScanNetwork} 
+
+              <Button
+                onClick={handleScanNetwork}
                 disabled={!cidrRange || scanInProgress}
                 className="w-full mt-2"
               >
@@ -231,20 +233,20 @@ const NetworkDiscovery: React.FC = () => {
               </Button>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="device">
             <div className="p-4">
               <div className="mb-4">
                 <label className="text-sm text-gray-400 mb-2 block">IP Address</label>
-                <Input 
-                  value={singleIpToScan} 
-                  onChange={(e) => setSingleIpToScan(e.target.value)} 
-                  placeholder="e.g. 192.168.1.5" 
+                <Input
+                  value={singleIpToScan}
+                  onChange={(e) => setSingleIpToScan(e.target.value)}
+                  placeholder="e.g. 192.168.1.5"
                 />
               </div>
-              
-              <Button 
-                onClick={handleScanSingleDevice} 
+
+              <Button
+                onClick={handleScanSingleDevice}
                 disabled={!singleIpToScan || scanInProgress}
                 className="w-full"
               >
@@ -264,7 +266,7 @@ const NetworkDiscovery: React.FC = () => {
           </TabsContent>
         </Tabs>
       </NeonBorder>
-      
+
       {/* Devices Table */}
       <NeonBorder color="purple" className="mb-8">
         <div className="p-4 border-b border-gray-800 flex justify-between items-center">
@@ -273,30 +275,30 @@ const NetworkDiscovery: React.FC = () => {
             Discovered Devices
           </h2>
           <div className="flex space-x-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="text-gray-400 hover:text-white flex items-center"
             >
               <i className="ri-filter-3-line mr-1"></i> Filter
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="text-gray-400 hover:text-white flex items-center"
             >
               <i className="ri-file-download-line mr-1"></i> Export
             </Button>
           </div>
         </div>
-        
+
         <div className="overflow-x-auto">
           {isLoadingDevices ? (
             <div className="p-8 text-center">
               <Skeleton className="h-4 w-3/4 mx-auto mb-4" />
               <Skeleton className="h-4 w-1/2 mx-auto" />
             </div>
-          ) : devices && devices.length > 0 ? (
+          ) : Array.isArray(devices) && devices.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -320,14 +322,14 @@ const NetworkDiscovery: React.FC = () => {
                     <TableCell className="font-mono text-sm">{device.macAddress}</TableCell>
                     <TableCell>{renderDeviceType(device.deviceType)}</TableCell>
                     <TableCell>{device.vendor || 'Unknown'}</TableCell>
+                    <TableCell>{device.vendor || 'Unknown'}</TableCell>
                     <TableCell>{device.osType || 'Unknown'}</TableCell>
                     <TableCell>
-                      <Badge variant={device.isOnline ? "success" : "destructive"}>
+                      <Badge variant={device.isOnline ? "default" : "destructive"}>
                         {device.isOnline ? 'Online' : 'Offline'}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-wrap gap-1">
                         {device.openPorts && device.openPorts.length > 0 ? (
                           device.openPorts.map((port) => (
                             <Badge key={port} variant="outline" className="text-xs">
@@ -337,7 +339,6 @@ const NetworkDiscovery: React.FC = () => {
                         ) : (
                           <span className="text-gray-500 text-sm">None</span>
                         )}
-                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
@@ -360,7 +361,7 @@ const NetworkDiscovery: React.FC = () => {
           )}
         </div>
       </NeonBorder>
-      
+
       {/* Scan Summary Card */}
       {scanResults && (
         <NeonBorder color="magenta" className="mb-8">
@@ -394,7 +395,7 @@ const NetworkDiscovery: React.FC = () => {
           </CardContent>
         </NeonBorder>
       )}
-      
+
       {/* Desktop Application Download Card */}
       {!isDesktopMode() && (
         <NeonBorder color="cyan" className="mb-8">
@@ -423,7 +424,7 @@ const NetworkDiscovery: React.FC = () => {
                   </Button>
                 </CardFooter>
               </Card>
-              
+
               <Card className="bg-background border-gray-800/50 shadow-md">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">macOS</CardTitle>
@@ -438,7 +439,7 @@ const NetworkDiscovery: React.FC = () => {
                   </Button>
                 </CardFooter>
               </Card>
-              
+
               <Card className="bg-background border-blue-800/50 shadow-md">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Linux</CardTitle>

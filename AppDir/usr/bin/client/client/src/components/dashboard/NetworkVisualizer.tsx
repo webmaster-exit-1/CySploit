@@ -6,45 +6,54 @@ import { Button } from '@/components/ui/button';
 import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
 import { useToast } from '@/hooks/use-toast';
 
+interface Device {
+  id: string | number;
+  deviceName?: string;
+  deviceType?: string;
+  ipAddress: string;
+  isOnline: boolean;
+  [key: string]: any;
+}
+
 const NetworkVisualizer: React.FC = () => {
-  const { devices, isLoadingDevices } = useNetworkScanner();
+  const { devices, isLoadingDevices } = useNetworkScanner() as { devices: Device[], isLoadingDevices: boolean };
   const { toast } = useToast();
   const [graphData, setGraphData] = useState<NetworkGraph>({ nodes: [], links: [] });
-  
+
   // Generate network graph data from devices
   useEffect(() => {
     if (devices && devices.length > 0) {
       // Find the router device or use the first device as the central node
-      const routerDevice = devices.find((device: any) => 
+      const routerDevice = devices.find((device: any) =>
         device.deviceType === 'router' || device.ipAddress.endsWith('.1')
       ) || devices[0];
-      
+
       const nodes: NetworkNode[] = [];
       const links: NetworkLink[] = [];
-      
+
       // Add router as the central node
       nodes.push({
         id: `device-${routerDevice.id}`,
         label: routerDevice.deviceName || `Router`,
-        type: routerDevice.deviceType || 'router',
+        type: (routerDevice.deviceType as 'router' | 'computer' | 'iot' | 'server' | 'unknown') || 'router',
         ipAddress: routerDevice.ipAddress,
         isOnline: routerDevice.isOnline,
         data: routerDevice
       });
-      
+
       // Add all other devices and link to the router
       devices.forEach((device: any) => {
         if (device.id === routerDevice.id) return;
-        
+
         nodes.push({
           id: `device-${device.id}`,
           label: device.deviceName || `Device-${device.id}`,
-          type: device.deviceType || 'unknown',
+          type: (device.deviceType as 'router' | 'computer' | 'iot' | 'server' | 'unknown') || 'unknown',
           ipAddress: device.ipAddress,
           isOnline: device.isOnline,
           data: device
         });
-        
+
         // Create link with random traffic value (1-10)
         links.push({
           id: `link-${routerDevice.id}-${device.id}`,
@@ -52,14 +61,14 @@ const NetworkVisualizer: React.FC = () => {
           target: `device-${device.id}`,
           value: 1 + Math.floor(Math.random() * 9)
         });
-        
+
         // Add some extra links between devices for a more complex network
         if (Math.random() > 0.7) {
           // Find another random device to link to
-          const otherDevices = devices.filter(d => 
+          const otherDevices = devices.filter(d =>
             d.id !== device.id && d.id !== routerDevice.id
           );
-          
+
           if (otherDevices.length > 0) {
             const randomDevice = otherDevices[Math.floor(Math.random() * otherDevices.length)];
             links.push({
@@ -71,32 +80,32 @@ const NetworkVisualizer: React.FC = () => {
           }
         }
       });
-      
+
       setGraphData({ nodes, links });
     }
   }, [devices]);
-  
+
   const handleRefresh = () => {
     toast({
       title: "Network Visualization",
       description: "Refreshing network map...",
     });
   };
-  
+
   const handleExport = () => {
     toast({
       title: "Export",
       description: "Exporting network map...",
     });
   };
-  
+
   const handleExpand = () => {
     toast({
       title: "Network Visualization",
       description: "Expanding to full screen...",
     });
   };
-  
+
   const handleNodeClick = (node: NetworkNode) => {
     toast({
       title: node.label,
@@ -112,46 +121,46 @@ const NetworkVisualizer: React.FC = () => {
           Network Visualization
         </h2>
         <div className="flex space-x-3">
-          <Button 
-            onClick={handleRefresh} 
-            variant="outline" 
-            size="sm" 
+          <Button
+            onClick={handleRefresh}
+            variant="outline"
+            size="sm"
             className="text-gray-400 hover:text-white flex items-center"
           >
             <i className="ri-refresh-line mr-1"></i> Refresh
           </Button>
-          <Button 
-            onClick={handleExport} 
-            variant="outline" 
-            size="sm" 
+          <Button
+            onClick={handleExport}
+            variant="outline"
+            size="sm"
             className="text-gray-400 hover:text-white flex items-center"
           >
             <i className="ri-download-line mr-1"></i> Export
           </Button>
-          <Button 
-            onClick={handleExpand} 
-            variant="outline" 
-            size="sm" 
+          <Button
+            onClick={handleExpand}
+            variant="outline"
+            size="sm"
             className="text-gray-400 hover:text-white flex items-center"
           >
             <i className="ri-fullscreen-line mr-1"></i> Expand
           </Button>
         </div>
       </div>
-      
+
       <div className="p-4 h-96 relative bg-black bg-opacity-70 overflow-hidden">
         {isLoadingDevices ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-primary animate-pulse">Loading network data...</div>
           </div>
         ) : (
-          <NetworkMap 
-            data={graphData} 
-            height={360} 
-            onNodeClick={handleNodeClick} 
+          <NetworkMap
+            data={graphData}
+            height={360}
+            onNodeClick={handleNodeClick}
           />
         )}
-        
+
         {/* Network details overlay */}
         <div className="absolute bottom-4 left-4 bg-background bg-opacity-80 p-3 rounded-lg border border-gray-800 w-56">
           <div className="text-xs text-gray-400 mb-1">Network Details</div>
@@ -161,7 +170,7 @@ const NetworkVisualizer: React.FC = () => {
             <span>{devices?.length || 0} Devices</span>
           </div>
         </div>
-        
+
         {/* Controls overlay */}
         <div className="absolute top-4 right-4 bg-background bg-opacity-80 p-2 rounded-lg border border-gray-800 flex space-x-2">
           <button className="text-gray-400 hover:text-primary text-lg">

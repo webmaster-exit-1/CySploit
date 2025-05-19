@@ -11,11 +11,11 @@ interface VulnerabilitiesTableProps {
   showPagination?: boolean;
 }
 
-const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({ 
+const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
   maxItems = 5,
   showPagination = true
 }) => {
-  const { vulnerabilities, isLoadingVulnerabilities, updateVulnerabilityMutation } = useVulnerabilityScanner();
+  const { vulnerabilities = [] as Vulnerability[], isLoadingVulnerabilities, updateVulnerabilityMutation } = useVulnerabilityScanner();
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
 
@@ -43,7 +43,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
   const handleMitigateClick = async (vuln: Vulnerability) => {
     try {
       let newStatus: string;
-      
+
       if (vuln.status === 'detected' || vuln.status === 'unpatched') {
         newStatus = 'mitigated';
       } else if (vuln.status === 'mitigated') {
@@ -51,12 +51,12 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
       } else {
         newStatus = 'detected';
       }
-      
+
       await updateVulnerabilityMutation.mutateAsync({
         id: vuln.id,
         status: newStatus
       });
-      
+
       toast({
         title: "Vulnerability Updated",
         description: `Status changed to ${newStatus}`,
@@ -72,11 +72,11 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
 
   // Pagination logic
   const itemsPerPage = maxItems;
-  const totalItems = vulnerabilities?.length || 0;
+  const totalItems = Array.isArray(vulnerabilities) ? vulnerabilities.length : 0;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
-  const paginatedVulnerabilities = vulnerabilities ? 
-    vulnerabilities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : 
+
+  const paginatedVulnerabilities = Array.isArray(vulnerabilities) ?
+    vulnerabilities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) :
     [];
 
   // Severity badge
@@ -87,9 +87,9 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
       medium: "bg-yellow-500 text-black",
       low: "bg-gray-400 text-black"
     };
-    
+
     const color = severityColors[severity as keyof typeof severityColors] || severityColors.low;
-    
+
     return (
       <span className="flex items-center">
         <span className={`w-2 h-2 rounded-full ${severity === 'critical' || severity === 'high' ? 'bg-destructive' : severity === 'medium' ? 'bg-yellow-500' : 'bg-gray-400'} mr-2`}></span>
@@ -108,9 +108,9 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
       mitigated: "bg-green-500 bg-opacity-20 text-green-500",
       ignored: "bg-gray-700 text-gray-300"
     };
-    
+
     const color = statusColors[status as keyof typeof statusColors] || statusColors.detected;
-    
+
     return (
       <span className={`text-xs ${color} px-2 py-1 rounded-full`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -126,25 +126,25 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
           Vulnerabilities Detected
         </h2>
         <div className="flex space-x-3">
-          <Button 
+          <Button
             onClick={handleFilter}
-            variant="outline" 
-            size="sm" 
+            variant="outline"
+            size="sm"
             className="text-gray-400 hover:text-white flex items-center"
           >
             <i className="ri-filter-3-line mr-1"></i> Filter
           </Button>
-          <Button 
+          <Button
             onClick={handleExport}
-            variant="outline" 
-            size="sm" 
+            variant="outline"
+            size="sm"
             className="text-gray-400 hover:text-white flex items-center"
           >
             <i className="ri-file-download-line mr-1"></i> Export
           </Button>
         </div>
       </div>
-      
+
       <div className="overflow-x-auto">
         {isLoadingVulnerabilities ? (
           <div className="text-center py-8 text-gray-400">
@@ -168,9 +168,11 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
             <tbody>
               {paginatedVulnerabilities.map((vuln: Vulnerability) => {
                 // Find associated device to get IP address
-                const device = vulnerabilities?.find((v: any) => v.id === vuln.deviceId);
+                const device = Array.isArray(vulnerabilities) ?
+                  vulnerabilities.find((v: Vulnerability) => v.id === vuln.deviceId) :
+                  undefined;
                 const ipAddress = device?.ipAddress || "Unknown";
-                
+
                 return (
                   <tr key={vuln.id} className="border-b border-gray-800 hover:bg-background transition duration-150">
                     <td className="px-4 py-3">
@@ -185,13 +187,13 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
                       {renderStatusBadge(vuln.status)}
                     </td>
                     <td className="px-4 py-3">
-                      <button 
+                      <button
                         onClick={() => handleInfoClick(vuln)}
                         className="text-primary hover:text-white mr-2"
                       >
                         <i className="ri-information-line"></i>
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleMitigateClick(vuln)}
                         className="text-secondary hover:text-white"
                       >
@@ -205,14 +207,14 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
           </table>
         )}
       </div>
-      
+
       {showPagination && totalPages > 1 && (
         <div className="p-4 border-t border-gray-800 flex justify-between items-center">
           <div className="text-sm text-gray-400">
             Showing {paginatedVulnerabilities.length} of {totalItems} vulnerabilities
           </div>
           <div className="flex space-x-1">
-            <button 
+            <button
               className={cn(
                 "w-8 h-8 flex items-center justify-center rounded-md text-gray-400 hover:text-white",
                 currentPage === 1 ? "bg-background opacity-50" : "bg-background"
@@ -222,7 +224,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
             >
               <i className="ri-arrow-left-s-line"></i>
             </button>
-            
+
             {Array.from({ length: Math.min(totalPages, 3) }).map((_, index) => {
               // Show pages around current page
               let pageNum = currentPage;
@@ -235,7 +237,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
               } else {
                 pageNum = currentPage - 1 + index;
               }
-              
+
               return (
                 <button
                   key={pageNum}
@@ -249,8 +251,8 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
                 </button>
               );
             })}
-            
-            <button 
+
+            <button
               className={cn(
                 "w-8 h-8 flex items-center justify-center rounded-md text-gray-400 hover:text-white",
                 currentPage === totalPages ? "bg-background opacity-50" : "bg-background"

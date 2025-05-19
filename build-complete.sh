@@ -76,7 +76,7 @@ HERE=${SELF%/*}
 export PATH="${HERE}/usr/bin:${PATH}"
 export NODE_PATH="${HERE}/usr/lib/node_modules"
 export ELECTRON_DISABLE_SECURITY_WARNINGS=true
-export DATABASE_URL=${DATABASE_URL:-"postgresql://neondb_owner:npg_mSZTyIlN86ts@ep-plain-cake-a6piux6n.us-west-2.aws.neon.tech/neondb?sslmode=require"}
+export DATABASE_URL=${DATABASE_URL:-"postgresql://cysploit:cysploit@localhost:5432/cysploit_db"}
 
 # Make sure we have all directories needed
 mkdir -p "${HERE}/usr/bin/client"

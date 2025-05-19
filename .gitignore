@@ -1,6 +1,75 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json # If you use yarn.lock or pnpm-lock.yaml exclusively
+yarn.lock         # If you use package-lock.json or pnpm-lock.yaml exclusively
+# pnpm-lock.yaml  # If you use package-lock.json or yarn.lock exclusively
+
+# Build output
+dist/
+server-build/
+# The `build/` directory might be created by Vite if you changed its outDir,
+# or by other tools. If Vite outputs to `dist/public`, then `dist/` above covers it.
+# If you have a specific top-level `build/` dir for other purposes, add it:
+# build/
+
+# Vite specific
+.vite/
+# Vite's default cache directory, can sometimes be `.vite` in the root or inside `node_modules`
+
+# Drizzle ORM migrations
+# Typically, migration files *should* be version controlled as they represent
+# the history of your database schema. However, if your workflow involves
+# always generating them from scratch or using a different strategy, you might ignore them.
+# For most projects, DO NOT ignore this. I'm listing it for completeness of generated folders.
+# migrations/
+
+# Electron-builder output
+# The `dist/` directory is already listed above, which electron-builder uses by default.
+# If you have specific intermediate files or other output locations for electron-builder, add them.
+# For example, if you had a `release/` directory:
+# release/
+
+# Environment variables
 .env
-node_modules
-dist
-build
+.env.*
+!.env.example # Important: Keep an example .env file in version control
+
+# Operating System generated files
 .DS_Store
-.vscode
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE / Editor specific
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Coverage reports (if you use testing frameworks)
+coverage/
+.nyc_output/
+
+# Other specific files from your project if they are generated or local
+# e.g., if start-electron.js copies main.js to main.cjs and you only want to track main.js
+# electron/main.cjs # If main.cjs is always a copy of main.js
+

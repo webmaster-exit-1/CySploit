@@ -22,6 +22,7 @@ import PenTools from "@/pages/PenTools";
 import ShodanSearch from "@/pages/ShodanSearch";
 import MetasploitConsole from "@/pages/MetasploitConsole";
 import Resources from "@/pages/Resources";
+import BackendTest from "@/pages/BackendTest";
 
 function Router() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -40,7 +41,7 @@ function Router() {
           <Dashboard />
         </PageLayout>
       </Route>
-      
+
       <Route path="/network-discovery">
         <PageLayout
           toggleMobileSidebar={toggleMobileSidebar}
@@ -49,7 +50,7 @@ function Router() {
           <NetworkDiscovery />
         </PageLayout>
       </Route>
-      
+
       <Route path="/vulnerability-scanner">
         <PageLayout
           toggleMobileSidebar={toggleMobileSidebar}
@@ -58,7 +59,7 @@ function Router() {
           <VulnerabilityScanner />
         </PageLayout>
       </Route>
-      
+
       <Route path="/packet-inspector">
         <PageLayout
           toggleMobileSidebar={toggleMobileSidebar}
@@ -67,7 +68,7 @@ function Router() {
           <PacketInspector />
         </PageLayout>
       </Route>
-      
+
       <Route path="/network-mapping">
         <PageLayout
           toggleMobileSidebar={toggleMobileSidebar}
@@ -76,7 +77,7 @@ function Router() {
           <NetworkMapping />
         </PageLayout>
       </Route>
-      
+
       <Route path="/terminal">
         <PageLayout
           toggleMobileSidebar={toggleMobileSidebar}
@@ -85,7 +86,7 @@ function Router() {
           <Terminal />
         </PageLayout>
       </Route>
-      
+
       <Route path="/sessions">
         <PageLayout
           toggleMobileSidebar={toggleMobileSidebar}
@@ -94,7 +95,7 @@ function Router() {
           <Sessions />
         </PageLayout>
       </Route>
-      
+
       <Route path="/settings">
         <PageLayout
           toggleMobileSidebar={toggleMobileSidebar}
@@ -119,7 +120,16 @@ function Router() {
       <Route path="/resources">
         <Resources />
       </Route>
-      
+
+      <Route path="/backend-test">
+        <PageLayout
+          toggleMobileSidebar={toggleMobileSidebar}
+          isMobileSidebarOpen={isMobileSidebarOpen}
+        >
+          <BackendTest />
+        </PageLayout>
+      </Route>
+
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

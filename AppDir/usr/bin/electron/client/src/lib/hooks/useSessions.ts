@@ -5,10 +5,10 @@ import { queryClient } from '@/lib/queryClient';
 
 export const useSessions = () => {
   // Get all sessions
-  const { 
-    data: sessions, 
-    isLoading: isLoadingSessions 
-  } = useQuery({
+  const {
+    data: sessions,
+    isLoading: isLoadingSessions
+  } = useQuery<Session[]>({
     queryKey: ['/api/sessions'],
     refetchOnWindowFocus: false,
   });
@@ -24,8 +24,8 @@ export const useSessions = () => {
 
   // Create a new session
   const createSessionMutation = useMutation({
-    mutationFn: async (sessionData: { 
-      name: string, 
+    mutationFn: async (sessionData: {
+      name: string,
       isActive: boolean,
       networkData?: Record<string, any>
     }): Promise<Session> => {
@@ -59,8 +59,8 @@ export const useSessions = () => {
     if (!sessions) return [];
     return sessions
       .filter((session: Session) => !session.isActive)
-      .sort((a: Session, b: Session) => 
-        new Date(b.endedAt || b.startedAt).getTime() - 
+      .sort((a: Session, b: Session) =>
+        new Date(b.endedAt || b.startedAt).getTime() -
         new Date(a.endedAt || a.startedAt).getTime()
       )
       .slice(0, 5);
@@ -70,10 +70,10 @@ export const useSessions = () => {
   const formatSessionDuration = (session: Session) => {
     const start = new Date(session.startedAt).getTime();
     const end = session.endedAt ? new Date(session.endedAt).getTime() : Date.now();
-    
+
     const durationMs = end - start;
     const seconds = Math.floor(durationMs / 1000);
-    
+
     if (seconds < 60) {
       return `${seconds} sec`;
     } else if (seconds < 3600) {

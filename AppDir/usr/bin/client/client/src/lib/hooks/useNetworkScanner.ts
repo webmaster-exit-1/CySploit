@@ -22,24 +22,24 @@ export const useNetworkScanner = () => {
         // If in desktop mode, use Electron's native nmap
         if (isDesktopMode()) {
           console.log('Running network scan in desktop mode with native nmap');
-          
+
           // Parse CIDR to get target range
           const target = cidr.split('/')[0].replace(/\.\d+$/, '.0');
-          
+
           // Run native nmap scan
           const results = await electronBridge.runNmapScan({
             scanType: 'quick',
             target: cidr,
           });
-          
+
           // Parse the nmap results
           // This is a simplified example - in a real app, you'd want to parse
           // the nmap output more thoroughly
           const foundIPs = results.data
             .match(/\d+\.\d+\.\d+\.\d+/g) || [];
-          
+
           // Create a mock result similar to what the server would return
-          const mockDevices = foundIPs.map((ip, index) => ({
+          const mockDevices = foundIPs.map((ip: string, index: number) => ({
             id: index + 1,
             ipAddress: ip,
             macAddress: '00:00:00:00:00:00', // Placeholder
@@ -52,20 +52,20 @@ export const useNetworkScanner = () => {
             status: 'online',
             details: {}
           }));
-          
+
           // Send to server to store in database
-          const response = await apiRequest('POST', '/api/scan/network', { 
+          const response = await apiRequest('POST', '/api/scan/network', {
             cidr,
-            scannedDevices: mockDevices 
+            scannedDevices: mockDevices
           });
-          
+
           return {
             sessionId: 1,
             devicesFound: mockDevices.length,
             devices: mockDevices
           };
-        } 
-        
+        }
+
         // Web mode: use server-side scanning
         const response = await apiRequest('POST', '/api/scan/network', { cidr });
         return await response.json();
@@ -87,31 +87,38 @@ export const useNetworkScanner = () => {
         // If in desktop mode, use Electron's native nmap
         if (isDesktopMode()) {
           console.log('Running device scan in desktop mode with native nmap');
-          
+
           // Run native nmap scan
           const results = await electronBridge.runNmapScan({
             scanType: 'comprehensive',
             target: ipAddress,
           });
-          
+
           // Parse the nmap results to determine if device is online
-          const isOnline = results.data.includes('Host is up') || 
+          const isOnline = results.data.includes('Host is up') ||
                            !results.data.includes('Host seems down');
-          
+
           if (!isOnline) {
-            return { 
-              isOnline: false 
+            return {
+              isOnline: false
             };
           }
-          
+
           // Try to extract details from comprehensive scan
           // This is simplified - you would want much more thorough parsing
-          const ports = (results.data.match(/(\d+)\/tcp\s+open/g) || [])
-            .map(p => parseInt(p.split('/')[0]));
-            
+            // Define interfaces for port parsing
+            interface PortInfo {
+            port: number;
+            protocol: string;
+            state: string;
+            }
+
+            const ports: number[] = (results.data.match(/(\d+)\/tcp\s+open/g) || [])
+            .map((p: string): number => parseInt(p.split('/')[0]));
+
           const osMatches = results.data.match(/OS:\s*(.*?)(?:\n|$)/);
           const osType = osMatches ? osMatches[1].trim() : null;
-          
+
           const deviceInfo = {
             ipAddress,
             macAddress: '00:00:00:00:00:00', // Placeholder
@@ -124,21 +131,21 @@ export const useNetworkScanner = () => {
             status: 'online',
             details: { nmapOutput: results.data }
           };
-          
+
           // Send to server to store in database
-          const response = await apiRequest('POST', '/api/scan/device', { 
+          const response = await apiRequest('POST', '/api/scan/device', {
             ipAddress,
-            deviceInfo 
+            deviceInfo
           });
-          
+
           const serverResponse = await response.json();
-          
+
           return {
             isOnline: true,
             device: serverResponse.device || deviceInfo
           };
         }
-        
+
         // Web mode: use server-side scanning
         const response = await apiRequest('POST', '/api/scan/device', { ipAddress });
         return await response.json();
