@@ -37,6 +37,7 @@ release/
 .env.*
 !.env.example # Important: Keep an example .env file in version control
 .plandex*
+plandex*
 
 # Operating System generated files
 .DS_Store
