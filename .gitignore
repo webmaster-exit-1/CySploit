@@ -5,7 +5,7 @@ yarn-error.log*
 pnpm-debug.log*
 package-lock.json # If you use yarn.lock or pnpm-lock.yaml exclusively
 yarn.lock         # If you use package-lock.json or pnpm-lock.yaml exclusively
-# pnpm-lock.yaml  # If you use package-lock.json or yarn.lock exclusively
+pnpm-lock.yaml  # If you use package-lock.json or yarn.lock exclusively
 
 # Build output
 dist/
@@ -24,18 +24,19 @@ server-build/
 # the history of your database schema. However, if your workflow involves
 # always generating them from scratch or using a different strategy, you might ignore them.
 # For most projects, DO NOT ignore this. I'm listing it for completeness of generated folders.
-# migrations/
+migrations/
 
 # Electron-builder output
 # The `dist/` directory is already listed above, which electron-builder uses by default.
 # If you have specific intermediate files or other output locations for electron-builder, add them.
 # For example, if you had a `release/` directory:
-# release/
+release/
 
 # Environment variables
 .env
 .env.*
 !.env.example # Important: Keep an example .env file in version control
+.plandex*
 
 # Operating System generated files
 .DS_Store
