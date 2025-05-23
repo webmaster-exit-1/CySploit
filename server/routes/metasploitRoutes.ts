@@ -21,10 +21,15 @@ export function registerMetasploitRoutes(app: Express) {
     try {
       const { host, port, username, password } = req.body;
       
-      if (!host || !port || !username || !password) {
+      // Validate host and port
+      const allowedHosts = ['127.0.0.1', 'localhost']; // Add more trusted hosts as needed
+      const isValidHost = allowedHosts.includes(host);
+      const isValidPort = Number.isInteger(port) && port > 0 && port <= 65535;
+      
+      if (!host || !port || !username || !password || !isValidHost || !isValidPort) {
         return res.status(400).json({ 
           success: false, 
-          message: 'Missing required connection parameters'
+          message: 'Invalid or missing connection parameters'
         });
       }
       
