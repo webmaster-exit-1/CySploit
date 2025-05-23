@@ -1,4 +1,5 @@
 import { Express, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import { Server } from 'http';
 import { networkInterfaces } from 'os';
 import { exec } from 'child_process';
@@ -22,10 +23,17 @@ function apiRouter(path: string): string {
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = new Server(app);
 
+  // Define rate limiter: maximum of 100 requests per 15 minutes
+  const scanNetworkLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: { message: 'Too many requests, please try again later.' }
+  });
+
   // ===== Network Scanner Routes =====
 
   // Scan a network range
-  app.post(apiRouter('/scan/network'), async (req: Request, res: Response) => {
+  app.post(apiRouter('/scan/network'), scanNetworkLimiter, async (req: Request, res: Response) => {
     try {
       const { cidr } = req.body;
 
