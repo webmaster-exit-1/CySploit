@@ -1,4 +1,5 @@
 import express, { type Express } from "express";
+import rateLimit from "express-rate-limit";
 import fs from "node:fs"; // Using node: prefix for clarity
 import path from "node:path"; // Using node: prefix
 import { fileURLToPath } from "node:url"; // Helper to convert file URL to path
@@ -54,7 +55,16 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   app.use(vite.middlewares);
-  app.use("*", async (req, res, next) => {
+
+  // Configure rate limiter: maximum of 100 requests per 15 minutes
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: "Too many requests, please try again later.",
+  });
+
+  // Apply rate limiter to the route
+  app.use("*", limiter, async (req, res, next) => {
     const url = req.originalUrl;
 
     try {
