@@ -1,6 +1,7 @@
 import express from 'express';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 
 // Load environment variables
 dotenv.config();
@@ -18,8 +19,15 @@ pool.connect()
   .then(() => console.log('Connected to the database'))
   .catch((err) => console.error('Database connection error:', err));
 
-// Define a sample route
-app.get('/', async (req, res) => {
+// Define rate limiter: maximum of 100 requests per 15 minutes
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests, please try again later.',
+});
+
+// Define a sample route with rate limiting
+app.get('/', limiter, async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW()');
     res.json({ message: 'Server is running', time: result.rows[0].now });
