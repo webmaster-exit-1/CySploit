@@ -1,3 +1,5 @@
+# CySploit
+
 <div align="center">
   <h1>CySploit - Cybersecurity Analysis Platform</h1>
 </div>
@@ -31,17 +33,20 @@
 ### Running from Source
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/cysploit.git
    cd cysploit
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Run the development server:
+
    ```bash
    npm run dev
    ```
@@ -53,11 +58,13 @@
 To run the application as an Electron desktop app in development mode:
 
 1. Make sure all dependencies are installed:
+
    ```bash
    npm install
    ```
 
 2. Run the development server and Electron app simultaneously:
+
    ```bash
    npx concurrently "npm run dev" "npx wait-on http://localhost:5000 && npx electron electron/main.js"
    ```
@@ -67,11 +74,13 @@ To run the application as an Electron desktop app in development mode:
 You can build CySploit as a standalone desktop application for Linux, Windows, or Mac:
 
 1. Make the build script executable:
+
    ```bash
    chmod +x build-electron.sh
    ```
 
 2. Run the build script:
+
    ```bash
    ./build-electron.sh
    ```
@@ -81,16 +90,19 @@ You can build CySploit as a standalone desktop application for Linux, Windows, o
 #### Platform-Specific Builds
 
 - **Linux (AppImage, Deb, RPM)**:
+
   ```bash
   npx electron-builder build --linux --publish never
   ```
 
 - **Windows (Installer, Portable)**:
+
   ```bash
   npx electron-builder build --win --publish never
   ```
 
 - **macOS (DMG, ZIP)**:
+
   ```bash
   npx electron-builder build --mac --publish never
   ```
@@ -110,7 +122,6 @@ npm run db:push  # Push into database
 ./build-electron.sh  # Compile the electron app
 ./run-cysploit.sh  # Execute the client and server connected to our database
 ```
-
 
 ## Configuration
 
