@@ -1,6 +1,6 @@
 # CySploit
 
-<div align="center">
+<!-- markdownlint-disable MD033 -->
   <h1>CySploit - Cybersecurity Analysis Platform</h1>
 </div>
 <div align="center">
@@ -107,20 +107,19 @@ You can build CySploit as a standalone desktop application for Linux, Windows, o
   npx electron-builder build --mac --publish never
   ```
 
-Quick Start Electron Desktop Application for CySploit
-======
+#### <b><u>***Quick Start Electron Desktop Application for CySploit***</u></b>
 
 ```bash
-cd CySploit  # Change into CySploit directory
-sudo docker-compose up -d  # Start up the postgresql database for Metasploit and Shodan
-npm i  # Install dependencies
-npm run build  # Build client & server
-npm run check  # Run lint for errors
-npm run db:generate  # Generate database entries from schema
-npm run db:migrate  # Migrate database entries into database
-npm run db:push  # Push into database
-./build-electron.sh  # Compile the electron app
-./run-cysploit.sh  # Execute the client and server connected to our database
+cd CySploit                  # Change into CySploit directory
+sudo docker-compose up -d    # Start up the postgresql database for Metasploit and Shodan
+npm i                        # Install dependencies
+npm run build                # Build client & server
+npm run check                # Run lint for errors
+npm run db:generate          # Generate database entries from schema
+npm run db:migrate           # Migrate database entries into database
+npm run db:push              # Push into database
+./build-electron.sh          # Compile the electron app
+./run-cysploit.sh            # Execute the client and server connected to our database
 ```
 
 ## Configuration
