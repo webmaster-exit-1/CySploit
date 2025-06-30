@@ -3,9 +3,9 @@ node_modules/
 npm-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-package-lock.json # If you use yarn.lock or pnpm-lock.yaml exclusively
-yarn.lock         # If you use package-lock.json or pnpm-lock.yaml exclusively
-pnpm-lock.yaml  # If you use package-lock.json or yarn.lock exclusively
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Build output
 dist/
