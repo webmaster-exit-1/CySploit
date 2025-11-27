@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "client": "cd client && vite",
-    "server": "nodemon --exec ts-node server/index.ts",
+    "server": "tsx --env-file .env server/index.ts",
     "build": "npm run build:client && npm run build:server",
     "build:client": "cd client && vite build",
     "build:server": "tsc --project tsconfig.server.json",
@@ -96,12 +96,12 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
     "wait-on": "^7.2.0",
     "zod": "^3.22.4"
   },
-  "description": "A cutting-edge cybersecurity platform designed to simplify network security assessment through advanced, interactive scanning and analysis tools.",
   "build": {
     "appId": "com.cysploit.app",
     "productName": "CySploit",
