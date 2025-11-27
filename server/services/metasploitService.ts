@@ -374,7 +374,7 @@ export async function getMetasploitModules(moduleType: string): Promise<any> {
       modules: result.modules
     };
   } catch (error) {
-    console.error(`Failed to get Metasploit modules for type ${moduleType}:`, error);
+    console.error('Failed to get Metasploit modules for type %s:', moduleType, error);
     return {
       success: false,
       error: String(error)
