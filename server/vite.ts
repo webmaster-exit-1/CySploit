@@ -36,8 +36,8 @@ export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
     hmr: { server },
-    allowedHosts: true as true,
-  };
+    allowedHosts: true,
+  } as const;
 
   const vite = await createViteServer({
     ...(resolvedViteConfig as UserConfig), // Spread the resolved config

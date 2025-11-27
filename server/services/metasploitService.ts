@@ -339,15 +339,42 @@ export async function getMetasploitModules(moduleType: string): Promise<any> {
     if (!rpcClient || !rpcToken) {
       await reconnectIfNeeded();
     }
-    
-    const modules = await makeRpcCall('module.compatible_payloads', [moduleType]);
-    
+
+    let method: string;
+    switch (moduleType) {
+      case 'exploit':
+        method = 'module.exploits';
+        break;
+      case 'auxiliary':
+        method = 'module.auxiliary';
+        break;
+      case 'post':
+        method = 'module.post';
+        break;
+      case 'payload':
+        method = 'module.payloads';
+        break;
+      case 'encoder':
+        method = 'module.encoders';
+        break;
+      case 'nop':
+        method = 'module.nops';
+        break;
+      default:
+        return {
+          success: false,
+          error: `Unsupported module type: '${moduleType}'`
+        };
+    }
+
+    const result = await makeRpcCall(method);
+
     return {
       success: true,
-      modules
+      modules: result.modules
     };
   } catch (error) {
-    console.error('Failed to get Metasploit modules:', error);
+    console.error('Failed to get Metasploit modules for type %s:', moduleType, error);
     return {
       success: false,
       error: String(error)
