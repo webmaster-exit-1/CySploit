@@ -87,7 +87,7 @@
     "autoprefixer": "^10.4.19",
     "concurrently": "^8.2.2",
     "drizzle-kit": "^0.20.14",
-    "electron": "^29.2.0",
+    "electron": "^38.0.0",
     "electron-builder": "^24.13.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
