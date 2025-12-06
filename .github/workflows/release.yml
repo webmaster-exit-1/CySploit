@@ -47,7 +47,7 @@ jobs:
           zip -r cysploit-dist.zip dist/
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: release-artifacts
           path: |
@@ -96,7 +96,7 @@ jobs:
 
       - name: Upload Electron artifacts
         if: steps.electron_check.outputs.electron_built == 'true'
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: electron-artifacts
           path: |
