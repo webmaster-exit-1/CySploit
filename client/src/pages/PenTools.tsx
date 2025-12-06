@@ -24,104 +24,8 @@ const resourceRoutes = [
   { path: '/pentools', label: 'PenTools', icon: 'ri-code-s-slash-line' },
 ];
 
-const PenTools: React.FC = () => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [location] = useLocation();
-  
-  useEffect(() => {
-    // Create a style element for the matrix animation background
-    const style = document.createElement('style');
-    style.textContent = `
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: #000;
-        overflow: hidden;
-      }
-      
-      .pentools-container {
-        position: fixed;
-        top: 50px; /* Make room for the navbar */
-        left: 0;
-        width: 100vw;
-        height: calc(100vh - 50px); /* Adjust height to account for navbar */
-        z-index: 10;
-      }
-
-      .matrix-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 5;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Create and initialize Matrix animation
-    const canvas = document.createElement('canvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const matrixContainer = document.createElement('div');
-    matrixContainer.className = 'matrix-container';
-    matrixContainer.appendChild(canvas);
-    document.body.appendChild(matrixContainer);
-    
-    // Matrix animation code
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      const fontSize = 14;
-      const columns = Math.floor(canvas.width / fontSize);
-      const drops = Array(columns).fill(1);
-      
-      const drawMatrix = () => {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = `${fontSize}px monospace`;
-        
-        for (let i = 0; i < drops.length; i++) {
-          const text = chars[Math.floor(Math.random() * chars.length)];
-          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-          
-          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-          }
-          
-          drops[i]++;
-        }
-      };
-      
-      const matrixInterval = setInterval(drawMatrix, 33);
-      
-      // Handle window resize
-      const handleResize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const newColumns = Math.floor(canvas.width / fontSize);
-        drops.length = 0;
-        for (let i = 0; i < newColumns; i++) {
-          drops.push(1);
-        }
-      };
-      
-      window.addEventListener('resize', handleResize);
-      
-      // Cleanup function
-      return () => {
-        clearInterval(matrixInterval);
-        window.removeEventListener('resize', handleResize);
-        document.body.removeChild(matrixContainer);
-        document.head.removeChild(style);
-      };
-    }
-  }, []);
-
-  // Custom navbar specifically for PenTools
-  const CustomNavbar = () => {
+// Custom navbar specifically for PenTools
+const CustomNavbar: React.FC<{ location: string }> = ({ location }) => {
     return (
       <nav className="bg-background/95 backdrop-blur-sm border-b border-gray-800 py-2 sticky top-0 z-40 w-full">
         <div className="container mx-auto flex items-center justify-between">
@@ -244,10 +148,106 @@ const PenTools: React.FC = () => {
     );
   };
 
+const PenTools: React.FC = () => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [location] = useLocation();
+  
+  useEffect(() => {
+    // Create a style element for the matrix animation background
+    const style = document.createElement('style');
+    style.textContent = `
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+        overflow: hidden;
+      }
+      
+      .pentools-container {
+        position: fixed;
+        top: 50px; /* Make room for the navbar */
+        left: 0;
+        width: 100vw;
+        height: calc(100vh - 50px); /* Adjust height to account for navbar */
+        z-index: 10;
+      }
+
+      .matrix-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Create and initialize Matrix animation
+    const canvas = document.createElement('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const matrixContainer = document.createElement('div');
+    matrixContainer.className = 'matrix-container';
+    matrixContainer.appendChild(canvas);
+    document.body.appendChild(matrixContainer);
+    
+    // Matrix animation code
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      const fontSize = 14;
+      const columns = Math.floor(canvas.width / fontSize);
+      const drops = Array(columns).fill(1);
+      
+      const drawMatrix = () => {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0F0';
+        ctx.font = `${fontSize}px monospace`;
+        
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          
+          drops[i]++;
+        }
+      };
+      
+      const matrixInterval = setInterval(drawMatrix, 33);
+      
+      // Handle window resize
+      const handleResize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const newColumns = Math.floor(canvas.width / fontSize);
+        drops.length = 0;
+        for (let i = 0; i < newColumns; i++) {
+          drops.push(1);
+        }
+      };
+      
+      window.addEventListener('resize', handleResize);
+      
+      // Cleanup function
+      return () => {
+        clearInterval(matrixInterval);
+        window.removeEventListener('resize', handleResize);
+        document.body.removeChild(matrixContainer);
+        document.head.removeChild(style);
+      };
+    }
+  }, []);
+
   // Return the PenTools page with navbar and iframe
   return (
     <>
-      <CustomNavbar />
+      <CustomNavbar location={location} />
       <div className="pentools-container">
         {/* PenTools HTML iframe */}
         <iframe
