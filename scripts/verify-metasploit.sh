@@ -51,15 +51,17 @@ echo ""
 
 # Test 3: Check if msf_db database exists
 echo "Test 3: Checking Metasploit database..."
-if docker ps | grep -q "cysploit-db"; then
-    if docker exec cysploit-db-1 psql -U cysploit -d cysploit_db -c "\l" 2>/dev/null | grep -q "msf_db"; then
+# Get the container name dynamically
+CONTAINER_NAME=$(docker ps --format "{{.Names}}" | grep cysploit-db | head -1)
+if [ -n "$CONTAINER_NAME" ]; then
+    if docker exec "$CONTAINER_NAME" psql -U cysploit -d cysploit_db -c "\l" 2>/dev/null | grep -q "msf_db"; then
         test_pass "msf_db database exists"
     else
         test_fail "msf_db database does not exist"
     fi
     
     # Test database connection
-    if docker exec cysploit-db-1 psql -U msf_user -d msf_db -c "SELECT 1;" &> /dev/null; then
+    if docker exec "$CONTAINER_NAME" psql -U msf_user -d msf_db -c "SELECT 1;" &> /dev/null; then
         test_pass "msf_user can connect to msf_db"
     else
         test_fail "msf_user cannot connect to msf_db"
@@ -72,8 +74,8 @@ echo ""
 
 # Test 4: Check if Metasploit tables exist
 echo "Test 4: Checking Metasploit database tables..."
-if docker ps | grep -q "cysploit-db"; then
-    table_count=$(docker exec cysploit-db-1 psql -U msf_user -d msf_db -t -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';" 2>/dev/null | tr -d ' ')
+if [ -n "$CONTAINER_NAME" ]; then
+    table_count=$(docker exec "$CONTAINER_NAME" psql -U msf_user -d msf_db -t -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';" 2>/dev/null | tr -d ' ')
     
     if [ "$table_count" -gt 0 ]; then
         test_pass "Metasploit database has $table_count tables"
@@ -88,11 +90,11 @@ echo ""
 
 # Test 5: Check critical Metasploit tables
 echo "Test 5: Checking critical Metasploit tables..."
-if docker ps | grep -q "cysploit-db"; then
+if [ -n "$CONTAINER_NAME" ]; then
     critical_tables=("hosts" "services" "vulns" "workspaces")
     
     for table in "${critical_tables[@]}"; do
-        if docker exec cysploit-db-1 psql -U msf_user -d msf_db -t -c "\dt" 2>/dev/null | grep -q "$table"; then
+        if docker exec "$CONTAINER_NAME" psql -U msf_user -d msf_db -t -c "\dt" 2>/dev/null | grep -q "$table"; then
             test_pass "Table '$table' exists"
         else
             test_fail "Table '$table' does not exist"
@@ -106,7 +108,7 @@ echo ""
 # Test 6: Test Metasploit database connection
 echo "Test 6: Testing Metasploit console database connection..."
 if command -v msfconsole &> /dev/null; then
-    if docker ps | grep -q "cysploit-db"; then
+    if [ -n "$CONTAINER_NAME" ]; then
         # Run msfconsole with db_status and capture output
         db_status=$(echo "db_status" | timeout 30 msfconsole -q 2>&1 | grep -i "connected\|database" | head -1)
         

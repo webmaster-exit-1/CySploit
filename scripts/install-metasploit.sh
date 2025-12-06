@@ -69,6 +69,8 @@ sudo ln -sf /opt/metasploit-framework/msfrpcd /usr/local/bin/msfrpcd
 echo ""
 echo -e "${BLUE}Step 6/6: Creating database configuration...${NC}"
 mkdir -p ~/.msf4
+# Note: This password matches the one configured in docker-compose.yml and scripts/init-metasploit-db.sh
+# For production environments, use strong passwords and store them securely
 cat > ~/.msf4/database.yml << 'EOF'
 production:
   adapter: postgresql
