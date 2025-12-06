@@ -7640,7 +7640,7 @@ thenify-all@^1.0.0:
 
 "three-bmfont-text@github:dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695":
   version "3.0.0"
-  resolved "git+ssh://git@github.com/dmarcos/three-bmfont-text.git#eed4878795be9b3e38cf6aec6b903f56acd1f695"
+  resolved "https://github.com/dmarcos/three-bmfont-text.git#eed4878795be9b3e38cf6aec6b903f56acd1f695"
   integrity sha512-JcaccaRCcK/A4c0igPQ9RCw91cil7pLhogDVmrThEvP20B/vbFaaNlmn3frF7pWeo3lATUiNrxVfgxm9qfr9GA==
   dependencies:
     array-shuffle "^1.0.1"
