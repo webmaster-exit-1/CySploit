@@ -2,13 +2,13 @@ import { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { Server } from 'http';
 import { networkInterfaces } from 'os';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { db } from './db';
 import { hosts, nmapScans, captureSession, vulnerabilities, packets, ports, settings } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 
-const execAsync = promisify(exec);
+const execAsync = promisify(execFile);
 
 // API router helper function
 function apiRouter(path: string): string {
@@ -62,7 +62,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         // Run an actual nmap ping scan to discover hosts
         console.log(`Running nmap ping scan on ${cidr}...`);
-        const { stdout: nmapOutput } = await execAsync(`nmap -sn -T4 ${cidr}`);
+        const { stdout: nmapOutput } = await execAsync(
+          'nmap',
+          ['-sn', '-T4', cidr]
+        );
 
         // Parse nmap output to find hosts
         const hostLines = nmapOutput.split('\n').filter(line => line.includes('Nmap scan report for'));
