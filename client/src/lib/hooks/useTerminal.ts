@@ -115,7 +115,6 @@ export const useTerminal = () => {
 
         case 'scan': {
           let target = '';
-          let port = '';
 
           // Parse arguments
           for (let i = 0; i < args.length; i++) {
@@ -123,7 +122,7 @@ export const useTerminal = () => {
               target = args[i + 1];
               i++;
             } else if (args[i] === '-port' && i + 1 < args.length) {
-              port = args[i + 1];
+              // port argument is parsed but not currently used
               i++;
             }
           }

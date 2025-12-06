@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { NetworkInterface, NetworkScanResult, Device } from '@/lib/types';
@@ -22,9 +22,6 @@ export const useNetworkScanner = () => {
         // If in desktop mode, use Electron's native nmap
         if (isDesktopMode()) {
           console.log('Running network scan in desktop mode with native nmap');
-
-          // Parse CIDR to get target range
-          const target = cidr.split('/')[0].replace(/\.\d+$/, '.0');
 
           // Run native nmap scan
           const results = await electronBridge.runNmapScan({
@@ -54,7 +51,7 @@ export const useNetworkScanner = () => {
           }));
 
           // Send to server to store in database
-          const response = await apiRequest('POST', '/api/scan/network', {
+          await apiRequest('POST', '/api/scan/network', {
             cidr,
             scannedDevices: mockDevices
           });
@@ -106,13 +103,6 @@ export const useNetworkScanner = () => {
 
           // Try to extract details from comprehensive scan
           // This is simplified - you would want much more thorough parsing
-            // Define interfaces for port parsing
-            interface PortInfo {
-            port: number;
-            protocol: string;
-            state: string;
-            }
-
             const ports: number[] = (results.data.match(/(\d+)\/tcp\s+open/g) || [])
             .map((p: string): number => parseInt(p.split('/')[0]));
 

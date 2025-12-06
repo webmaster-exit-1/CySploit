@@ -111,9 +111,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 }
 
                 // Determine device type based on ports
+                // Note: Device type detection logic can be enhanced in the future
                 if (ipAddress.endsWith('.1') || openPorts.includes(53)) {
+                  // Potential router or DNS server
                 } else if (openPorts.includes(22) && openPorts.includes(80)) {
+                  // Potential web server
                 } else if (openPorts.includes(3389)) {
+                  // Potential Windows RDP server
                 }
 
                 // Try to get MAC address
@@ -132,6 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   const { stdout: osDetectionOutput } = await execAsync(`nmap -O --osscan-guess -T4 ${ipAddress}`);
                   const osMatches = osDetectionOutput.match(/OS details: (.+)/);
                   if (osMatches && osMatches[1]) {
+                    // OS detection successful - can be used in future enhancement
                   }
                 } catch (osError) {
                   // Ignore OS detection errors

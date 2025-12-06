@@ -57,22 +57,6 @@ const NetworkMap: React.FC<NetworkMapProps> = ({
     }
   };
 
-  // Node icon based on type
-  const getNodeIcon = (type: string) => {
-    switch (type) {
-      case 'router':
-        return 'ri-router-line';
-      case 'server':
-        return 'ri-server-line';
-      case 'computer':
-        return 'ri-computer-line';
-      case 'iot':
-        return 'ri-device-line';
-      default:
-        return 'ri-question-line';
-    }
-  };
-
   // Link color based on value
   const getLinkColor = (link: NetworkLink) => {
     const value = link.value;

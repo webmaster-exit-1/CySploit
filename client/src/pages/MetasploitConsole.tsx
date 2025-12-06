@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { cn } from '@/lib/utils';
-import { Link, useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
+
+import { useLocation } from 'wouter';
+
 import Navbar from '@/components/layout/Navbar';
 
 const MetasploitConsole: React.FC = () => {
-  const [location] = useLocation();
+  useLocation();
   const [output, setOutput] = useState<string[]>([
     'Starting Metasploit Framework Console...',
     'Connecting to PostgreSQL database...',
@@ -205,8 +205,8 @@ const MetasploitConsole: React.FC = () => {
             className="h-[calc(100vh-200px)] overflow-y-auto mb-2 whitespace-pre-wrap"
             onClick={handleTerminalClick}
           >
-            {output.map((line, index) => (
-              <div key={index} className={
+            {output.map((line) => (
+              <div key={`${Date.now()}-${Math.random()}-${line.substring(0, 30)}`} className={
                 line.includes('[-]') ? 'text-red-500' : 
                 line.includes('[+]') ? 'text-green-500' : 
                 line.includes('[*]') ? 'text-blue-500' : 
