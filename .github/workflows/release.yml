@@ -141,20 +141,20 @@ jobs:
           name: Release ${{ steps.get_version.outputs.version }}
           body: |
             ## CySploit ${{ steps.get_version.outputs.version }}
-            
+
             ### What's Changed
             ${{ steps.changelog.outputs.changes }}
-            
+
             ### Installation
-            
+
             **Electron Desktop App:**
             - Download the `.AppImage` file for Linux
             - Download the `.deb` file for Debian/Ubuntu systems
-            
+
             **From Source:**
             - Download `cysploit-dist.tar.gz` or `cysploit-dist.zip`
             - Extract and follow the README for setup instructions
-            
+
             **Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ steps.get_version.outputs.version }}
           files: |
             artifacts/*
