@@ -39,19 +39,32 @@
    cd cysploit
    ```
 
-2. Install dependencies:
+2. Set up environment variables:
+
+   ```bash
+   cp .env.example .env
+   # Edit .env and configure DATABASE_URL
+   ```
+
+3. Install dependencies:
 
    ```bash
    npm install
    ```
 
-3. Run the development server:
+4. Start the PostgreSQL database:
+
+   ```bash
+   sudo docker-compose up -d
+   ```
+
+5. Run the development server:
 
    ```bash
    npm run dev
    ```
 
-4. Open your browser to `http://localhost:5000`
+6. Open your browser to `http://localhost:5000`
 
 ### Running as Desktop Application (Development)
 
@@ -112,6 +125,7 @@ You can build CySploit as a standalone desktop application for Linux, Windows, o
 ```bash
 cd CySploit                  # Change into CySploit directory
 sudo docker-compose up -d    # Start up the postgresql database for Metasploit and Shodan
+cp .env.example .env         # Create environment configuration file
 npm i                        # Install dependencies
 npm run build                # Build client & server
 npm run check                # Run lint for errors

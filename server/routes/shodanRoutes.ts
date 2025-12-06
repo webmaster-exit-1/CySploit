@@ -32,7 +32,7 @@ export function registerShodanRoutes(app: Express) {
           });
         }
         
-        const data = await response.json();
+        const data = await response.json() as any;
         
         res.json({
           configured: true,
@@ -95,7 +95,7 @@ export function registerShodanRoutes(app: Express) {
           throw new Error(`Shodan API error: ${response.status} ${response.statusText}`);
         }
         
-        const data = await response.json();
+        const data = await response.json() as any;
         
         // Store the search result in the database
         await db.insert(shodanSearches).values({
@@ -151,7 +151,7 @@ export function registerShodanRoutes(app: Express) {
           throw new Error(`Shodan API error: ${response.status} ${response.statusText}`);
         }
         
-        const data = await response.json();
+        const data = await response.json() as any;
         
         // Store the search result in the database
         await db.insert(shodanSearches).values({
@@ -212,7 +212,7 @@ export function registerShodanRoutes(app: Express) {
           throw new Error(`Shodan API error: ${response.status} ${response.statusText}`);
         }
         
-        const data = await response.json();
+        const data = await response.json() as any;
         
         if (!data.matches || data.matches.length === 0) {
           return res.status(404).json({ message: 'No information available for this CVE' });
