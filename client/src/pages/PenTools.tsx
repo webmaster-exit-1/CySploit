@@ -246,7 +246,6 @@ const PenTools: React.FC = () => {
       <CustomNavbar location={location} />
       <div className="pentools-container">
         {/* PenTools HTML iframe - sandbox allows same-origin for local trusted content */}
-        {/* @ts-expect-error - sandbox combination needed for iframe functionality */}
         <iframe
           ref={iframeRef}
           src="/pentools-styled-apis.html"

@@ -68,7 +68,22 @@ const SHODAN_PRESETS = [
   { name: 'Exposed IoT devices', query: 'has_screenshot:true device:webcam' },
 ];
 
-// Mock Shodan results data structure
+// Shodan API response match structure
+interface ShodanApiMatch {
+  ip_str: string;
+  port: number;
+  hostnames?: string[];
+  location?: { country_name?: string };
+  org: string;
+  isp: string;
+  os: string | null;
+  timestamp: string;
+  product: string;
+  version: string | null;
+  vulns?: string[];
+}
+
+// Shodan results data structure for display
 interface ShodanResult {
   ip: string;
   port: number;
@@ -331,19 +346,7 @@ const ShodanSearch = (): JSX.Element => {
         }
 
         // Process real results from Shodan
-        const results = data.matches?.map((match: {
-          ip_str: string;
-          port: number;
-          hostnames?: string[];
-          location?: { country_name?: string };
-          org: string;
-          isp: string;
-          os: string | null;
-          timestamp: string;
-          product: string;
-          version: string | null;
-          vulns?: string[];
-        }) => ({
+        const results = data.matches?.map((match: ShodanApiMatch) => ({
           ip: match.ip_str,
           port: match.port,
           hostnames: match.hostnames || [],
