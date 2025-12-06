@@ -1,0 +1,60 @@
+name: Check for Updates
+
+on:
+  schedule:
+    # Run every Monday at 10:00 UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check-dependencies:
+    name: Check Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for outdated packages
+        id: outdated
+        run: |
+          echo "Checking for outdated packages..."
+          npm outdated || true
+          
+      - name: Run npm audit
+        id: audit
+        run: |
+          echo "Running security audit..."
+          npm audit --audit-level=moderate || true
+
+      - name: Check build status
+        run: |
+          echo "Verifying build..."
+          npm run build
+
+      - name: Check lint status
+        run: |
+          echo "Verifying lint..."
+          npm run lint
+
+      - name: Summary
+        run: |
+          echo "### Dependency Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Build: Successful" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Lint: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the workflow logs for detailed information about outdated packages and security advisories." >> $GITHUB_STEP_SUMMARY

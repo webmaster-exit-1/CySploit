@@ -169,6 +169,16 @@ npm run db:push              # Push into database
 2. The 3D visualization will display your network topology and security findings
 3. Export reports for further analysis in other tools
 
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## Releases
+
+For information about creating releases and the CI/CD pipeline, see [RELEASE.md](RELEASE.md).
+
+To download the latest release, visit the [Releases page](https://github.com/webmaster-exit-1/CySploit/releases).
+
 ## License
 
 Copyright © 2025 CySploit Team - All rights reserved
