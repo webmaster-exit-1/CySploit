@@ -370,7 +370,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           throw new Error(`Shodan API error: ${response.status} ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const data = await response.json() as any;
 
         // Process the results
         res.json({
