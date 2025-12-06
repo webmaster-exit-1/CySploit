@@ -1,0 +1,76 @@
+name: Auto Release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'package.json'
+  workflow_dispatch:
+    inputs:
+      skip_tag_check:
+        description: 'Skip tag existence check'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  check-version:
+    name: Check Version and Create Tag
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      version: ${{ steps.check.outputs.version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version from package.json
+        id: package_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "Package version: v${VERSION}"
+
+      - name: Check if tag exists
+        id: check
+        run: |
+          VERSION="${{ steps.package_version.outputs.version }}"
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "Tag $VERSION already exists"
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "Tag $VERSION does not exist, will create release"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and push tag
+        if: steps.check.outputs.should_release == 'true' || github.event.inputs.skip_tag_check == 'true'
+        run: |
+          VERSION="${{ steps.package_version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push origin "$VERSION"
+
+  trigger-release:
+    name: Trigger Release Workflow
+    needs: check-version
+    if: needs.check-version.outputs.should_release == 'true' || github.event.inputs.skip_tag_check == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger release workflow
+        run: |
+          echo "Release workflow will be triggered by the tag push"
+          echo "Version: ${{ needs.check-version.outputs.version }}"
