@@ -7,11 +7,11 @@ import { buttonVariants } from "@/components/ui/button"
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
-const IconLeft = ({ className, ...props }: React.HTMLAttributes<SVGElement>) => (
+const IconLeft = ({ className, ...props }: React.ComponentProps<typeof ChevronLeft>) => (
   <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
 );
 
-const IconRight = ({ className, ...props }: React.HTMLAttributes<SVGElement>) => (
+const IconRight = ({ className, ...props }: React.ComponentProps<typeof ChevronRight>) => (
   <ChevronRight className={cn("h-4 w-4", className)} {...props} />
 );
 
