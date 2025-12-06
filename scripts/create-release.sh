@@ -73,4 +73,14 @@ git push origin "$TAG"
 echo -e "\n${GREEN}✓ Tag created and pushed successfully!${NC}"
 echo -e "${GREEN}The release workflow will now build and publish the release.${NC}"
 echo -e "${GREEN}Check the Actions tab on GitHub to monitor progress.${NC}"
-echo -e "\nRelease URL: https://github.com/$(git config --get remote.origin.url | sed 's/.*:\(.*\)\.git/\1/')/releases/tag/${TAG}"
+
+# Extract repository URL (handle both SSH and HTTPS formats)
+REPO_URL=$(git config --get remote.origin.url)
+if [[ $REPO_URL =~ ^https://github.com/(.+)\.git$ ]]; then
+    REPO_PATH="${BASH_REMATCH[1]}"
+elif [[ $REPO_URL =~ ^git@github.com:(.+)\.git$ ]]; then
+    REPO_PATH="${BASH_REMATCH[1]}"
+else
+    REPO_PATH="webmaster-exit-1/CySploit"
+fi
+echo -e "\nRelease URL: https://github.com/${REPO_PATH}/releases/tag/${TAG}"

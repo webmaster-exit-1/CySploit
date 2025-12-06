@@ -12,15 +12,13 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "webmaster-exit-1"
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
     labels:
       - "dependencies"
       - "npm"
-    
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -29,8 +27,6 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 5
-    reviewers:
-      - "webmaster-exit-1"
     commit-message:
       prefix: "chore(ci)"
       include: "scope"

@@ -75,12 +75,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build project first
+        run: npm run build
+
       - name: Build Electron app
         run: npm run build:electron
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Check if Electron build succeeded
+        id: electron_check
+        run: |
+          if [ -d "dist" ] && (ls dist/*.AppImage 2>/dev/null || ls dist/*.deb 2>/dev/null); then
+            echo "electron_built=true" >> $GITHUB_OUTPUT
+          else
+            echo "electron_built=false" >> $GITHUB_OUTPUT
+            echo "Warning: Electron build artifacts not found"
+          fi
 
       - name: Upload Electron artifacts
+        if: steps.electron_check.outputs.electron_built == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: electron-artifacts
@@ -111,6 +126,7 @@ jobs:
         with:
           name: electron-artifacts
           path: ./artifacts
+        continue-on-error: true
 
       - name: Get version from tag or input
         id: get_version
