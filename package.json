@@ -109,7 +109,7 @@
     "concurrently": "^8.2.2",
     "drizzle-kit": "^0.20.14",
     "electron": "^38.0.0",
-    "electron-builder": "^26.0.12",
+    "electron-builder": "^26.3.4",
     "embla-carousel-react": "^8.6.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
