@@ -294,8 +294,8 @@ const ShodanSearch = (): JSX.Element => {
     }
   };
 
-  // Use a preset search query
-  const usePreset = (preset: { name: string, query: string }) => {
+  // Apply a preset search query
+  const applyPreset = (preset: { name: string, query: string }) => {
     setQuery(preset.query);
     // Focus the input after applying preset
     if (inputRef.current) {
@@ -331,7 +331,19 @@ const ShodanSearch = (): JSX.Element => {
         }
 
         // Process real results from Shodan
-        const results = data.matches?.map((match: any) => ({
+        const results = data.matches?.map((match: {
+          ip_str: string;
+          port: number;
+          hostnames?: string[];
+          location?: { country_name?: string };
+          org: string;
+          isp: string;
+          os: string | null;
+          timestamp: string;
+          product: string;
+          version: string | null;
+          vulns?: string[];
+        }) => ({
           ip: match.ip_str,
           port: match.port,
           hostnames: match.hostnames || [],
@@ -548,9 +560,9 @@ const ShodanSearch = (): JSX.Element => {
               {/* Search suggestions */}
               {showSuggestions && (
                 <div className="absolute mt-1 w-full bg-background border border-blue-600/30 neon-border-blue-subtle rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto">
-                  {suggestions.map((suggestion, index) => (
+                  {suggestions.map((suggestion) => (
                     <div
-                      key={index}
+                      key={suggestion.filter}
                       className="px-4 py-2 cursor-pointer hover:bg-muted/40 flex justify-between"
                       onClick={() => applySuggestion(suggestion)}
                     >
@@ -587,9 +599,9 @@ const ShodanSearch = (): JSX.Element => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {searchResults.map((result, index) => (
+                      {searchResults.map((result) => (
                         <TableRow
-                          key={index}
+                          key={`${result.ip}-${result.port}`}
                           className="border-b border-gray-800 hover:bg-muted/80 cursor-pointer"
                         >
                           <TableCell className="font-mono">
@@ -611,9 +623,9 @@ const ShodanSearch = (): JSX.Element => {
                             )}
                             {result.vulns && result.vulns.length > 0 && (
                               <div className="mt-1 flex flex-wrap gap-1">
-                                {result.vulns.map((vuln, idx) => (
+                                {result.vulns.map((vuln) => (
                                   <span
-                                    key={idx}
+                                    key={vuln}
                                     className="px-1.5 py-0.5 bg-red-900/50 text-red-300 text-xs rounded-sm"
                                   >
                                     {vuln}
@@ -637,11 +649,11 @@ const ShodanSearch = (): JSX.Element => {
 
           <TabsContent value="presets" className="mt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {SHODAN_PRESETS.map((preset, index) => (
+              {SHODAN_PRESETS.map((preset) => (
                 <div
-                  key={index}
+                  key={preset.name}
                   className="bg-muted border border-blue-600/30 neon-border-blue-subtle rounded-lg p-4 hover:bg-muted/80 cursor-pointer transition-colors"
-                  onClick={() => usePreset(preset)}
+                  onClick={() => applyPreset(preset)}
                 >
                   <h3 className="text-blue-400 font-semibold mb-2">
                     <i className="ri-search-eye-line mr-2"></i>
@@ -672,9 +684,9 @@ const ShodanSearch = (): JSX.Element => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {SHODAN_FILTERS.map((filter, index) => (
+                    {SHODAN_FILTERS.map((filter) => (
                       <TableRow
-                        key={index}
+                        key={filter.filter}
                         className="border-b border-gray-800 hover:bg-muted/80"
                       >
                         <TableCell className="font-mono font-medium text-white">{filter.filter}</TableCell>
@@ -687,6 +699,7 @@ const ShodanSearch = (): JSX.Element => {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <button
+                                  type="button"
                                   className="ml-2 text-gray-400 hover:text-blue-400"
                                   onClick={() => setQuery(filter.example)}
                                 >

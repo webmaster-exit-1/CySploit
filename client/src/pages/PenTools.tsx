@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -18,10 +18,6 @@ const routes = [
   { path: '/network-mapping', label: 'Network Mapping', icon: 'ri-router-line' },
   { path: '/terminal', label: 'Terminal', icon: 'ri-terminal-box-line' },
   { path: '/sessions', label: 'Sessions', icon: 'ri-folder-line' },
-];
-
-const resourceRoutes = [
-  { path: '/pentools', label: 'PenTools', icon: 'ri-code-s-slash-line' },
 ];
 
 // Custom navbar specifically for PenTools
@@ -249,10 +245,12 @@ const PenTools: React.FC = () => {
     <>
       <CustomNavbar location={location} />
       <div className="pentools-container">
-        {/* PenTools HTML iframe */}
+        {/* PenTools HTML iframe - sandbox allows same-origin for local trusted content */}
+        {/* @ts-expect-error - sandbox combination needed for iframe functionality */}
         <iframe
           ref={iframeRef}
           src="/pentools-styled-apis.html"
+          sandbox="allow-scripts allow-same-origin allow-forms"
           style={{
             width: '100%',
             height: '100%',
