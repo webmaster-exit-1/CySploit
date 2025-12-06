@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { Vulnerability } from '@/lib/types';
 import TerminalConsole from '@/components/dashboard/TerminalConsole';
 import NeonBorder from '@/components/common/NeonBorder';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
 import { useVulnerabilityScanner } from '@/lib/hooks/useVulnerabilityScanner';

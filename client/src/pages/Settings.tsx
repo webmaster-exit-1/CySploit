@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import NeonBorder from '@/components/common/NeonBorder';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
@@ -52,7 +52,6 @@ const notificationSchema = z.object({
 const Settings: React.FC = () => {
   const { toast } = useToast();
   const { accentColor, setAccentColor } = useTheme();
-  const [animationsEnabled, setAnimationsEnabled] = useState(true);
   
   // Set page title
   useEffect(() => {
@@ -182,8 +181,7 @@ const Settings: React.FC = () => {
     // Apply accent color from settings
     setAccentColor(values.accentColor);
     
-    // Apply animation settings
-    setAnimationsEnabled(values.animationsEnabled);
+    // Note: Animation settings would be applied here if the feature was implemented
   };
   
   const onScanSettingsSubmit = (values: z.infer<typeof scanSettingsSchema>) => {

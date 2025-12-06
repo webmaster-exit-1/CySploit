@@ -7,10 +7,10 @@ interface HeaderProps {
   toggleMobileSidebar?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleMobileSidebar }) => {
+const Header: React.FC<HeaderProps> = () => {
   const [location] = useLocation();
   const { toast } = useToast();
-  const [isConnected, setIsConnected] = useState(true);
+  const [isConnected] = useState(true);
 
   // Get page title based on route
   const getPageTitle = () => {

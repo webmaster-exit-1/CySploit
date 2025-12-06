@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { cn } from '@/lib/utils';
-import { Link, useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
+
+import { useLocation } from 'wouter';
+
 import Navbar from '@/components/layout/Navbar';
 
 const MetasploitConsole: React.FC = () => {
-  const [location] = useLocation();
+  useLocation();
   const [output, setOutput] = useState<string[]>([
     'Starting Metasploit Framework Console...',
     'Connecting to PostgreSQL database...',

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import NeonBorder from '@/components/common/NeonBorder';
 import { Button } from '@/components/ui/button';
 import {
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -51,8 +50,8 @@ const generateTrafficData = (hours: number) => {
 
 const TrafficAnalyzer: React.FC = () => {
   const [timeRange, setTimeRange] = useState('24');
-  const { analyzeTrafficMutation } = usePacketAnalyzer();
-  const { sessions } = useSessions();
+  usePacketAnalyzer();
+  useSessions();
   
   // Generate traffic data based on selected time range
   const trafficData = generateTrafficData(parseInt(timeRange));

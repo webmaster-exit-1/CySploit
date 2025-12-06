@@ -10,9 +10,7 @@ interface PageLayoutProps {
 }
 
 const PageLayout: React.FC<PageLayoutProps> = ({ 
-  children, 
-  toggleMobileSidebar,
-  isMobileSidebarOpen 
+  children
 }) => {
   return (
     <div className="page-container">
@@ -22,7 +20,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
       {/* Main Content */}
       <div className="content-container no-sidebar">
         {/* Header */}
-        <Header toggleMobileSidebar={toggleMobileSidebar} />
+        <Header />
         
         {/* Page Content */}
         <main className="p-6">

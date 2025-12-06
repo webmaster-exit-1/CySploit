@@ -158,7 +158,7 @@ export const runVulnerabilityScan = (options: {
 
 // Check if Metasploit is available
 export const checkMetasploitAvailability = (): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const api = getElectronAPI();
 
     if (!api) {

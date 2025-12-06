@@ -9,7 +9,6 @@ import {
   GlobeAltIcon,
   CommandLineIcon,
   WrenchScrewdriverIcon,
-  ClockIcon,
   ComputerDesktopIcon
 } from '@heroicons/react/24/outline';
 

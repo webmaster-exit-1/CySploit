@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
-import { useVulnerabilityScanner } from '@/lib/hooks/useVulnerabilityScanner';
-import { usePacketAnalyzer } from '@/lib/hooks/usePacketAnalyzer';
+
+
+
 import { useSessions } from '@/lib/hooks/useSessions';
 import { Session } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import NeonBorder from '@/components/common/NeonBorder';
 import { formatDate } from '@/lib/utils';

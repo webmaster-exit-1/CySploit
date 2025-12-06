@@ -271,9 +271,6 @@ export async function executeMetasploitModule(moduleType: string, moduleName: st
       };
     }
     
-    // Get the module options
-    const moduleOptions = await makeRpcCall('module.options', [moduleType, moduleName]);
-    
     // Create a console to execute the module
     const consoleId = await makeRpcCall('console.create');
     

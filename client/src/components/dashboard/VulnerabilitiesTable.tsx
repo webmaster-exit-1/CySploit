@@ -81,15 +81,6 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
 
   // Severity badge
   const renderSeverityBadge = (severity: string) => {
-    const severityColors = {
-      critical: "bg-destructive text-white",
-      high: "bg-destructive text-white",
-      medium: "bg-yellow-500 text-black",
-      low: "bg-gray-400 text-black"
-    };
-
-    const color = severityColors[severity as keyof typeof severityColors] || severityColors.low;
-
     return (
       <span className="flex items-center">
         <span className={`w-2 h-2 rounded-full ${severity === 'critical' || severity === 'high' ? 'bg-destructive' : severity === 'medium' ? 'bg-yellow-500' : 'bg-gray-400'} mr-2`}></span>

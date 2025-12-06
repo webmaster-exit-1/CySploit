@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
@@ -25,10 +25,9 @@ const PacketInspector: React.FC = () => {
     formatPacketForDisplay,
     analyzeTrafficMutation,
     captureInProgress,
-    isSessionActive,
-    generatePacketMutation
+    isSessionActive
   } = usePacketAnalyzer();
-  const { sessions, getSession, isLoadingSessions } = useSessions();
+  const { sessions, isLoadingSessions } = useSessions();
 
   const [selectedInterface, setSelectedInterface] = useState<string>('');
   const [captureFilter, setCaptureFilter] = useState<string>('');
@@ -343,7 +342,7 @@ const PacketInspector: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {sessionPackets.map((packet: Packet) => {
-                    const formattedPacket = formatPacketForDisplay(packet);
+                    formatPacketForDisplay(packet);
                     return (
                       <TableRow
                         key={packet.id}
