@@ -67,22 +67,56 @@ docker exec cysploit-db-1 psql -U msf_user -d msf_db -c "SELECT 1;"
 
 ## Metasploit Framework Configuration
 
-### Install Metasploit (Optional but Recommended)
+### Automated Installation (Recommended)
 
-If you want full Metasploit integration, install the framework:
+We provide an automated installation script that handles all dependencies and configuration:
+
+```bash
+# Run the automated installation script
+./scripts/install-metasploit.sh
+```
+
+This script will:
+- Install all required dependencies (Ruby, build tools, libraries)
+- Clone Metasploit Framework from GitHub
+- Install all required Ruby gems
+- Create symbolic links for easy access
+- Configure the database connection
+
+### Verify Installation
+
+After installation, run the verification script:
+
+```bash
+# Verify Metasploit installation and database connectivity
+./scripts/verify-metasploit.sh
+```
+
+### Manual Installation (Alternative)
+
+If you prefer to install manually:
 
 ```bash
 # Install dependencies
-sudo apt-get install -y ruby ruby-dev build-essential libpq-dev
+sudo apt-get install -y ruby ruby-dev build-essential libpq-dev \
+  libpcap-dev autoconf bison libssl-dev libyaml-dev libreadline-dev \
+  zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev libsqlite3-dev
+
+# Install bundler
+sudo gem install bundler
 
 # Clone Metasploit Framework
 cd /opt
-sudo git clone https://github.com/rapid7/metasploit-framework.git
+sudo git clone --depth=1 https://github.com/rapid7/metasploit-framework.git
 cd metasploit-framework
 
 # Install gems
-sudo gem install bundler
 sudo bundle install
+
+# Create symbolic links
+sudo ln -sf /opt/metasploit-framework/msfconsole /usr/local/bin/msfconsole
+sudo ln -sf /opt/metasploit-framework/msfvenom /usr/local/bin/msfvenom
+sudo ln -sf /opt/metasploit-framework/msfrpcd /usr/local/bin/msfrpcd
 ```
 
 ### Configure Metasploit to Use PostgreSQL
