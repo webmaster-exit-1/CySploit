@@ -1,4 +1,4 @@
-import express, { type Request, Response, NextFunction } from "express";
+import express, { type Request, Response } from "express";
 import { registerRoutes } from "./routes.js";
 import { registerShodanRoutes } from "./routes/shodanRoutes.js";
 import { registerMetasploitRoutes } from "./routes/metasploitRoutes.js";

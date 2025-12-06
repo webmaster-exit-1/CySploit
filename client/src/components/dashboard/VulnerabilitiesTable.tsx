@@ -179,12 +179,14 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
                     </td>
                     <td className="px-4 py-3">
                       <button
+                        type="button"
                         onClick={() => handleInfoClick(vuln)}
                         className="text-primary hover:text-white mr-2"
                       >
                         <i className="ri-information-line"></i>
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleMitigateClick(vuln)}
                         className="text-secondary hover:text-white"
                       >
@@ -206,6 +208,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
           </div>
           <div className="flex space-x-1">
             <button
+              type="button"
               className={cn(
                 "w-8 h-8 flex items-center justify-center rounded-md text-gray-400 hover:text-white",
                 currentPage === 1 ? "bg-background opacity-50" : "bg-background"
@@ -231,6 +234,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
 
               return (
                 <button
+                  type="button"
                   key={pageNum}
                   className={cn(
                     "w-8 h-8 flex items-center justify-center rounded-md",
@@ -244,6 +248,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
             })}
 
             <button
+              type="button"
               className={cn(
                 "w-8 h-8 flex items-center justify-center rounded-md text-gray-400 hover:text-white",
                 currentPage === totalPages ? "bg-background opacity-50" : "bg-background"
