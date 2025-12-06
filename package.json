@@ -1,6 +1,6 @@
 {
   "name": "cysploit",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A cutting-edge cybersecurity platform designed to simplify network security assessment through advanced, interactive scanning and analysis tools.",
   "main": "electron/main.js",
   "scripts": {
