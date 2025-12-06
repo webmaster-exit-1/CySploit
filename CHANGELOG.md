@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Dependabot configuration (was incomplete)
+- TypeScript ESLint compatibility issue (updated parser to match plugin version 8.48.1)
+- Build artifacts directory (cysploit-dist/) excluded from linting and version control
+- Lint script configuration to allow warnings per project guidelines
 
 ## [2.0.1] - 2024-12-06
 
