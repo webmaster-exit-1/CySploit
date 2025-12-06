@@ -9,6 +9,7 @@ pnpm-lock.yaml
 # Build output
 dist/
 server-build/
+cysploit-dist/
 # The `build/` directory might be created by Vite if you changed its outDir,
 # or by other tools. If Vite outputs to `dist/public`, then `dist/` above covers it.
 # If you have a specific top-level `build/` dir for other purposes, add it:
