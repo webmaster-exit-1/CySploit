@@ -5,7 +5,7 @@ import eslint from "@eslint/js";
 
 export default tseslint.config(
   {
-    ignores: ["**/*.js", "**/*.cjs", "dist/", "build/", "node_modules/", "out/", ".vite/"],
+    ignores: ["**/*.js", "**/*.cjs", "dist/", "build/", "node_modules/", "out/", ".vite/", "cysploit-dist/"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
