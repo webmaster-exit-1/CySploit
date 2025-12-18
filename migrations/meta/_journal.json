@@ -8,6 +8,13 @@
       "when": 1746781882444,
       "tag": "0000_goofy_living_lightning",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766016000000,
+      "tag": "0001_align_to_shared_schema",
+      "breakpoints": true
     }
   ]
 }

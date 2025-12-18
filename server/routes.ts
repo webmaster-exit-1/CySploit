@@ -90,14 +90,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
                 // Check if device is reachable
                 try {
-                  await execAsync(`ping -c 1 -W 1 ${ipAddress}`);
+                  await execAsync('ping', ['-c', '1', '-W', '1', ipAddress]);
                 } catch {
                   console.log(`Device ${ipAddress} is not reachable. Skipping.`);
                   continue;
                 }
 
                 // Run a basic port scan
-                const { stdout: portScanOutput } = await execAsync(`nmap -T4 -F --open ${ipAddress}`);
+                const { stdout: portScanOutput } = await execAsync('nmap', ['-T4', '-F', '--open', ipAddress]);
 
                 // Parse the scan output for open ports
                 const openPorts = [];
@@ -123,17 +123,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 // Try to get MAC address
                 let macAddress = null;
                 try {
-                  await execAsync(`ping -c 1 -W 1 ${ipAddress}`);
-                  const { stdout: arpOutput } = await execAsync(`arp -n ${ipAddress} | grep -v Address | awk '{print $3}'`);
-                  macAddress = arpOutput.trim();
-                  if (macAddress === '(incomplete)') macAddress = null;
+                  await execAsync('ping', ['-c', '1', '-W', '1', ipAddress]);
+                  const { stdout: neighOutput } = await execAsync('ip', ['neigh', 'show', ipAddress]);
+                  const match = neighOutput.match(/\blladdr\s+([0-9a-f:]{17})\b/i);
+                  macAddress = match?.[1] ?? null;
                 } catch {
                   // Ignore ARP errors
                 }
 
                 // Try to get OS detection
                 try {
-                  const { stdout: osDetectionOutput } = await execAsync(`nmap -O --osscan-guess -T4 ${ipAddress}`);
+                  const { stdout: osDetectionOutput } = await execAsync('nmap', ['-O', '--osscan-guess', '-T4', ipAddress]);
                   const osMatches = osDetectionOutput.match(/OS details: (.+)/);
                   if (osMatches && osMatches[1]) {
                     // OS detection successful - can be used in future enhancement
@@ -147,6 +147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   // Only include properties defined in your hosts schema
                   ipAddress: ipAddress,
                   name: hostname || null,
+                  macAddress,
                   lastSeen: new Date(),
                   scanId: nmapScan.id
                   // Add other properties here only if they exist in your schema
