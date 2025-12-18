@@ -124,6 +124,12 @@ chmod +x build-appimage.sh
 ./build-appimage.sh
 ```
 
+If the build fails with `EACCES` during native module rebuilds (e.g. `node-libcurl`), ensure your `node_modules` is not root-owned (avoid `sudo npm install`). A quick fix is:
+
+```bash
+sudo chown -R $USER:$USER node_modules
+```
+
 #### Platform-Specific Builds
 
 - **Linux (AppImage, Deb, RPM)**:

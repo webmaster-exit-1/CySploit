@@ -24,6 +24,21 @@ if [ ! -d node_modules ]; then
   npm install
 fi
 
+# electron-builder rebuilds native deps (node-gyp). If any build artifacts are root-owned
+# (often caused by running npm with sudo), the rebuild can fail with EACCES.
+if [ -e node_modules/node-libcurl/build/Makefile ]; then
+  OWNER_UID=$(stat -c '%u' node_modules/node-libcurl/build/Makefile 2>/dev/null || echo "")
+  if [ -n "$OWNER_UID" ] && [ "$OWNER_UID" -eq 0 ]; then
+    echo ""
+    echo "Error: node_modules/node-libcurl/build contains root-owned files (will break electron-builder rebuild)." >&2
+    echo "Fix it by running:" >&2
+    echo "  sudo chown -R $USER:$USER node_modules/node-libcurl" >&2
+    echo "Or, for a full cleanup:" >&2
+    echo "  sudo rm -rf node_modules package-lock.json && npm install" >&2
+    exit 1
+  fi
+fi
+
 echo "Building client + server bundles..."
 npm run build
 
