@@ -16,6 +16,13 @@ interface MetasploitConfig {
   password: string;
 }
 
+export type MetasploitServiceResult = {
+  success: boolean;
+  message?: string;
+  error?: string;
+  [key: string]: unknown;
+};
+
 type RpcWireResponse = {
   result?: unknown;
   error?: unknown;
@@ -184,7 +191,7 @@ export async function makeRpcCall<T = unknown>(method: string, params: unknown[]
 /**
  * Run a Metasploit scan on a target
  */
-export async function runMetasploitScan(target: string, scanType: string): Promise<unknown> {
+export async function runMetasploitScan(target: string, scanType: string): Promise<MetasploitServiceResult> {
   try {
     if (!rpcClient || !rpcToken) {
       await reconnectIfNeeded();
@@ -271,7 +278,7 @@ export async function runMetasploitScan(target: string, scanType: string): Promi
 /**
  * Execute a Metasploit module
  */
-export async function executeMetasploitModule(moduleType: string, moduleName: string, options: Record<string, unknown>): Promise<unknown> {
+export async function executeMetasploitModule(moduleType: string, moduleName: string, options: Record<string, unknown>): Promise<MetasploitServiceResult> {
   try {
     if (!rpcClient || !rpcToken) {
       await reconnectIfNeeded();
@@ -347,7 +354,7 @@ export async function executeMetasploitModule(moduleType: string, moduleName: st
 /**
  * Get a list of available Metasploit modules by type
  */
-export async function getMetasploitModules(moduleType: string): Promise<unknown> {
+export async function getMetasploitModules(moduleType: string): Promise<MetasploitServiceResult> {
   try {
     if (!rpcClient || !rpcToken) {
       await reconnectIfNeeded();
@@ -398,7 +405,7 @@ export async function getMetasploitModules(moduleType: string): Promise<unknown>
 /**
  * Get a list of active Metasploit sessions
  */
-export async function getMetasploitSessions(): Promise<unknown> {
+export async function getMetasploitSessions(): Promise<MetasploitServiceResult> {
   try {
     if (!rpcClient || !rpcToken) {
       await reconnectIfNeeded();
