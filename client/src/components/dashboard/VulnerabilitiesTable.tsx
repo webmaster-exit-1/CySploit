@@ -61,7 +61,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
         title: "Vulnerability Updated",
         description: `Status changed to ${newStatus}`,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update vulnerability status",

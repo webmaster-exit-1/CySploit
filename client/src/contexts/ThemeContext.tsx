@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 type AccentColor = 'cyan' | 'magenta' | 'purple' | 'green';
 
@@ -17,30 +17,30 @@ const ThemeContext = createContext<ThemeContextType>(defaultContext);
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [accentColor, setAccentColor] = useState<AccentColor>('cyan');
+  const [accentColor, setAccentColor] = useState<AccentColor>(() => {
+    const savedAccentColor = localStorage.getItem('accentColor') as AccentColor | null;
+    if (savedAccentColor && ['cyan', 'magenta', 'purple', 'green'].includes(savedAccentColor)) {
+      return savedAccentColor;
+    }
+    return 'cyan';
+  });
 
   // Apply the theme class to the document body
   useEffect(() => {
     // Remove all theme classes first
     document.documentElement.classList.remove('theme-cyan', 'theme-magenta', 'theme-purple', 'theme-green');
-    
+
     // Add the new theme class
     document.documentElement.classList.add(`theme-${accentColor}`);
-    
+
     // Store the accent color preference in localStorage
     localStorage.setItem('accentColor', accentColor);
   }, [accentColor]);
 
-  // Read the accent color from localStorage on initial load
-  useEffect(() => {
-    const savedAccentColor = localStorage.getItem('accentColor') as AccentColor;
-    if (savedAccentColor && ['cyan', 'magenta', 'purple', 'green'].includes(savedAccentColor)) {
-      setAccentColor(savedAccentColor);
-    }
-  }, []);
+  const value = useMemo<ThemeContextType>(() => ({ accentColor, setAccentColor }), [accentColor]);
 
   return (
-    <ThemeContext.Provider value={{ accentColor, setAccentColor }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );

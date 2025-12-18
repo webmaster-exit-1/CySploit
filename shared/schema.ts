@@ -46,7 +46,7 @@ export const hosts = pgTable("hosts", {
   hostname: text("hostname"),
   state: text("state").default("unknown"), // Making this field have a default value
   lastSeen: timestamp("last_seen").defaultNow(),
-  osDetails: jsonb("os_details").$type<Record<string, any>>(),
+  osDetails: jsonb("os_details").$type<Record<string, unknown>>(),
   macAddress: text("mac_address"),
   vendor: text("vendor"),
 });

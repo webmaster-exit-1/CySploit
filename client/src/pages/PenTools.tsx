@@ -1,3 +1,5 @@
+/* eslint-disable @eslint-react/dom/no-unsafe-iframe-sandbox */
+
 import React, { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
@@ -30,7 +32,7 @@ const CustomNavbar: React.FC<{ location: string }> = ({ location }) => {
               <i className="ri-shield-keyhole-line mr-2"></i>
               <span>CySploit</span>
             </div>
-            
+
             <div className="hidden lg:flex space-x-1">
               {routes.map((route) => (
                 <Link key={route.path} href={route.path}>
@@ -49,13 +51,13 @@ const CustomNavbar: React.FC<{ location: string }> = ({ location }) => {
               ))}
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="border-primary/50 text-primary hover:text-white hover:bg-primary/20 hover:border-primary neon-border-cyan"
                 >
                   <i className="ri-menu-3-line mr-1"></i> Menu
@@ -98,23 +100,23 @@ const CustomNavbar: React.FC<{ location: string }> = ({ location }) => {
                     <i className="ri-folder-line mr-2 text-orange-400"></i> Sessions
                   </DropdownMenuItem>
                 </Link>
-                
+
                 {/* Resources Section */}
                 <DropdownMenuItem className="font-bold pt-2 pb-2 border-t border-primary/30 mt-1 mb-1 cursor-default text-primary">
                   <i className="ri-folder-shield-2-fill mr-2 text-primary"></i> Resources
                 </DropdownMenuItem>
-                
+
                 <Link href="/pentools">
                   <DropdownMenuItem className="cursor-pointer hover:bg-background/50 hover:text-primary rounded-sm mb-1">
                     <i className="ri-code-s-slash-line mr-2 text-green-400"></i> PenTools
                   </DropdownMenuItem>
                 </Link>
-                
+
                 {/* API Keys Section */}
                 <DropdownMenuItem className="font-bold pt-2 pb-2 border-t border-primary/30 mt-1 mb-1 cursor-default text-primary">
                   <i className="ri-key-2-fill mr-2 text-secondary"></i> API Integration
                 </DropdownMenuItem>
-                
+
                 <Link href="/settings">
                   <DropdownMenuItem className="cursor-pointer hover:bg-background/50 hover:text-primary rounded-sm mb-1">
                     <i className="ri-spy-line mr-2 text-red-400"></i> Shodan API
@@ -147,7 +149,7 @@ const CustomNavbar: React.FC<{ location: string }> = ({ location }) => {
 const PenTools: React.FC = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [location] = useLocation();
-  
+
   useEffect(() => {
     // Create a style element for the matrix animation background
     const style = document.createElement('style');
@@ -158,7 +160,7 @@ const PenTools: React.FC = () => {
         background-color: #000;
         overflow: hidden;
       }
-      
+
       .pentools-container {
         position: fixed;
         top: 50px; /* Make room for the navbar */
@@ -183,12 +185,12 @@ const PenTools: React.FC = () => {
     const canvas = document.createElement('canvas');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    
+
     const matrixContainer = document.createElement('div');
     matrixContainer.className = 'matrix-container';
     matrixContainer.appendChild(canvas);
     document.body.appendChild(matrixContainer);
-    
+
     // Matrix animation code
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -196,27 +198,27 @@ const PenTools: React.FC = () => {
       const fontSize = 14;
       const columns = Math.floor(canvas.width / fontSize);
       const drops = Array(columns).fill(1);
-      
+
       const drawMatrix = () => {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#0F0';
         ctx.font = `${fontSize}px monospace`;
-        
+
         for (let i = 0; i < drops.length; i++) {
           const text = chars[Math.floor(Math.random() * chars.length)];
           ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-          
+
           if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
           }
-          
+
           drops[i]++;
         }
       };
-      
+
       const matrixInterval = setInterval(drawMatrix, 33);
-      
+
       // Handle window resize
       const handleResize = () => {
         canvas.width = window.innerWidth;
@@ -227,9 +229,9 @@ const PenTools: React.FC = () => {
           drops.push(1);
         }
       };
-      
+
       window.addEventListener('resize', handleResize);
-      
+
       // Cleanup function
       return () => {
         clearInterval(matrixInterval);

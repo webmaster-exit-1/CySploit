@@ -3,6 +3,11 @@ import { NetworkGraph, NetworkNode, NetworkLink } from '@/lib/types';
 import { ForceGraph2D } from 'react-force-graph';
 import { useToast } from '@/hooks/use-toast';
 
+type ForceGraphNetworkNode = NetworkNode & {
+  x?: number;
+  y?: number;
+};
+
 interface NetworkMapProps {
   data: NetworkGraph;
   height?: number;
@@ -33,9 +38,7 @@ const NetworkMap: React.FC<NetworkMapProps> = ({
     }
 
     return () => {
-      if (containerRef.current) {
-        resizeObserver.unobserve(containerRef.current);
-      }
+      resizeObserver.disconnect();
     };
   }, []);
 
@@ -66,40 +69,40 @@ const NetworkMap: React.FC<NetworkMapProps> = ({
   };
 
   // Custom node rendering
-  const nodeCanvasObject = (node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
+  const nodeCanvasObject = (node: ForceGraphNetworkNode, ctx: CanvasRenderingContext2D, globalScale: number) => {
     const label = node.label || node.id;
     const fontSize = 12/globalScale;
     const nodeSize = 8/globalScale;
-    
+
     // Draw node circle
     ctx.beginPath();
-    ctx.arc(node.x, node.y, nodeSize, 0, 2 * Math.PI);
+    ctx.arc(node.x ?? 0, node.y ?? 0, nodeSize, 0, 2 * Math.PI);
     ctx.fillStyle = getNodeColor(node);
     ctx.fill();
-    
+
     // Draw node border
     ctx.strokeStyle = 'rgba(30, 37, 46, 1)';
     ctx.lineWidth = 1.5/globalScale;
     ctx.stroke();
-    
+
     // Draw label below node
     ctx.font = `${fontSize}px Rajdhani`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillStyle = 'white';
-    ctx.fillText(label, node.x, node.y + nodeSize + 2/globalScale);
-    
+    ctx.fillText(label, node.x ?? 0, (node.y ?? 0) + nodeSize + 2/globalScale);
+
     // Draw IP address below label
     const ipAddress = node.ipAddress;
     if (ipAddress) {
       ctx.font = `${fontSize * 0.8}px Space Mono`;
       ctx.fillStyle = 'rgba(200, 200, 200, 0.8)';
-      ctx.fillText(ipAddress, node.x, node.y + nodeSize + fontSize + 4/globalScale);
+      ctx.fillText(ipAddress, node.x ?? 0, (node.y ?? 0) + nodeSize + fontSize + 4/globalScale);
     }
   };
 
   // Handle node click
-  const handleNodeClick = (node: any) => {
+  const handleNodeClick = (node: NetworkNode) => {
     if (onNodeClick) {
       onNodeClick(node);
     } else {

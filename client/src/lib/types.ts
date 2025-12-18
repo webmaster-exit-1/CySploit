@@ -10,7 +10,7 @@ export interface Device {
   isOnline: boolean;
   lastSeen: string;
   openPorts?: number[];
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 // Vulnerability types
@@ -32,7 +32,7 @@ export interface Session {
   startedAt: string;
   endedAt: string | null;
   isActive: boolean;
-  networkData?: Record<string, any>;
+  networkData?: Record<string, unknown>;
 }
 
 // Packet types
@@ -46,7 +46,7 @@ export interface Packet {
   destinationPort?: number;
   size?: number;
   timestamp: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 // Network scanner types
@@ -96,7 +96,7 @@ export interface NetworkNode {
   type: 'router' | 'computer' | 'iot' | 'server' | 'unknown';
   ipAddress: string;
   isOnline: boolean;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 export interface NetworkLink {

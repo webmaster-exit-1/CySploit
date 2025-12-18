@@ -1,5 +1,7 @@
 "use client"
 
+/* eslint-disable @eslint-react/dom/no-dangerously-set-innerhtml */
+
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 

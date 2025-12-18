@@ -26,7 +26,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@neondatabase/serverless": "^0.9.0",
+    "@neondatabase/serverless": "^1.0.2",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
@@ -86,11 +86,12 @@
     "uuid": "^9.0.1",
     "vaul": "^1.1.2",
     "wouter": "^3.8.1",
-    "ws": "^8.16.0"
+    "ws": "^8.16.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^1.5.0",
-    "@eslint/js": "^9.0.0",
+    "@eslint/js": "^8.57.1",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.3.0",
     "@tailwindcss/typography": "^0.5.10",
@@ -111,7 +112,7 @@
     "electron": "^38.0.0",
     "electron-builder": "^26.3.4",
     "embla-carousel-react": "^8.6.0",
-    "eslint": "^9.39.1",
+    "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "nodemon": "^3.1.0",
@@ -119,11 +120,10 @@
     "tailwindcss": "^3.4.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.2.2",
+    "typescript": "^5.6.3",
     "typescript-eslint": "^8.48.1",
     "vite": "^5.2.0",
-    "wait-on": "^9.0.3",
-    "zod": "^4.1.13"
+    "wait-on": "^9.0.3"
   },
   "build": {
     "appId": "com.cysploit.app",

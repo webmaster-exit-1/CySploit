@@ -91,7 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 // Check if device is reachable
                 try {
                   await execAsync(`ping -c 1 -W 1 ${ipAddress}`);
-                } catch (pingError) {
+                } catch {
                   console.log(`Device ${ipAddress} is not reachable. Skipping.`);
                   continue;
                 }
@@ -127,7 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   const { stdout: arpOutput } = await execAsync(`arp -n ${ipAddress} | grep -v Address | awk '{print $3}'`);
                   macAddress = arpOutput.trim();
                   if (macAddress === '(incomplete)') macAddress = null;
-                } catch (arpError) {
+                } catch {
                   // Ignore ARP errors
                 }
 
@@ -138,7 +138,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   if (osMatches && osMatches[1]) {
                     // OS detection successful - can be used in future enhancement
                   }
-                } catch (osError) {
+                } catch {
                   // Ignore OS detection errors
                 }
 
@@ -378,13 +378,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           throw new Error(`Shodan API error: ${response.status} ${response.statusText}`);
         }
 
-        const data = await response.json() as any;
+        const data = await response.json() as unknown;
+        const record = (typeof data === 'object' && data !== null) ? (data as Record<string, unknown>) : undefined;
+        const total = typeof record?.total === 'number' ? record.total : 0;
+        const matches = Array.isArray(record?.matches) ? record?.matches : [];
 
         // Process the results
         res.json({
           query,
-          total: data.total || 0,
-          matches: data.matches || []
+          total,
+          matches
         });
       } catch (fetchError) {
         console.error('Error fetching from Shodan API:', fetchError);

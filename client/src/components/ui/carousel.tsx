@@ -71,7 +71,10 @@ const Carousel = React.forwardRef<
         return
       }
 
+      // Embla emits selection events from effect-managed listeners.
+      // eslint-disable-next-line @eslint-react/hooks-extra/no-direct-set-state-in-use-effect
       setCanScrollPrev(api.canScrollPrev())
+      // eslint-disable-next-line @eslint-react/hooks-extra/no-direct-set-state-in-use-effect
       setCanScrollNext(api.canScrollNext())
     }, [])
 
@@ -118,19 +121,37 @@ const Carousel = React.forwardRef<
       }
     }, [api, onSelect])
 
+    const contextValue = React.useMemo(
+      () => ({
+        carouselRef,
+        api: api,
+        opts,
+        orientation:
+          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+        scrollPrev,
+        scrollNext,
+        canScrollPrev,
+        canScrollNext,
+        setApi,
+        plugins,
+      }),
+      [
+        api,
+        canScrollNext,
+        canScrollPrev,
+        carouselRef,
+        opts,
+        orientation,
+        plugins,
+        scrollNext,
+        scrollPrev,
+        setApi,
+      ]
+    )
+
     return (
       <CarouselContext.Provider
-        value={{
-          carouselRef,
-          api: api,
-          opts,
-          orientation:
-            orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
-          scrollPrev,
-          scrollNext,
-          canScrollPrev,
-          canScrollNext,
-        }}
+        value={contextValue}
       >
         <div
           ref={ref}

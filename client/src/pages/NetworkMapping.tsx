@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,11 +13,11 @@ import { TabsContent, Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn, getDeviceTypeIcon } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { useVulnerabilityScanner } from '@/lib/hooks/useVulnerabilityScanner';
+import type { Vulnerability } from '@/lib/types';
 
 const NetworkMapping: React.FC = () => {
   const { devices, isLoadingDevices, scanNetworkMutation } = useNetworkScanner();
   const { vulnerabilities } = useVulnerabilityScanner();
-  const [graphData, setGraphData] = useState<NetworkGraph>({ nodes: [], links: [] });
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [mapLayout, setMapLayout] = useState<string>('force-directed');
   const [cidrRange, setCidrRange] = useState<string>('192.168.1.0/24');
@@ -25,16 +25,15 @@ const NetworkMapping: React.FC = () => {
   const [scanProgress, setScanProgress] = useState(0);
   const { toast } = useToast();
 
-  // Generate network graph data from devices
-  useEffect(() => {
-    if (Array.isArray(devices) && devices.length > 0) {
-      generateNetworkGraph(devices);
+  const graphData = useMemo<NetworkGraph>(() => {
+    if (!Array.isArray(devices) || devices.length === 0) {
+      return { nodes: [], links: [] };
     }
-  }, [devices, vulnerabilities, mapLayout]);
 
-  const generateNetworkGraph = (devicesData: any[]) => {
+    const devicesData = devices as Device[];
+
     // Find the router device or use the first device as the central node
-    const routerDevice = devicesData.find((device: any) =>
+    const routerDevice = devicesData.find((device) =>
       device.deviceType === 'router' || device.ipAddress.endsWith('.1')
     ) || devicesData[0];
 
@@ -52,7 +51,7 @@ const NetworkMapping: React.FC = () => {
     });
 
     // Add all other devices and link to the router or other devices based on layout
-    devicesData.forEach((device: any) => {
+    devicesData.forEach((device) => {
       if (device.id === routerDevice.id) return;
 
       nodes.push({
@@ -75,7 +74,7 @@ const NetworkMapping: React.FC = () => {
 
         // Add some extra links between devices based on IP address proximity
         const deviceIpParts = device.ipAddress.split('.');
-        devicesData.forEach((otherDevice: any) => {
+        devicesData.forEach((otherDevice) => {
           if (otherDevice.id === device.id || otherDevice.id === routerDevice.id) return;
 
           const otherIpParts = otherDevice.ipAddress.split('.');
@@ -107,13 +106,14 @@ const NetworkMapping: React.FC = () => {
       }
     });
 
-    setGraphData({ nodes, links });
-  };
+    return { nodes, links };
+  }, [devices, mapLayout]);
 
   const handleNodeClick = (node: NetworkNode) => {
     // Find the device from the devices array
     if (Array.isArray(devices)) {
-      const device = devices.find((d: any) => d.id === parseInt(node.id.replace('device-', '')));
+      const nodeDeviceId = Number(node.id.replace('device-', ''));
+      const device = (devices as Device[]).find((d) => d.id === nodeDeviceId);
       setSelectedDevice(device || null);
     }
   };
@@ -175,13 +175,13 @@ const NetworkMapping: React.FC = () => {
   // Get device vulnerability count
   const getDeviceVulnerabilityCount = (deviceId: number) => {
     if (!Array.isArray(vulnerabilities)) return 0;
-    return vulnerabilities.filter((v: any) => v.deviceId === deviceId).length;
+    return (vulnerabilities as Vulnerability[]).filter((v) => v.deviceId === deviceId).length;
   };
 
   // Get device critical vulnerability count
   const getDeviceCriticalVulnerabilityCount = (deviceId: number) => {
     if (!Array.isArray(vulnerabilities)) return 0;
-    return vulnerabilities.filter((v: any) =>
+    return (vulnerabilities as Vulnerability[]).filter((v) =>
       v.deviceId === deviceId && v.severity === 'critical'
     ).length;
   };
@@ -345,8 +345,8 @@ const NetworkMapping: React.FC = () => {
                   <p className="text-gray-400 text-sm mb-1">Open Ports</p>
                   <div className="flex flex-wrap gap-1">
                     {selectedDevice.openPorts && selectedDevice.openPorts.length > 0 ? (
-                      selectedDevice.openPorts.map((port, i) => (
-                        <span key={i} className="px-2 py-0.5 bg-background text-xs rounded-md border border-gray-800">
+                      selectedDevice.openPorts.map((port) => (
+                        <span key={`${selectedDevice.id}-${port}`} className="px-2 py-0.5 bg-background text-xs rounded-md border border-gray-800">
                           {port}
                         </span>
                       ))

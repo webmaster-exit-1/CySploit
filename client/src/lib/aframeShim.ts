@@ -2,13 +2,13 @@
 // before any components try to use it
 declare global {
   interface Window {
-    AFRAME: any;
+    AFRAME: unknown;
   }
 }
 
 // Ensure AFRAME is defined globally
 if (typeof window !== 'undefined' && !window.AFRAME) {
-  window.AFRAME = {}; 
+  window.AFRAME = {};
   console.warn('AFRAME shim initialized. The real AFRAME library should be loaded from CDN.');
 }
 

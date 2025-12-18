@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  let capturedJsonResponse: Record<string, unknown> | undefined = undefined;
 
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
@@ -43,9 +43,15 @@ app.use((req, res, next) => {
   registerShodanRoutes(app);
   registerMetasploitRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+  app.use((err: unknown, _req: Request, res: Response) => {
+    const record = (typeof err === 'object' && err !== null)
+      ? (err as Record<string, unknown>)
+      : undefined;
+    const status =
+      (typeof record?.status === 'number' && record.status) ||
+      (typeof record?.statusCode === 'number' && record.statusCode) ||
+      500;
+    const message = (typeof record?.message === 'string' && record.message) || "Internal Server Error";
 
     res.status(status).json({ message });
     throw err;

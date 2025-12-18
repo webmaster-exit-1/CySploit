@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
-import { Device } from '@/lib/types';
+import { NetworkInterface, NetworkScanResult } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Helmet } from 'react-helmet';
 import NeonBorder from '@/components/common/NeonBorder';
@@ -30,26 +30,24 @@ const NetworkDiscovery: React.FC = () => {
   } = useNetworkScanner();
 
   // Ensure networkInterfaces is treated as an array
-  const interfaces = Array.isArray(networkInterfaces) ? networkInterfaces : [];
+  const interfaces: NetworkInterface[] = Array.isArray(networkInterfaces)
+    ? (networkInterfaces as NetworkInterface[])
+    : [];
 
   const { toast } = useToast();
   const [selectedInterface, setSelectedInterface] = useState<string>('');
   const [cidrRange, setCidrRange] = useState<string>('192.168.1.0/24');
   const [singleIpToScan, setSingleIpToScan] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>("network");
-  const [scanResults, setScanResults] = useState<any>(null);
+  const [scanResults, setScanResults] = useState<NetworkScanResult | null>(null);
 
-  // Update CIDR range when interface is selected
-  useEffect(() => {
-    if (interfaces && interfaces.length > 0) {
-      if (selectedInterface) {
-        const iface = interfaces.find((i: any) => i.name === selectedInterface);
-        if (iface) {
-          setCidrRange(getSuggestedCidrRange(iface));
-        }
-      }
+  const handleInterfaceChange = (value: string) => {
+    setSelectedInterface(value);
+    const iface = interfaces.find((i) => i.name === value);
+    if (iface) {
+      setCidrRange(getSuggestedCidrRange(iface));
     }
-  }, [selectedInterface, interfaces, getSuggestedCidrRange]);
+  };
 
   // Set page title
   useEffect(() => {
@@ -189,12 +187,12 @@ const NetworkDiscovery: React.FC = () => {
                   {isLoadingInterfaces ? (
                     <Skeleton className="h-10 w-full" />
                   ) : (
-                    <Select value={selectedInterface} onValueChange={setSelectedInterface}>
+                    <Select value={selectedInterface} onValueChange={handleInterfaceChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select an interface" />
                       </SelectTrigger>
                       <SelectContent>
-                        {interfaces && interfaces.map((iface: any) => (
+                        {interfaces && interfaces.map((iface) => (
                           <SelectItem key={iface.name} value={iface.name}>
                             {iface.name} ({iface.address})
                           </SelectItem>

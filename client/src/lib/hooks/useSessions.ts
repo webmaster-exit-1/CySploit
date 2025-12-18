@@ -27,7 +27,7 @@ export const useSessions = () => {
     mutationFn: async (sessionData: {
       name: string,
       isActive: boolean,
-      networkData?: Record<string, any>
+      networkData?: Record<string, unknown>
     }): Promise<Session> => {
       const response = await apiRequest('POST', '/api/sessions', sessionData);
       return await response.json();

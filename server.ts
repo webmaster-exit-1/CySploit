@@ -31,7 +31,7 @@ app.get('/', limiter, async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW()');
     res.json({ message: 'Server is running', time: result.rows[0].now });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Database query failed' });
   }
 });
