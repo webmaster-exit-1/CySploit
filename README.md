@@ -30,6 +30,15 @@
 
 ## Installation
 
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- Docker + Docker Compose (for PostgreSQL)
+- System tools used by scanning features:
+   - `nmap`
+   - `ip` (usually from `iproute2`)
+   - `ping` (usually from `iputils`)
+
 ### Running from Source
 
 1. Clone the repository:
@@ -55,16 +64,25 @@
 4. Start the PostgreSQL database:
 
    ```bash
-   sudo docker-compose up -d
+   docker compose up -d
    ```
 
-5. Run the development server:
+5. Apply database migrations:
+
+   ```bash
+   npm run db:migrate
+   ```
+
+6. Run the development server:
 
    ```bash
    npm run dev
    ```
 
-6. Open your browser to `http://localhost:5000`
+7. Open your browser to `http://localhost:5000`
+
+> Note: In dev, the backend serves both the API and the web UI on port `5000`.
+> If you run the client separately (`npm run client`), it runs on `5173` and proxies `/api/*` to `http://localhost:5000`.
 
 ### Running as Desktop Application (Development)
 
@@ -79,7 +97,7 @@ To run the application as an Electron desktop app in development mode:
 2. Run the development server and Electron app simultaneously:
 
    ```bash
-   npx concurrently "npm run dev" "npx wait-on http://localhost:5000 && npx electron electron/main.js"
+   npm run electron:dev
    ```
 
 ### Building as Desktop Application
@@ -124,14 +142,12 @@ You can build CySploit as a standalone desktop application for Linux, Windows, o
 
 ```bash
 cd CySploit                  # Change into CySploit directory
-sudo docker-compose up -d    # Start up the postgresql database for Metasploit and Shodan
+docker compose up -d         # Start up the PostgreSQL database (including Metasploit DB init)
 cp .env.example .env         # Create environment configuration file
 npm i                        # Install dependencies
 npm run build                # Build client & server
 npm run check                # Run lint for errors
-npm run db:generate          # Generate database entries from schema
 npm run db:migrate           # Migrate database entries into database
-npm run db:push              # Push into database
 ./build-electron.sh          # Compile the electron app
 ./run-cysploit.sh            # Execute the client and server connected to our database
 ```
