@@ -34,10 +34,7 @@
 
 - Node.js (v18+ recommended)
 - Docker + Docker Compose (for PostgreSQL)
-- System tools used by scanning features:
-   - `nmap`
-   - `ip` (usually from `iproute2`)
-   - `ping` (usually from `iputils`)
+- System tools used by scanning features: `nmap`, `ip` (usually from `iproute2`), `ping` (usually from `iputils`)
 
 ### Running from Source
 
