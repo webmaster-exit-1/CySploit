@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
 const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const { spawn, exec, fork } = require('child_process');
 const isDev = require('electron-is-dev');
 const fs = require('fs');
@@ -10,8 +11,22 @@ let serverProcess;
 
 function checkDatabase() {
   return new Promise((resolve) => {
-    const dbUrl = process.env.DATABASE_URL || 'postgresql://cysploit:cysploit@localhost:5432/cysploit_db';
-    console.log(`[Electron Main] Checking database with URL: ${dbUrl}`);
+    const dbUrl = process.env.DATABASE_URL;
+    if (!dbUrl) {
+      console.warn('[Electron Main] DATABASE_URL is not set. Skipping DB connectivity check.');
+      return resolve(false);
+    }
+
+    try {
+      const parsed = new URL(dbUrl);
+      const dbName = parsed.pathname?.replace(/^\//, '') || '(unknown-db)';
+      console.log(
+        `[Electron Main] Checking database: ${parsed.username}@${parsed.hostname}${parsed.port ? `:${parsed.port}` : ''}/${dbName}`,
+      );
+    } catch {
+      console.log('[Electron Main] Checking database (unparseable DATABASE_URL)');
+    }
+
     exec(`node -e "const { Client } = require('pg'); const client = new Client('${dbUrl}'); client.connect().then(() => { console.log('[DB Check] Connected'); client.end(); process.exit(0); }).catch(err => { console.error('[DB Check Error]', err.message); process.exit(1); })"`, (error, stdout, stderr) => {
       if (error) {
         console.error('[Electron Main] Database connection failed via check:', stderr.trim() || error.message);
