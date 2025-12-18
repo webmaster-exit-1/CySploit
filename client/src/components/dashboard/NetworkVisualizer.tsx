@@ -24,16 +24,27 @@ const NetworkVisualizer: React.FC = () => {
   };
   const { toast } = useToast();
 
-  const { data: ssidResponse } = useQuery({
-    queryKey: ['/api/network/ssid'],
+  const { data: connectionResponse } = useQuery({
+    queryKey: ['/api/network/connection'],
     refetchOnWindowFocus: false,
   });
 
-  const ssid = useMemo((): string | null => {
-    if (typeof ssidResponse !== 'object' || ssidResponse === null) return null;
-    const record = ssidResponse as Record<string, unknown>;
-    return typeof record.ssid === 'string' ? record.ssid : null;
-  }, [ssidResponse]);
+  const connection = useMemo((): { type: 'wifi' | 'ethernet' | 'unknown'; ssid: string | null } => {
+    if (typeof connectionResponse !== 'object' || connectionResponse === null) {
+      return { type: 'unknown', ssid: null };
+    }
+
+    const record = connectionResponse as Record<string, unknown>;
+    const type = record.type === 'wifi' || record.type === 'ethernet' ? record.type : 'unknown';
+    const ssid = typeof record.ssid === 'string' ? record.ssid : null;
+    return { type, ssid };
+  }, [connectionResponse]);
+
+  const primaryInterface = useMemo((): { name: string; address: string } | null => {
+    const iface = networkInterfaces?.[0];
+    if (!iface?.name || !iface.address) return null;
+    return { name: iface.name, address: iface.address };
+  }, [networkInterfaces]);
 
   const ipRange = useMemo((): string => {
     const iface = networkInterfaces?.[0];
@@ -188,7 +199,14 @@ const NetworkVisualizer: React.FC = () => {
         {/* Network details overlay */}
         <div className="absolute bottom-4 left-4 bg-background bg-opacity-80 p-3 rounded-lg border border-gray-800 w-56">
           <div className="text-xs text-gray-400 mb-1">Network Details</div>
-          <div className="text-primary text-sm font-medium font-mono mb-1">SSID: {ssid ?? 'Unknown'}</div>
+          <div className="text-primary text-sm font-medium font-mono mb-1">
+            {connection.type === 'wifi' ? `SSID: ${connection.ssid ?? 'Unknown'}` : connection.type === 'ethernet' ? 'Connection: Wired' : 'Connection: Unknown'}
+          </div>
+          {primaryInterface && (
+            <div className="text-xs text-gray-300 mb-1">
+              {primaryInterface.name} {primaryInterface.address}
+            </div>
+          )}
           <div className="flex justify-between text-xs text-gray-300">
             <span>IP Range: {ipRange}</span>
             <span>{devices?.length || 0} Devices</span>

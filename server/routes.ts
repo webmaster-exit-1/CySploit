@@ -262,6 +262,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current network connection info (best-effort)
+  app.get(apiRouter('/network/connection'), async (_req: Request, res: Response) => {
+    try {
+      const info = await getNetworkConnectionInfo();
+      res.json(info);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to get network connection info', error: String(error) });
+    }
+  });
+
   // Get all devices (hosts)
   app.get(apiRouter('/devices'), async (_req: Request, res: Response) => {
     try {
@@ -594,6 +604,48 @@ async function getCurrentWifiSsid(): Promise<string | null> {
   }
 
   return null;
+}
+
+type NetworkConnectionInfo = {
+  type: 'wifi' | 'ethernet' | 'unknown';
+  device: string | null;
+  ssid: string | null;
+};
+
+async function getNetworkConnectionInfo(): Promise<NetworkConnectionInfo> {
+  // Linux best-effort: use NetworkManager (nmcli) if present.
+  try {
+    const { stdout } = await execAsync('nmcli', ['-t', '-f', 'DEVICE,TYPE,STATE,CONNECTION', 'dev', 'status']);
+    const lines = stdout
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    for (const line of lines) {
+      const [device, type, state, connection] = line.split(':');
+      if (state !== 'connected') continue;
+
+      if (type === 'wifi') {
+        // Prefer a precise SSID lookup if possible.
+        const ssid = (await getCurrentWifiSsid()) ?? (connection?.trim() || null);
+        return { type: 'wifi', device: device || null, ssid };
+      }
+
+      if (type === 'ethernet') {
+        return { type: 'ethernet', device: device || null, ssid: null };
+      }
+    }
+  } catch {
+    // Ignore (nmcli not installed)
+  }
+
+  // Fallback: if we can read an SSID, assume Wi‑Fi; otherwise unknown.
+  const ssid = await getCurrentWifiSsid();
+  if (ssid) {
+    return { type: 'wifi', device: null, ssid };
+  }
+
+  return { type: 'unknown', device: null, ssid: null };
 }
 
 /**
