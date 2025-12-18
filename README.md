@@ -115,6 +115,15 @@ You can build CySploit as a standalone desktop application for Linux, Windows, o
 
 3. The packaged application will be created in the `/dist` directory
 
+#### Build AppImage (Linux)
+
+To build only the Linux AppImage:
+
+```bash
+chmod +x build-appimage.sh
+./build-appimage.sh
+```
+
 #### Platform-Specific Builds
 
 - **Linux (AppImage, Deb, RPM)**:
