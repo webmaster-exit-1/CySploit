@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
 import { usePacketAnalyzer } from '@/lib/hooks/usePacketAnalyzer';
 import { useSessions } from '@/lib/hooks/useSessions';
-import { Packet, TrafficAnalysis } from '@/lib/types';
+import { NetworkInterface, Packet, Session, TrafficAnalysis } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Helmet } from 'react-helmet';
 import NeonBorder from '@/components/common/NeonBorder';
@@ -25,10 +25,9 @@ const PacketInspector: React.FC = () => {
     formatPacketForDisplay,
     analyzeTrafficMutation,
     captureInProgress,
-    isSessionActive,
-    generatePacketMutation
+    isSessionActive
   } = usePacketAnalyzer();
-  const { sessions, getSession, isLoadingSessions } = useSessions();
+  const { sessions, isLoadingSessions } = useSessions();
 
   const [selectedInterface, setSelectedInterface] = useState<string>('');
   const [captureFilter, setCaptureFilter] = useState<string>('');
@@ -210,7 +209,7 @@ const PacketInspector: React.FC = () => {
                     {isLoadingInterfaces ? (
                       <SelectItem value="loading" disabled>Loading interfaces...</SelectItem>
                     ) : Array.isArray(networkInterfaces) && networkInterfaces.length > 0 ? (
-                      networkInterfaces.map((iface: any) => (
+                      (networkInterfaces as NetworkInterface[]).map((iface) => (
                         <SelectItem key={iface.name} value={iface.name}>
                           {iface.name} ({iface.address})
                         </SelectItem>
@@ -275,7 +274,7 @@ const PacketInspector: React.FC = () => {
                 {isLoadingSessions ? (
                   <SelectItem value="loading" disabled>Loading sessions...</SelectItem>
                 ) : sessions && sessions.length > 0 ? (
-                  sessions.map((session: any) => (
+                  (sessions as Session[]).map((session) => (
                     <SelectItem key={session.id} value={session.id.toString()}>
                       {session.name} {session.isActive && '(Active)'}
                     </SelectItem>
@@ -343,7 +342,7 @@ const PacketInspector: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {sessionPackets.map((packet: Packet) => {
-                    const formattedPacket = formatPacketForDisplay(packet);
+                    formatPacketForDisplay(packet);
                     return (
                       <TableRow
                         key={packet.id}
@@ -468,8 +467,8 @@ const PacketInspector: React.FC = () => {
                         paddingAngle={5}
                         dataKey="value"
                       >
-                        {protocolChartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        {protocolChartData.map((entry) => (
+                          <Cell key={entry.name} fill={entry.color} />
                         ))}
                       </Pie>
                       <Tooltip
@@ -532,8 +531,8 @@ const PacketInspector: React.FC = () => {
                 <h3 className="text-lg font-medium mb-2">Detected Anomalies</h3>
                 {packetAnalysis.anomalies && packetAnalysis.anomalies.length > 0 ? (
                   <ul className="space-y-2">
-                    {packetAnalysis.anomalies.map((anomaly, index) => (
-                      <li key={index} className="p-2 bg-black bg-opacity-50 rounded flex items-start">
+                    {packetAnalysis.anomalies.map((anomaly) => (
+                      <li key={anomaly} className="p-2 bg-black bg-opacity-50 rounded flex items-start">
                         <i className="ri-error-warning-line text-yellow-500 mr-2 mt-0.5"></i>
                         <span className="text-sm">{anomaly}</span>
                       </li>

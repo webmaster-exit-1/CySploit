@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { Vulnerability } from '@/lib/types';
 import TerminalConsole from '@/components/dashboard/TerminalConsole';
 import NeonBorder from '@/components/common/NeonBorder';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
 import { useVulnerabilityScanner } from '@/lib/hooks/useVulnerabilityScanner';
@@ -182,7 +182,7 @@ const Terminal: React.FC = () => {
                   <div className="font-mono text-sm mb-1">scan -target 192.168.1.0/24</div>
                   <div className="text-xs text-gray-400">Found 18 devices on network</div>
                 </div>
-                <button className="text-gray-500 hover:text-primary">
+                <button type="button" className="text-gray-500 hover:text-primary">
                   <i className="ri-repeat-line"></i>
                 </button>
               </div>
@@ -197,7 +197,7 @@ const Terminal: React.FC = () => {
                   <div className="font-mono text-sm mb-1">vuln-scan -target 192.168.1.5 -level deep</div>
                   <div className="text-xs text-gray-400">Found 3 vulnerabilities (2 critical)</div>
                 </div>
-                <button className="text-gray-500 hover:text-primary">
+                <button type="button" className="text-gray-500 hover:text-primary">
                   <i className="ri-repeat-line"></i>
                 </button>
               </div>
@@ -212,7 +212,7 @@ const Terminal: React.FC = () => {
                   <div className="font-mono text-sm mb-1">show devices</div>
                   <div className="text-xs text-gray-400">Listed 18 devices</div>
                 </div>
-                <button className="text-gray-500 hover:text-primary">
+                <button type="button" className="text-gray-500 hover:text-primary">
                   <i className="ri-repeat-line"></i>
                 </button>
               </div>
@@ -227,7 +227,7 @@ const Terminal: React.FC = () => {
                   <div className="font-mono text-sm mb-1">packet-capture -i eth0 -f "host 192.168.1.5"</div>
                   <div className="text-xs text-gray-400">Started packet capture (session ID: 1)</div>
                 </div>
-                <button className="text-gray-500 hover:text-primary">
+                <button type="button" className="text-gray-500 hover:text-primary">
                   <i className="ri-repeat-line"></i>
                 </button>
               </div>

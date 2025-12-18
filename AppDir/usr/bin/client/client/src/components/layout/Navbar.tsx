@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -8,28 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-
-// Core navigation routes with enhanced icons
-const routes = [
-  { path: '/', label: 'Dashboard', icon: 'ri-dashboard-3-line' },
-  { path: '/network-discovery', label: 'Network Discovery', icon: 'ri-radar-line' },
-  { path: '/vulnerability-scanner', label: 'Vulnerability Scanner', icon: 'ri-bug-2-line' },
-  { path: '/packet-inspector', label: 'Packet Inspector', icon: 'ri-file-search-line' },
-  { path: '/network-mapping', label: 'Network Mapping', icon: 'ri-broadcast-line' },
-  { path: '/terminal', label: 'Terminal', icon: 'ri-terminal-box-line' },
-  { path: '/sessions', label: 'Sessions', icon: 'ri-folder-line' },
-];
-
-// Resource routes with enhanced icons
-const resourceRoutes = [
-  { path: '/pentools', label: 'PenTools', icon: 'ri-tools-fill' },
-];
-
-// API integration routes with enhanced icons
-const integrationRoutes = [
-  { path: '/shodan', label: 'Shodan API', icon: 'ri-earth-line' },
-  { path: '/metasploit-console', label: 'Metasploit Console', icon: 'ri-braces-line' },
-];
 
 const Navbar: React.FC = () => {
   const [location] = useLocation();

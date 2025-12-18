@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { TerminalCommand } from '@/lib/types';
+import { Device, NetworkInterface, TerminalCommand, Vulnerability } from '@/lib/types';
 import { v4 as uuidv4 } from 'uuid';
 import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
 import { useVulnerabilityScanner } from '@/lib/hooks/useVulnerabilityScanner';
@@ -115,7 +115,6 @@ export const useTerminal = () => {
 
         case 'scan': {
           let target = '';
-          let port = '';
 
           // Parse arguments
           for (let i = 0; i < args.length; i++) {
@@ -123,7 +122,7 @@ export const useTerminal = () => {
               target = args[i + 1];
               i++;
             } else if (args[i] === '-port' && i + 1 < args.length) {
-              port = args[i + 1];
+              // port argument is parsed but not currently used
               i++;
             }
           }
@@ -194,8 +193,10 @@ export const useTerminal = () => {
 
           try {
             // First, find the device ID
-            const devices = Array.isArray(networkScanner.devices) ? networkScanner.devices : [];
-            const device = devices.find((d: any) => d.ipAddress === target);
+            const devices: Device[] = Array.isArray(networkScanner.devices)
+              ? (networkScanner.devices as Device[])
+              : [];
+            const device = devices.find((d) => d.ipAddress === target);
 
             if (!device) {
               addCommand('', `Error: Device ${target} not found. Run a network scan first.`, true);
@@ -315,7 +316,9 @@ export const useTerminal = () => {
 
           switch (subCommand) {
             case 'devices': {
-              const devices = Array.isArray(networkScanner.devices) ? networkScanner.devices : [];
+              const devices: Device[] = Array.isArray(networkScanner.devices)
+                ? (networkScanner.devices as Device[])
+                : [];
 
               if (devices.length === 0) {
                 addCommand('', 'No devices found. Run a network scan first.');
@@ -324,7 +327,7 @@ export const useTerminal = () => {
 
               let output = `Found ${devices.length} devices:\n`;
 
-              devices.forEach((device: any) => {
+              devices.forEach((device) => {
                 output += `
 [+] IP: ${device.ipAddress}
     MAC: ${device.macAddress}
@@ -342,7 +345,9 @@ export const useTerminal = () => {
             }
 
             case 'vulns': {
-              const vulnerabilities = Array.isArray(vulnerabilityScanner.vulnerabilities) ? vulnerabilityScanner.vulnerabilities : [];
+              const vulnerabilities: Vulnerability[] = Array.isArray(vulnerabilityScanner.vulnerabilities)
+                ? (vulnerabilityScanner.vulnerabilities as Vulnerability[])
+                : [];
 
               if (vulnerabilities.length === 0) {
                 addCommand('', 'No vulnerabilities found. Run a vulnerability scan first.');
@@ -351,7 +356,7 @@ export const useTerminal = () => {
 
               let output = `Found ${vulnerabilities.length} vulnerabilities:\n`;
 
-              vulnerabilities.forEach((vuln: any) => {
+              vulnerabilities.forEach((vuln) => {
                 output += `
 [+] ID: ${vuln.id}
     Device ID: ${vuln.deviceId}
@@ -368,7 +373,9 @@ export const useTerminal = () => {
             }
 
             case 'interfaces': {
-              const interfaces = Array.isArray(networkScanner.networkInterfaces) ? networkScanner.networkInterfaces : [];
+              const interfaces: NetworkInterface[] = Array.isArray(networkScanner.networkInterfaces)
+                ? (networkScanner.networkInterfaces as NetworkInterface[])
+                : [];
 
               if (interfaces.length === 0) {
                 addCommand('', 'No network interfaces found.');
@@ -377,7 +384,7 @@ export const useTerminal = () => {
 
               let output = `Found ${interfaces.length} network interfaces:\n`;
 
-              interfaces.forEach((iface: any) => {
+              interfaces.forEach((iface) => {
                 output += `
 [+] Name: ${iface.name}
     Address: ${iface.address}

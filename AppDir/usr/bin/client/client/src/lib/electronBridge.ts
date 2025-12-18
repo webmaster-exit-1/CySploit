@@ -4,21 +4,40 @@
  */
 
 // Define the Electron API types
+type NetworkInterfaceInfo = {
+  address: string;
+  netmask: string;
+  family: string;
+  mac: string;
+  internal: boolean;
+  cidr: string | null;
+  scopeid?: number;
+};
+
+type NmapResultsEvent =
+  | { type: 'progress'; data: string; percent?: number }
+  | { type: 'complete'; data: string }
+  | { type: 'error'; data: string };
+
+type PacketCaptureStartedEvent = { success: true } | { success: false; error: string };
+type PacketCaptureStoppedEvent = { success: true } | { success: false; error: string };
+type MetasploitConnectedEvent = { success: boolean };
+
 interface ElectronAPI {
-  send: (channel: string, data: any) => void;
-  receive: (channel: string, func: (...args: any[]) => void) => void;
+  send: (channel: string, data: unknown) => void;
+  receive: <T = unknown>(channel: string, func: (payload: T) => void) => void;
   getEnvironment: () => {
     platform: string;
     arch: string;
     hostname: string;
-    interfaces: Record<string, any[]>;
+    interfaces: Record<string, NetworkInterfaceInfo[]>;
     isElectron: boolean;
     isDesktop: boolean;
     isDevelopment: boolean;
     dbConnected: boolean;
   };
   checkDatabaseConnection: () => boolean;
-  getNetworkInterfaces: () => Record<string, any[]>;
+  getNetworkInterfaces: () => Record<string, NetworkInterfaceInfo[]>;
   getLocalIpAddress: () => string;
   checkToolAvailability: () => Promise<{
     nmap: boolean;
@@ -35,13 +54,13 @@ interface ElectronAPI {
 
 // Check if we're running in Electron
 const isElectron = (): boolean => {
-  return !!(window as any).api;
+  return !!(window as unknown as { api?: unknown }).api;
 };
 
 // Get the Electron API if available
 const getElectronAPI = (): ElectronAPI | null => {
   if (isElectron()) {
-    return (window as any).api as ElectronAPI;
+    return (window as unknown as { api?: ElectronAPI }).api ?? null;
   }
   return null;
 };
@@ -51,7 +70,7 @@ export const runNmapScan = (options: {
   scanType: 'quick' | 'full' | 'os' | 'ports' | 'comprehensive';
   target: string;
   ports?: string;
-}): Promise<any> => {
+}): Promise<{ type: 'complete'; data: string }> => {
   return new Promise((resolve, reject) => {
     const api = getElectronAPI();
 
@@ -63,7 +82,7 @@ export const runNmapScan = (options: {
     let resultsReceived = false;
 
     // Set up result handler
-    api.receive('nmapResults', (results) => {
+    api.receive<NmapResultsEvent>('nmapResults', (results) => {
       if (results.type === 'complete') {
         resultsReceived = true;
         resolve(results);
@@ -93,7 +112,7 @@ export const capturePackets = (options: {
       return;
     }
 
-    api.receive('packetCaptureStarted', (result) => {
+    api.receive<PacketCaptureStartedEvent>('packetCaptureStarted', (result) => {
       if (result.success) {
         resolve(true);
       } else {
@@ -106,7 +125,7 @@ export const capturePackets = (options: {
 };
 
 // Stop packet capture
-export const stopPacketCapture = (): Promise<any> => {
+export const stopPacketCapture = (): Promise<PacketCaptureStoppedEvent> => {
   return new Promise((resolve, reject) => {
     const api = getElectronAPI();
 
@@ -115,7 +134,7 @@ export const stopPacketCapture = (): Promise<any> => {
       return;
     }
 
-    api.receive('packetCaptureStopped', (result) => {
+    api.receive<PacketCaptureStoppedEvent>('packetCaptureStopped', (result) => {
       if (result.success) {
         resolve(result);
       } else {
@@ -130,7 +149,7 @@ export const stopPacketCapture = (): Promise<any> => {
 // Run vulnerability scan
 export const runVulnerabilityScan = (options: {
   target: string;
-}): Promise<any> => {
+}): Promise<{ type: 'complete'; data: string }> => {
   return new Promise((resolve, reject) => {
     const api = getElectronAPI();
 
@@ -141,7 +160,7 @@ export const runVulnerabilityScan = (options: {
 
     let resultsReceived = false;
 
-    api.receive('vulnerabilityScanResults', (results) => {
+    api.receive<NmapResultsEvent>('vulnerabilityScanResults', (results) => {
       if (results.type === 'complete') {
         resultsReceived = true;
         resolve(results);
@@ -158,7 +177,7 @@ export const runVulnerabilityScan = (options: {
 
 // Check if Metasploit is available
 export const checkMetasploitAvailability = (): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const api = getElectronAPI();
 
     if (!api) {
@@ -168,7 +187,7 @@ export const checkMetasploitAvailability = (): Promise<boolean> => {
       return;
     }
 
-    api.receive('metasploitConnected', (result) => {
+    api.receive<MetasploitConnectedEvent>('metasploitConnected', (result) => {
       resolve(result.success);
     });
 
@@ -183,7 +202,7 @@ export const isDesktopMode = (): boolean => {
 };
 
 // Get available network interfaces
-export const getNetworkInterfaces = (): Record<string, any[]> => {
+export const getNetworkInterfaces = (): Record<string, NetworkInterfaceInfo[]> => {
   const api = getElectronAPI();
 
   if (!api) {

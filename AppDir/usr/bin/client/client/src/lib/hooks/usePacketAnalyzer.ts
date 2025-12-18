@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { Packet, TrafficAnalysis, CaptureSession } from '@/lib/types';
+import { Packet, TrafficAnalysis } from '@/lib/types';
 import { queryClient } from '@/lib/queryClient';
 
 export const usePacketAnalyzer = () => {

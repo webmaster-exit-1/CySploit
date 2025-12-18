@@ -18,4 +18,4 @@ echo "Starting application from: ${HERE}"
 echo "Electron directory: ${ELECTRON_DIR}"
 ls -la "${ELECTRON_DIR}"
 
-electron "${ELECTRON_DIR}/main.js" "$@"
+electron "${ELECTRON_DIR}/main.cjs" "$@"

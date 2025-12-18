@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { NetworkNode, NetworkLink, NetworkGraph } from '@/lib/types';
 import NeonBorder from '@/components/common/NeonBorder';
 import NetworkMap from '@/components/common/NetworkMap';
@@ -16,9 +17,35 @@ interface Device {
 }
 
 const NetworkVisualizer: React.FC = () => {
-  const { devices, isLoadingDevices } = useNetworkScanner() as { devices: Device[], isLoadingDevices: boolean };
+  const { devices, isLoadingDevices, networkInterfaces } = useNetworkScanner() as {
+    devices: Device[];
+    isLoadingDevices: boolean;
+    networkInterfaces?: Array<{ name: string; address: string; netmask: string }>;
+  };
   const { toast } = useToast();
   const [graphData, setGraphData] = useState<NetworkGraph>({ nodes: [], links: [] });
+
+  const { data: connectionResponse } = useQuery({
+    queryKey: ['/api/network/connection'],
+    refetchOnWindowFocus: false,
+  });
+
+  const connection = useMemo((): { type: 'wifi' | 'ethernet' | 'unknown'; ssid: string | null } => {
+    if (typeof connectionResponse !== 'object' || connectionResponse === null) {
+      return { type: 'unknown', ssid: null };
+    }
+
+    const record = connectionResponse as Record<string, unknown>;
+    const type = record.type === 'wifi' || record.type === 'ethernet' ? record.type : 'unknown';
+    const ssid = typeof record.ssid === 'string' ? record.ssid : null;
+    return { type, ssid };
+  }, [connectionResponse]);
+
+  const primaryInterface = useMemo((): { name: string; address: string } | null => {
+    const iface = networkInterfaces?.[0];
+    if (!iface?.name || !iface.address) return null;
+    return { name: iface.name, address: iface.address };
+  }, [networkInterfaces]);
 
   // Generate network graph data from devices
   useEffect(() => {
@@ -164,7 +191,14 @@ const NetworkVisualizer: React.FC = () => {
         {/* Network details overlay */}
         <div className="absolute bottom-4 left-4 bg-background bg-opacity-80 p-3 rounded-lg border border-gray-800 w-56">
           <div className="text-xs text-gray-400 mb-1">Network Details</div>
-          <div className="text-primary text-sm font-medium font-mono mb-1">SSID: CyberNet_5GHz</div>
+          <div className="text-primary text-sm font-medium font-mono mb-1">
+            {connection.type === 'wifi' ? `SSID: ${connection.ssid ?? 'Unknown'}` : connection.type === 'ethernet' ? 'Connection: Wired' : 'Connection: Unknown'}
+          </div>
+          {primaryInterface && (
+            <div className="text-xs text-gray-300 mb-1">
+              {primaryInterface.name} {primaryInterface.address}
+            </div>
+          )}
           <div className="flex justify-between text-xs text-gray-300">
             <span>IP Range: 192.168.1.0/24</span>
             <span>{devices?.length || 0} Devices</span>
@@ -173,13 +207,13 @@ const NetworkVisualizer: React.FC = () => {
 
         {/* Controls overlay */}
         <div className="absolute top-4 right-4 bg-background bg-opacity-80 p-2 rounded-lg border border-gray-800 flex space-x-2">
-          <button className="text-gray-400 hover:text-primary text-lg">
+          <button type="button" className="text-gray-400 hover:text-primary text-lg">
             <i className="ri-zoom-in-line"></i>
           </button>
-          <button className="text-gray-400 hover:text-primary text-lg">
+          <button type="button" className="text-gray-400 hover:text-primary text-lg">
             <i className="ri-zoom-out-line"></i>
           </button>
-          <button className="text-gray-400 hover:text-primary text-lg">
+          <button type="button" className="text-gray-400 hover:text-primary text-lg">
             <i className="ri-refresh-line"></i>
           </button>
         </div>

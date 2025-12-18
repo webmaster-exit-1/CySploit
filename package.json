@@ -72,7 +72,6 @@
     "msgpack-lite": "^0.1.26",
     "next-themes": "^0.4.6",
     "node-gyp": "^12.1.0",
-    "node-libcurl": "^4.1.0",
     "pg": "^8.11.3",
     "postgres": "^3.4.7",
     "react": "^18.2.0",
@@ -132,8 +131,10 @@
     "appId": "com.cysploit.app",
     "productName": "CySploit",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build-resources"
     },
+    "icon": "build-resources/icons/icon.png",
     "files": [
       "electron/**/*",
       "server/**/*",
@@ -149,6 +150,7 @@
         "AppImage",
         "deb"
       ],
+      "icon": "build-resources/icons/icon.png",
       "category": "Security",
       "maintainer": "echohellosuperuser@member.fsf.org"
     }

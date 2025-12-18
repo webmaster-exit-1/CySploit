@@ -10,6 +10,67 @@ import { eq } from 'drizzle-orm';
 
 const execAsync = promisify(execFile);
 
+async function upsertHostByIp(params: {
+  scanId: number;
+  ipAddress: string;
+  name?: string | null;
+  macAddress?: string | null;
+}): Promise<typeof hosts.$inferSelect> {
+  const { scanId, ipAddress, name = null, macAddress = null } = params;
+
+  const [existing] = await db.select().from(hosts).where(eq(hosts.ipAddress, ipAddress));
+  if (existing) {
+    const [updated] = await db
+      .update(hosts)
+      .set({
+        scanId,
+        name,
+        macAddress,
+        lastSeen: new Date(),
+      })
+      .where(eq(hosts.id, existing.id))
+      .returning();
+
+    return updated ?? existing;
+  }
+
+  const [inserted] = await db
+    .insert(hosts)
+    .values({
+      scanId,
+      ipAddress,
+      name,
+      macAddress,
+      lastSeen: new Date(),
+    })
+    .returning();
+
+  return inserted;
+}
+
+function severityFromCvssScore(score: number | null): 'critical' | 'high' | 'medium' | 'low' {
+  if (score === null || Number.isNaN(score)) return 'medium';
+  if (score >= 9) return 'critical';
+  if (score >= 7) return 'high';
+  if (score >= 4) return 'medium';
+  return 'low';
+}
+
+function extractCvesWithContext(nmapOutput: string): Array<{ cveId: string; context: string }> {
+  const lines = nmapOutput.split(/\r?\n/);
+  const results: Array<{ cveId: string; context: string }> = [];
+
+  for (const line of lines) {
+    const matches = line.match(/CVE-\d{4}-\d{4,7}/g);
+    if (!matches) continue;
+    for (const cveId of matches) {
+      results.push({ cveId, context: line.trim() });
+    }
+  }
+
+  return results;
+}
+
 // API router helper function
 function apiRouter(path: string): string {
   return `/api${path}`;
@@ -143,15 +204,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 }
 
                 // Create or update the host in the database
-                const [host] = await db.insert(hosts).values({
-                  // Only include properties defined in your hosts schema
-                  ipAddress: ipAddress,
+                const host = await upsertHostByIp({
+                  scanId: nmapScan.id,
+                  ipAddress,
                   name: hostname || null,
                   macAddress,
-                  lastSeen: new Date(),
-                  scanId: nmapScan.id
-                  // Add other properties here only if they exist in your schema
-                }).returning();
+                });
+
+                // Replace prior port records for this host (keeps latest scan view clean)
+                await db.delete(ports).where(eq(ports.hostId, host.id));
 
                 // Store ports in database, now that host.id is available
                 for (const { portNumber, service } of portDetails) {
@@ -174,19 +235,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Add local interfaces to the scan results
         const interfaces = getLocalInterfaces();
+        const seenIps = new Set<string>(discoveredHosts.map((h) => h.ipAddress));
         for (const iface of interfaces) {
+          if (seenIps.has(iface.address)) {
+            continue;
+          }
           console.log(`Adding local interface ${iface.name} (${iface.address}) to results`);
 
           // Create or update the host entry for this interface
-          const [host] = await db.insert(hosts).values({
+          const host = await upsertHostByIp({
+            scanId: nmapScan.id,
             ipAddress: iface.address,
             name: `localhost-${iface.name}`,
-            lastSeen: new Date(),
-            scanId: nmapScan.id
-            // Only include properties defined in your hosts schema
-          }).returning();
+            macAddress: null,
+          });
 
           discoveredHosts.push(host);
+          seenIps.add(iface.address);
         }
 
         // Update the nmap scan with the results
@@ -243,6 +308,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Scan a device for vulnerabilities (best-effort via nmap vuln scripts)
+  app.post(apiRouter('/scan/vulnerabilities'), scanNetworkLimiter, async (req: Request, res: Response) => {
+    try {
+      const { deviceId, level } = req.body as { deviceId?: unknown; level?: unknown };
+      const parsedDeviceId = typeof deviceId === 'number' ? deviceId : Number(deviceId);
+
+      if (!Number.isFinite(parsedDeviceId) || parsedDeviceId <= 0) {
+        return res.status(400).json({ message: 'deviceId is required' });
+      }
+
+      const [host] = await db.select().from(hosts).where(eq(hosts.id, parsedDeviceId));
+      if (!host) {
+        return res.status(404).json({ message: 'Device not found' });
+      }
+
+      const ipAddress = host.ipAddress;
+      const scanLevel = typeof level === 'string' ? level : 'basic';
+      const args = scanLevel === 'deep'
+        ? ['-sV', '--script', 'vuln', '-T4', '--version-all', ipAddress]
+        : ['-sV', '--script', 'vuln', '-T4', ipAddress];
+
+      const [nmapScan] = await db.insert(nmapScans).values({
+        command: `nmap ${args.join(' ')}`,
+        target: ipAddress,
+        status: 'running',
+        startTime: new Date(),
+      }).returning();
+
+      let stdout = '';
+      let stderr = '';
+      try {
+        const result = await execAsync('nmap', args);
+        stdout = result.stdout ?? '';
+        stderr = result.stderr ?? '';
+
+        await db.update(nmapScans)
+          .set({
+            status: 'completed',
+            rawOutput: `${stdout}${stderr ? `\n\nSTDERR:\n${stderr}` : ''}`,
+            endTime: new Date(),
+          })
+          .where(eq(nmapScans.id, nmapScan.id));
+      } catch (scanError) {
+        await db.update(nmapScans)
+          .set({
+            status: 'error',
+            rawOutput: String(scanError),
+            endTime: new Date(),
+          })
+          .where(eq(nmapScans.id, nmapScan.id));
+
+        return res.status(500).json({
+          message: 'Failed to run vulnerability scan (nmap)',
+          error: scanError instanceof Error ? scanError.message : String(scanError),
+        });
+      }
+
+      // Replace existing vulns for this host with the latest scan results
+      await db.delete(vulnerabilities).where(eq(vulnerabilities.hostId, host.id));
+
+      const cvesWithContext = extractCvesWithContext(stdout);
+      const uniqueByCve = new Map<string, string>();
+      for (const item of cvesWithContext) {
+        if (!uniqueByCve.has(item.cveId)) uniqueByCve.set(item.cveId, item.context);
+      }
+
+      // Best-effort CVSS extraction (some nmap scripts print 'CVSS: X.Y')
+      const cvssMatch = stdout.match(/\bCVSS:?\s*(\d+(?:\.\d+)?)\b/i);
+      const cvssScore = cvssMatch ? Number(cvssMatch[1]) : null;
+      const severity = severityFromCvssScore(cvssScore);
+
+      const insertValues = Array.from(uniqueByCve.entries()).map(([cveId, context]) => ({
+        hostId: host.id,
+        cveId,
+        cvssScore: cvssScore === null ? null : String(cvssScore),
+        severity,
+        title: `Detected ${cveId}`,
+        description: context || null,
+        scanId: nmapScan.id,
+        discoveredAt: new Date(),
+      }));
+
+      const inserted = insertValues.length > 0
+        ? await db.insert(vulnerabilities).values(insertValues).returning()
+        : [];
+
+      res.json({
+        sessionId: nmapScan.id,
+        vulnerabilitiesFound: inserted.length,
+        vulnerabilities: inserted.map((v) => ({
+          id: v.id,
+          deviceId: v.hostId,
+          cveId: v.cveId ?? undefined,
+          severity: (v.severity as 'critical' | 'high' | 'medium' | 'low'),
+          title: v.title,
+          description: v.description ?? undefined,
+          status: 'detected',
+          discoveredAt: (v.discoveredAt ? new Date(v.discoveredAt).toISOString() : new Date().toISOString()),
+        })),
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to scan vulnerabilities', error: String(error) });
+    }
+  });
+
   // Get local network interfaces
   app.get(apiRouter('/network/interfaces'), (_req: Request, res: Response) => {
     try {
@@ -277,7 +447,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(apiRouter('/devices'), async (_req: Request, res: Response) => {
     try {
       const allHosts = await db.select().from(hosts);
-      res.json(allHosts);
+
+      // Dedupe by IP address so repeated scans don't create overlapping devices in UI.
+      // Keep the most recently seen host per IP.
+      const byIp = new Map<string, (typeof hosts.$inferSelect)>();
+      for (const host of allHosts) {
+        const ip = host.ipAddress;
+        const existing = byIp.get(ip);
+        if (!existing) {
+          byIp.set(ip, host);
+          continue;
+        }
+
+        const existingTime = existing.lastSeen ? new Date(existing.lastSeen).getTime() : 0;
+        const hostTime = host.lastSeen ? new Date(host.lastSeen).getTime() : 0;
+        if (hostTime >= existingTime) {
+          byIp.set(ip, host);
+        }
+      }
+
+      res.json(Array.from(byIp.values()));
     } catch (error) {
       res.status(500).json({ message: 'Failed to get devices', error: String(error) });
     }

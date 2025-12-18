@@ -16,9 +16,9 @@ import {
 } from '@/components/icons';
 
 const Dashboard: React.FC = () => {
-  const { devices, isLoadingDevices } = useNetworkScanner();
+  const { devices } = useNetworkScanner();
   const { vulnerabilities, getVulnerabilityCounts } = useVulnerabilityScanner();
-  const { sessions, getActiveSessions } = useSessions();
+  const { getActiveSessions } = useSessions();
   
   // Get counts for cards
   const deviceCount = devices && Array.isArray(devices) ? devices.length : 0;

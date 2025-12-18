@@ -1,5 +1,7 @@
 "use client"
 
+/* eslint-disable @eslint-react/dom/no-dangerously-set-innerhtml */
+
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
@@ -45,9 +47,10 @@ const ChartContainer = React.forwardRef<
 >(({ id, className, children, config, ...props }, ref) => {
   const uniqueId = React.useId()
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
+  const contextValue = React.useMemo(() => ({ config }), [config])
 
   return (
-    <ChartContext.Provider value={{ config }}>
+    <ChartContext.Provider value={contextValue}>
       <div
         data-chart={chartId}
         ref={ref}

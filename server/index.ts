@@ -8,6 +8,18 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Guard against malformed percent-encoding in URLs.
+// Vite's middleware calls decodeURI() and will throw on malformed inputs.
+app.use((req, res, next) => {
+  try {
+    // eslint-disable-next-line no-unused-expressions
+    decodeURI(req.url);
+    next();
+  } catch {
+    res.status(400).send('Bad Request');
+  }
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;

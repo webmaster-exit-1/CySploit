@@ -67,7 +67,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
               <i className="ri-shield-keyhole-line mr-2"></i>
               <span>CySploit</span>
             </div>
-            <button onClick={onClose} className="text-gray-400 hover:text-white">
+            <button type="button" onClick={onClose} className="text-gray-400 hover:text-white">
               <i className="ri-close-line text-xl"></i>
             </button>
           </div>

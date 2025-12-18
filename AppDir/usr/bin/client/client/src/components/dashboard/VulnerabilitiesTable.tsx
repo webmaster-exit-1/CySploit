@@ -61,7 +61,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
         title: "Vulnerability Updated",
         description: `Status changed to ${newStatus}`,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update vulnerability status",
@@ -81,15 +81,6 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
 
   // Severity badge
   const renderSeverityBadge = (severity: string) => {
-    const severityColors = {
-      critical: "bg-destructive text-white",
-      high: "bg-destructive text-white",
-      medium: "bg-yellow-500 text-black",
-      low: "bg-gray-400 text-black"
-    };
-
-    const color = severityColors[severity as keyof typeof severityColors] || severityColors.low;
-
     return (
       <span className="flex items-center">
         <span className={`w-2 h-2 rounded-full ${severity === 'critical' || severity === 'high' ? 'bg-destructive' : severity === 'medium' ? 'bg-yellow-500' : 'bg-gray-400'} mr-2`}></span>
@@ -188,12 +179,14 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
                     </td>
                     <td className="px-4 py-3">
                       <button
+                        type="button"
                         onClick={() => handleInfoClick(vuln)}
                         className="text-primary hover:text-white mr-2"
                       >
                         <i className="ri-information-line"></i>
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleMitigateClick(vuln)}
                         className="text-secondary hover:text-white"
                       >
@@ -215,6 +208,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
           </div>
           <div className="flex space-x-1">
             <button
+              type="button"
               className={cn(
                 "w-8 h-8 flex items-center justify-center rounded-md text-gray-400 hover:text-white",
                 currentPage === 1 ? "bg-background opacity-50" : "bg-background"
@@ -240,6 +234,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
 
               return (
                 <button
+                  type="button"
                   key={pageNum}
                   className={cn(
                     "w-8 h-8 flex items-center justify-center rounded-md",
@@ -253,6 +248,7 @@ const VulnerabilitiesTable: React.FC<VulnerabilitiesTableProps> = ({
             })}
 
             <button
+              type="button"
               className={cn(
                 "w-8 h-8 flex items-center justify-center rounded-md text-gray-400 hover:text-white",
                 currentPage === totalPages ? "bg-background opacity-50" : "bg-background"

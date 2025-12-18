@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable @eslint-react/dom/no-unsafe-iframe-sandbox */
+
+import React, { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -20,108 +22,8 @@ const routes = [
   { path: '/sessions', label: 'Sessions', icon: 'ri-folder-line' },
 ];
 
-const resourceRoutes = [
-  { path: '/pentools', label: 'PenTools', icon: 'ri-code-s-slash-line' },
-];
-
-const PenTools: React.FC = () => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [location] = useLocation();
-  
-  useEffect(() => {
-    // Create a style element for the matrix animation background
-    const style = document.createElement('style');
-    style.textContent = `
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: #000;
-        overflow: hidden;
-      }
-      
-      .pentools-container {
-        position: fixed;
-        top: 50px; /* Make room for the navbar */
-        left: 0;
-        width: 100vw;
-        height: calc(100vh - 50px); /* Adjust height to account for navbar */
-        z-index: 10;
-      }
-
-      .matrix-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 5;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Create and initialize Matrix animation
-    const canvas = document.createElement('canvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const matrixContainer = document.createElement('div');
-    matrixContainer.className = 'matrix-container';
-    matrixContainer.appendChild(canvas);
-    document.body.appendChild(matrixContainer);
-    
-    // Matrix animation code
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      const fontSize = 14;
-      const columns = Math.floor(canvas.width / fontSize);
-      const drops = Array(columns).fill(1);
-      
-      const drawMatrix = () => {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = `${fontSize}px monospace`;
-        
-        for (let i = 0; i < drops.length; i++) {
-          const text = chars[Math.floor(Math.random() * chars.length)];
-          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-          
-          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-          }
-          
-          drops[i]++;
-        }
-      };
-      
-      const matrixInterval = setInterval(drawMatrix, 33);
-      
-      // Handle window resize
-      const handleResize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const newColumns = Math.floor(canvas.width / fontSize);
-        drops.length = 0;
-        for (let i = 0; i < newColumns; i++) {
-          drops.push(1);
-        }
-      };
-      
-      window.addEventListener('resize', handleResize);
-      
-      // Cleanup function
-      return () => {
-        clearInterval(matrixInterval);
-        window.removeEventListener('resize', handleResize);
-        document.body.removeChild(matrixContainer);
-        document.head.removeChild(style);
-      };
-    }
-  }, []);
-
-  // Custom navbar specifically for PenTools
-  const CustomNavbar = () => {
+// Custom navbar specifically for PenTools
+const CustomNavbar: React.FC<{ location: string }> = ({ location }) => {
     return (
       <nav className="bg-background/95 backdrop-blur-sm border-b border-gray-800 py-2 sticky top-0 z-40 w-full">
         <div className="container mx-auto flex items-center justify-between">
@@ -130,7 +32,7 @@ const PenTools: React.FC = () => {
               <i className="ri-shield-keyhole-line mr-2"></i>
               <span>CySploit</span>
             </div>
-            
+
             <div className="hidden lg:flex space-x-1">
               {routes.map((route) => (
                 <Link key={route.path} href={route.path}>
@@ -149,13 +51,13 @@ const PenTools: React.FC = () => {
               ))}
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="border-primary/50 text-primary hover:text-white hover:bg-primary/20 hover:border-primary neon-border-cyan"
                 >
                   <i className="ri-menu-3-line mr-1"></i> Menu
@@ -198,23 +100,23 @@ const PenTools: React.FC = () => {
                     <i className="ri-folder-line mr-2 text-orange-400"></i> Sessions
                   </DropdownMenuItem>
                 </Link>
-                
+
                 {/* Resources Section */}
                 <DropdownMenuItem className="font-bold pt-2 pb-2 border-t border-primary/30 mt-1 mb-1 cursor-default text-primary">
                   <i className="ri-folder-shield-2-fill mr-2 text-primary"></i> Resources
                 </DropdownMenuItem>
-                
+
                 <Link href="/pentools">
                   <DropdownMenuItem className="cursor-pointer hover:bg-background/50 hover:text-primary rounded-sm mb-1">
                     <i className="ri-code-s-slash-line mr-2 text-green-400"></i> PenTools
                   </DropdownMenuItem>
                 </Link>
-                
+
                 {/* API Keys Section */}
                 <DropdownMenuItem className="font-bold pt-2 pb-2 border-t border-primary/30 mt-1 mb-1 cursor-default text-primary">
                   <i className="ri-key-2-fill mr-2 text-secondary"></i> API Integration
                 </DropdownMenuItem>
-                
+
                 <Link href="/settings">
                   <DropdownMenuItem className="cursor-pointer hover:bg-background/50 hover:text-primary rounded-sm mb-1">
                     <i className="ri-spy-line mr-2 text-red-400"></i> Shodan API
@@ -244,15 +146,112 @@ const PenTools: React.FC = () => {
     );
   };
 
+const PenTools: React.FC = () => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [location] = useLocation();
+
+  useEffect(() => {
+    // Create a style element for the matrix animation background
+    const style = document.createElement('style');
+    style.textContent = `
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+        overflow: hidden;
+      }
+
+      .pentools-container {
+        position: fixed;
+        top: 50px; /* Make room for the navbar */
+        left: 0;
+        width: 100vw;
+        height: calc(100vh - 50px); /* Adjust height to account for navbar */
+        z-index: 10;
+      }
+
+      .matrix-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Create and initialize Matrix animation
+    const canvas = document.createElement('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const matrixContainer = document.createElement('div');
+    matrixContainer.className = 'matrix-container';
+    matrixContainer.appendChild(canvas);
+    document.body.appendChild(matrixContainer);
+
+    // Matrix animation code
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      const fontSize = 14;
+      const columns = Math.floor(canvas.width / fontSize);
+      const drops = Array(columns).fill(1);
+
+      const drawMatrix = () => {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0F0';
+        ctx.font = `${fontSize}px monospace`;
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+
+          drops[i]++;
+        }
+      };
+
+      const matrixInterval = setInterval(drawMatrix, 33);
+
+      // Handle window resize
+      const handleResize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const newColumns = Math.floor(canvas.width / fontSize);
+        drops.length = 0;
+        for (let i = 0; i < newColumns; i++) {
+          drops.push(1);
+        }
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      // Cleanup function
+      return () => {
+        clearInterval(matrixInterval);
+        window.removeEventListener('resize', handleResize);
+        document.body.removeChild(matrixContainer);
+        document.head.removeChild(style);
+      };
+    }
+  }, []);
+
   // Return the PenTools page with navbar and iframe
   return (
     <>
-      <CustomNavbar />
+      <CustomNavbar location={location} />
       <div className="pentools-container">
-        {/* PenTools HTML iframe */}
+        {/* PenTools HTML iframe - sandbox allows same-origin for local trusted content */}
         <iframe
           ref={iframeRef}
           src="/pentools-styled-apis.html"
+          sandbox="allow-scripts allow-same-origin allow-forms"
           style={{
             width: '100%',
             height: '100%',

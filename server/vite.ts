@@ -46,8 +46,9 @@ export async function setupVite(app: Express, server: Server) {
       ...viteLogger,
       error: (msg, options) => {
         viteLogger.error(msg, options);
-        log(`Vite error: ${msg}. Exiting.`, "vite");
-        process.exit(1); // Consider if exiting is too aggressive for all errors
+        // Do not crash the whole backend process on Vite middleware errors.
+        // Some errors (e.g. malformed URIs from clients) should be handled per-request.
+        log(`Vite error: ${msg}.`, "vite");
       },
     },
     server: serverOptions,
