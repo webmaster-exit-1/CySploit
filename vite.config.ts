@@ -28,11 +28,14 @@ export default (async (): Promise<UserConfig> => {
       emptyOutDir: true,
     },
     server: {
-      // This is important for the Vite dev server when used as middleware
-      // It ensures that Vite serves assets correctly relative to the Express app.
-      // The port here is Vite's dev server port, not your Express server port.
-      // Your Express server (e.g., on port 5000) will proxy to this.
-      // origin: 'http://localhost:5173', // Or whatever port Vite uses if run standalone
+      // When running the Vite dev server standalone (e.g. `npm run client`),
+      // proxy API calls to the Express backend (port 5000).
+      proxy: {
+        "/api": {
+          target: "http://localhost:5000",
+          changeOrigin: true,
+        },
+      },
     }
   });
 })();

@@ -252,6 +252,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current Wi-Fi SSID (best-effort; may be null if not connected or tooling unavailable)
+  app.get(apiRouter('/network/ssid'), async (_req: Request, res: Response) => {
+    try {
+      const ssid = await getCurrentWifiSsid();
+      res.json({ ssid });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to get Wi-Fi SSID', error: String(error) });
+    }
+  });
+
   // Get all devices (hosts)
   app.get(apiRouter('/devices'), async (_req: Request, res: Response) => {
     try {
@@ -552,6 +562,38 @@ function getLocalInterfaces(): { name: string, address: string, netmask: string 
   });
 
   return results;
+}
+
+async function getCurrentWifiSsid(): Promise<string | null> {
+  // Linux best-effort: prefer NetworkManager (nmcli), fallback to iwgetid.
+  try {
+    const { stdout } = await execAsync('nmcli', ['-t', '-f', 'active,ssid', 'dev', 'wifi']);
+    const lines = stdout
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    for (const line of lines) {
+      // Format: yes:<ssid> or no:<ssid>
+      const [active, ...rest] = line.split(':');
+      if (active === 'yes') {
+        const ssid = rest.join(':').trim();
+        if (ssid) return ssid;
+      }
+    }
+  } catch {
+    // Ignore (nmcli not installed or not running under NetworkManager)
+  }
+
+  try {
+    const { stdout } = await execAsync('iwgetid', ['-r']);
+    const ssid = stdout.trim();
+    if (ssid) return ssid;
+  } catch {
+    // Ignore (iwgetid not installed or not connected)
+  }
+
+  return null;
 }
 
 /**

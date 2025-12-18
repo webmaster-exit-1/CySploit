@@ -1,4 +1,4 @@
-import express, { type Request, Response } from "express";
+import express, { type NextFunction, type Request, Response } from "express";
 import { registerRoutes } from "./routes.js";
 import { registerShodanRoutes } from "./routes/shodanRoutes.js";
 import { registerMetasploitRoutes } from "./routes/metasploitRoutes.js";
@@ -43,7 +43,8 @@ app.use((req, res, next) => {
   registerShodanRoutes(app);
   registerMetasploitRoutes(app);
 
-  app.use((err: unknown, _req: Request, res: Response) => {
+  app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+    void _next;
     const record = (typeof err === 'object' && err !== null)
       ? (err as Record<string, unknown>)
       : undefined;
@@ -54,7 +55,8 @@ app.use((req, res, next) => {
     const message = (typeof record?.message === 'string' && record.message) || "Internal Server Error";
 
     res.status(status).json({ message });
-    throw err;
+    // Do not rethrow after responding; keep the server process alive.
+    log(`Error ${status}: ${message}`, "express");
   });
 
   // importantly only setup vite in development and after

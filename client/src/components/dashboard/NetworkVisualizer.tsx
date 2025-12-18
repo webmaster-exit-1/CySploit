@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { NetworkNode, NetworkLink, NetworkGraph } from '@/lib/types';
 import NeonBorder from '@/components/common/NeonBorder';
 import NetworkMap from '@/components/common/NetworkMap';
@@ -16,8 +17,31 @@ interface Device {
 }
 
 const NetworkVisualizer: React.FC = () => {
-  const { devices, isLoadingDevices } = useNetworkScanner() as { devices: Device[], isLoadingDevices: boolean };
+  const { devices, isLoadingDevices, networkInterfaces } = useNetworkScanner() as {
+    devices: Device[];
+    isLoadingDevices: boolean;
+    networkInterfaces?: Array<{ name: string; address: string; netmask: string }>;
+  };
   const { toast } = useToast();
+
+  const { data: ssidResponse } = useQuery({
+    queryKey: ['/api/network/ssid'],
+    refetchOnWindowFocus: false,
+  });
+
+  const ssid = useMemo((): string | null => {
+    if (typeof ssidResponse !== 'object' || ssidResponse === null) return null;
+    const record = ssidResponse as Record<string, unknown>;
+    return typeof record.ssid === 'string' ? record.ssid : null;
+  }, [ssidResponse]);
+
+  const ipRange = useMemo((): string => {
+    const iface = networkInterfaces?.[0];
+    if (!iface?.address) return '192.168.1.0/24';
+    const parts = iface.address.split('.');
+    if (parts.length !== 4) return '192.168.1.0/24';
+    return `${parts[0]}.${parts[1]}.${parts[2]}.0/24`;
+  }, [networkInterfaces]);
 
   const graphData = useMemo<NetworkGraph>(() => {
     if (!devices || devices.length === 0) {
@@ -164,9 +188,9 @@ const NetworkVisualizer: React.FC = () => {
         {/* Network details overlay */}
         <div className="absolute bottom-4 left-4 bg-background bg-opacity-80 p-3 rounded-lg border border-gray-800 w-56">
           <div className="text-xs text-gray-400 mb-1">Network Details</div>
-          <div className="text-primary text-sm font-medium font-mono mb-1">SSID: CyberNet_5GHz</div>
+          <div className="text-primary text-sm font-medium font-mono mb-1">SSID: {ssid ?? 'Unknown'}</div>
           <div className="flex justify-between text-xs text-gray-300">
-            <span>IP Range: 192.168.1.0/24</span>
+            <span>IP Range: {ipRange}</span>
             <span>{devices?.length || 0} Devices</span>
           </div>
         </div>

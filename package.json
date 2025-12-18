@@ -4,7 +4,8 @@
   "description": "A cutting-edge cybersecurity platform designed to simplify network security assessment through advanced, interactive scanning and analysis tools.",
   "main": "electron/main.js",
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "npm run server",
+    "dev:split": "concurrently \"npm run server\" \"npm run client\"",
     "client": "vite",
     "server": "tsx --env-file .env server/index.ts",
     "build": "npm run build:client && npm run build:server",
@@ -14,7 +15,7 @@
     "lint": "eslint .",
     "preview": "npm run build && node dist/server/index.js",
     "electron": "electron .",
-    "electron:dev": "concurrently \"npm run client\" \"wait-on http://localhost:5000 && npm run electron\"",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5000 && npm run electron\"",
     "build:electron": "npm run build && electron-builder",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "ts-node scripts/migrate.ts",

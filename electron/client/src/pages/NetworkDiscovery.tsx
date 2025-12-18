@@ -163,10 +163,10 @@ const NetworkDiscovery: React.FC = () => {
         {!isDesktopMode() && (
           <Alert className="mt-4 border-orange-500 bg-orange-500/10">
             <Info className="h-4 w-4 text-orange-500" />
-            <AlertTitle className="text-orange-500">Web Preview Mode</AlertTitle>
+            <AlertTitle className="text-orange-500">Browser Mode</AlertTitle>
             <AlertDescription>
-              You're running in web preview mode. Network scanning is limited to the Replit environment.
-              For full network scanning capabilities, download and run the desktop application.
+              You're running in browser mode. Scans and discovery run via the backend API on this machine.
+              For native desktop integrations, use the desktop application.
             </AlertDescription>
           </Alert>
         )}
