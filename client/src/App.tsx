@@ -118,7 +118,12 @@ function Router() {
       </Route>
 
       <Route path="/resources">
-        <Resources />
+        <PageLayout
+          toggleMobileSidebar={toggleMobileSidebar}
+          isMobileSidebarOpen={isMobileSidebarOpen}
+        >
+          <Resources />
+        </PageLayout>
       </Route>
 
       <Route path="/backend-test">
@@ -131,7 +136,14 @@ function Router() {
       </Route>
 
       {/* Fallback to 404 */}
-      <Route component={NotFound} />
+      <Route>
+        <PageLayout
+          toggleMobileSidebar={toggleMobileSidebar}
+          isMobileSidebarOpen={isMobileSidebarOpen}
+        >
+          <NotFound />
+        </PageLayout>
+      </Route>
     </Switch>
   );
 }
