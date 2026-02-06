@@ -49,7 +49,14 @@ const processTrafficData = (sessions: Session[], packets: Packet[], hours: numbe
       
       // Determine direction based on packet metadata
       // This is a simplified check - adjust based on your actual packet structure
-      const packetData = packet.data ? JSON.parse(packet.data) : {};
+      let packetData = {};
+      try {
+        packetData = packet.data ? JSON.parse(packet.data) : {};
+      } catch (e) {
+        console.warn('Failed to parse packet data:', e);
+        // Continue with empty data object
+      }
+      
       const isIncoming = 'direction' in packetData
         ? packetData.direction === 'incoming'
         : packet.destinationIp.startsWith('192.168.') || packet.destinationIp.startsWith('10.');

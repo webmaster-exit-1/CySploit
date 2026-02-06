@@ -309,12 +309,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Scan a single device
+  // NOTE: This endpoint requires nmap with elevated privileges for:
+  // - SYN scanning (-sS): Requires root/admin for raw socket access
+  // - OS detection (-O): Requires root/admin for low-level packet analysis
+  // Without proper permissions, scans will fail or produce incomplete results.
+  // See INSTALLATION.md for nmap setup and permission configuration.
   app.post(apiRouter('/scan/device'), scanNetworkLimiter, async (req: Request, res: Response) => {
     try {
       const { ipAddress } = req.body;
 
       if (!ipAddress) {
         return res.status(400).json({ message: 'IP address is required' });
+      }
+      
+      // Validate IP address format to prevent command injection
+      if (!isValidIp(ipAddress)) {
+        return res.status(400).json({ message: 'Invalid IP address format' });
       }
 
       console.log(`Starting device scan on ${ipAddress}...`);
@@ -855,6 +865,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Network interface is required' });
       }
       
+      // Validate interface name (alphanumeric, hyphens, underscores only)
+      if (!/^[a-zA-Z0-9_-]+$/.test(iface)) {
+        return res.status(400).json({ message: 'Invalid network interface name' });
+      }
+      
+      // Validate BPF filter syntax if provided
+      // Basic validation - should be improved with proper BPF parser
+      if (filter && (filter.includes(';') || filter.includes('|') || filter.includes('&'))) {
+        return res.status(400).json({ message: 'Invalid filter syntax. Filter must be valid BPF syntax.' });
+      }
+      
       console.log(`Starting packet capture on interface ${iface}...`);
       
       // Create a capture session
@@ -1047,7 +1068,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sourcePort: sourcePort || Math.floor(Math.random() * 65535),
         destinationPort: destinationPort || 80,
         protocol: protocol || 'TCP',
-        length: Math.floor(Math.random() * 1500) + 64, // Random size between 64-1564 bytes
+        length: Math.floor(Math.random() * 1501) + 64, // Random size between 64-1564 bytes (inclusive)
         data: JSON.stringify({
           test: true,
           generated: new Date().toISOString()

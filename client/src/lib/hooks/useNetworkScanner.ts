@@ -43,7 +43,7 @@ export const useNetworkScanner = () => {
             const ipMatch = block.match(/^(?:([^\s]+) \()?([0-9.]+)\)?/);
             if (!ipMatch) continue;
             
-            const hostname = ipMatch[1] || null;
+            const initialHostname = ipMatch[1] || null;
             const ipAddress = ipMatch[2];
             
             // Extract MAC address
@@ -68,7 +68,7 @@ export const useNetworkScanner = () => {
               id: devices.length + 1,
               ipAddress,
               macAddress,
-              name: hostname || `Device at ${ipAddress}`,
+              name: initialHostname || `Device at ${ipAddress}`,
               lastSeen: new Date(),
               deviceType: 'unknown',
               vendor,
@@ -154,8 +154,8 @@ export const useNetworkScanner = () => {
           }
           
           // Extract hostname if available
-          const hostnameMatch = nmapOutput.match(/Nmap scan report for ([^\s(]+)/);
-          const hostname = hostnameMatch ? hostnameMatch[1] : null;
+          const deviceHostnameMatch = nmapOutput.match(/Nmap scan report for ([^\s(]+)/);
+          const hostname = deviceHostnameMatch ? deviceHostnameMatch[1] : null;
 
           const deviceInfo = {
             ipAddress,
