@@ -14,34 +14,72 @@ import {
 import { usePacketAnalyzer } from '@/lib/hooks/usePacketAnalyzer';
 import { useSessions } from '@/lib/hooks/useSessions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Session, Packet } from '@/lib/types';
 
-// Generate sample traffic data
-const generateTrafficData = (hours: number) => {
+// Process real traffic data from capture sessions and packets
+const processTrafficData = (sessions: Session[], packets: Packet[], hours: number) => {
   const data = [];
   const now = new Date();
+  const startTime = now.getTime() - (hours * 60 * 60 * 1000);
   
+  // Create time buckets for aggregation
+  const buckets = new Map();
+  
+  // If we have real packet data, aggregate it by time buckets
+  if (packets && packets.length > 0) {
+    for (const packet of packets) {
+      const packetTime = new Date(packet.timestamp).getTime();
+      
+      // Skip packets outside time range
+      if (packetTime < startTime) continue;
+      
+      // Round to nearest hour for bucketing
+      const bucketTime = Math.floor(packetTime / (60 * 60 * 1000)) * (60 * 60 * 1000);
+      
+      if (!buckets.has(bucketTime)) {
+        buckets.set(bucketTime, {
+          incoming: 0,
+          outgoing: 0,
+          count: 0
+        });
+      }
+      
+      const bucket = buckets.get(bucketTime);
+      const size = packet.size || 64; // Default to 64 bytes if unknown
+      
+      // Determine direction based on packet metadata
+      // This is a simplified check - adjust based on your actual packet structure
+      const isIncoming = packet.data && 'direction' in packet.data
+        ? packet.data.direction === 'incoming'
+        : packet.destinationIp.startsWith('192.168.') || packet.destinationIp.startsWith('10.');
+      
+      if (isIncoming) {
+        bucket.incoming += size;
+      } else {
+        bucket.outgoing += size;
+      }
+      bucket.count++;
+    }
+  }
+  
+  // Generate data points for all time buckets in range
   for (let i = hours; i >= 0; i--) {
     const time = new Date(now.getTime() - (i * 60 * 60 * 1000));
+    const bucketTime = Math.floor(time.getTime() / (60 * 60 * 1000)) * (60 * 60 * 1000);
     
-    // Create more realistic traffic pattern with peaks at typical times
-    let hourFactor = Math.sin((time.getHours() / 24) * Math.PI * 2) * 0.5 + 0.5;
-    if (time.getHours() >= 9 && time.getHours() <= 17) {
-      hourFactor *= 1.5; // More traffic during work hours
-    }
+    const bucket = buckets.get(bucketTime) || { incoming: 0, outgoing: 0, count: 0 };
     
-    // Add some randomness
-    const randomFactor = 0.7 + Math.random() * 0.6;
-    
-    // Create incoming and outgoing values with different patterns
-    const incoming = Math.round((0.5 + hourFactor) * randomFactor * 200) / 100;
-    const outgoing = Math.round((0.3 + hourFactor * 0.7) * randomFactor * 200) / 100;
+    // Convert bytes to GB
+    const incoming = bucket.incoming / (1024 * 1024 * 1024);
+    const outgoing = bucket.outgoing / (1024 * 1024 * 1024);
     
     data.push({
       time: time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       timestamp: time.getTime(),
-      incoming,
-      outgoing,
-      total: incoming + outgoing
+      incoming: Math.round(incoming * 100) / 100,
+      outgoing: Math.round(outgoing * 100) / 100,
+      total: Math.round((incoming + outgoing) * 100) / 100,
+      packetCount: bucket.count
     });
   }
   
@@ -50,11 +88,22 @@ const generateTrafficData = (hours: number) => {
 
 const TrafficAnalyzer: React.FC = () => {
   const [timeRange, setTimeRange] = useState('24');
-  usePacketAnalyzer();
-  useSessions();
+  const packetAnalyzer = usePacketAnalyzer();
+  const { sessions } = useSessions();
   
-  // Generate traffic data based on selected time range
-  const trafficData = generateTrafficData(parseInt(timeRange));
+  // Get packets from the first active session if available
+  // In a real implementation, you'd want to aggregate across all sessions
+  const activeSession = sessions?.find((s: Session) => s.isActive);
+  const sessionPacketsQuery = activeSession 
+    ? packetAnalyzer.getSessionPackets(activeSession.id)
+    : { data: [] };
+  
+  // Process real traffic data based on selected time range
+  const trafficData = processTrafficData(
+    sessions || [],
+    sessionPacketsQuery.data as Packet[] || [],
+    parseInt(timeRange)
+  );
   
   // Calculate statistics
   const totalTraffic = trafficData.reduce((sum, item) => sum + item.total, 0).toFixed(1);

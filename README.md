@@ -173,9 +173,33 @@ npm run db:migrate           # Migrate database entries into database
 
 ### Metasploit Integration
 
-1. Ensure Metasploit Framework is installed on your system
-2. Configure the Metasploit connection settings in the Settings section
-3. The shared PostgreSQL database will be used by both CySploit and Metasploit
+CySploit integrates with Metasploit Framework via RPC (Remote Procedure Call):
+
+1. **Metasploit Framework must be installed separately** on your system
+   - Download from: https://www.metasploit.com/download
+   - Or use package manager: `sudo apt install metasploit-framework` (Linux)
+
+2. **Start the Metasploit RPC daemon**:
+   ```bash
+   msfrpcd -P <your-password> -S -a 127.0.0.1 -p 55553
+   ```
+
+3. **Configure in CySploit Settings**:
+   - Navigate to Settings → Metasploit Configuration
+   - Host: `127.0.0.1`
+   - Port: `55553`
+   - Username: `msf`
+   - Password: (the password you set above)
+
+4. **Shared PostgreSQL database**:
+   - The docker-compose setup includes a pre-configured Metasploit database
+   - Database: `msf_db`
+   - User: `msf_user`
+   - Password: `msf_password`
+
+**Note**: Metasploit is not embedded in CySploit. The RPC integration provides a secure, maintainable way to leverage Metasploit's capabilities while keeping the tools separate.
+
+For detailed setup instructions, see [METASPLOIT_RPC_SETUP.md](METASPLOIT_RPC_SETUP.md)
 
 ## Usage
 
