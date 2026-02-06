@@ -45,12 +45,13 @@ const processTrafficData = (sessions: Session[], packets: Packet[], hours: numbe
       }
       
       const bucket = buckets.get(bucketTime);
-      const size = packet.size || 64; // Default to 64 bytes if unknown
+      const size = packet.length || 64; // Default to 64 bytes if unknown
       
       // Determine direction based on packet metadata
       // This is a simplified check - adjust based on your actual packet structure
-      const isIncoming = packet.data && 'direction' in packet.data
-        ? packet.data.direction === 'incoming'
+      const packetData = packet.data ? JSON.parse(packet.data) : {};
+      const isIncoming = 'direction' in packetData
+        ? packetData.direction === 'incoming'
         : packet.destinationIp.startsWith('192.168.') || packet.destinationIp.startsWith('10.');
       
       if (isIncoming) {

@@ -85,7 +85,7 @@ export const usePacketAnalyzer = () => {
     return {
       ...packet,
       formattedTimestamp: new Date(packet.timestamp).toLocaleTimeString(),
-      formattedSize: `${packet.size} bytes`,
+      formattedSize: `${packet.length || 0} bytes`,
       summary: `${packet.sourceIp}:${packet.sourcePort} → ${packet.destinationIp}:${packet.destinationPort} (${packet.protocol})`
     };
   };

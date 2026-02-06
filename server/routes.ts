@@ -971,7 +971,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         destinationCounts[packet.destinationIp] = (destinationCounts[packet.destinationIp] || 0) + 1;
         
         // Total size
-        totalSize += packet.size || 0;
+        totalSize += packet.length || 0;
       }
       
       // Get top ports
@@ -1047,12 +1047,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sourcePort: sourcePort || Math.floor(Math.random() * 65535),
         destinationPort: destinationPort || 80,
         protocol: protocol || 'TCP',
-        size: Math.floor(Math.random() * 1500) + 64, // Random size between 64-1564 bytes
-        timestamp: new Date(),
-        data: {
+        length: Math.floor(Math.random() * 1500) + 64, // Random size between 64-1564 bytes
+        data: JSON.stringify({
           test: true,
           generated: new Date().toISOString()
-        }
+        })
       }).returning();
       
       res.json(packet);
