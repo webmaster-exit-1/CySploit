@@ -308,6 +308,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Scan a single device
+  app.post(apiRouter('/scan/device'), scanNetworkLimiter, async (req: Request, res: Response) => {
+    try {
+      const { ipAddress } = req.body;
+
+      if (!ipAddress) {
+        return res.status(400).json({ message: 'IP address is required' });
+      }
+
+      console.log(`Starting device scan on ${ipAddress}...`);
+
+      // Use single host CIDR notation for consistency
+      // (Note: we use nmap directly rather than calling /scan/network to avoid recursion)
+      
+      // Run nmap on single host
+      const { stdout: nmapOutput } = await execAsync('nmap', ['-sS', '-sV', '-O', '--osscan-guess', '-T4', ipAddress]);
+      
+      // Check if host is up
+      const isOnline = nmapOutput.includes('Host is up') || !nmapOutput.includes('Host seems down');
+      
+      if (!isOnline) {
+        return res.json({ 
+          isOnline: false,
+          message: 'Device is not reachable'
+        });
+      }
+      
+      // Create a new nmap scan entry
+      const [nmapScan] = await db.insert(nmapScans).values({
+        command: `nmap -sS -sV -O -T4 ${ipAddress}`,
+        target: ipAddress,
+        status: 'completed',
+        startTime: new Date(),
+        endTime: new Date(),
+        rawOutput: nmapOutput
+      }).returning();
+      
+      // Parse hostname
+      const hostnameMatch = nmapOutput.match(/Nmap scan report for ([^\s(]+)/);
+      const hostname = hostnameMatch && hostnameMatch[1] !== ipAddress ? hostnameMatch[1] : null;
+      
+      // Parse MAC address
+      const macMatch = nmapOutput.match(/MAC Address: ([0-9A-F:]{17})/i);
+      const macAddress = macMatch ? macMatch[1] : null;
+      
+      // Parse vendor
+      const vendorMatch = nmapOutput.match(/MAC Address: [0-9A-F:]+ \(([^)]+)\)/i);
+      const vendor = vendorMatch ? vendorMatch[1] : null;
+      
+      // Parse OS detection
+      let osType = null;
+      const osMatch = nmapOutput.match(/OS details:\s*(.+?)(?:\n|$)/i);
+      if (osMatch) {
+        osType = osMatch[1].trim();
+      } else {
+        const osGuessMatch = nmapOutput.match(/Aggressive OS guesses:\s*(.+?)(?:\n|$)/i);
+        if (osGuessMatch) {
+          osType = osGuessMatch[1].split(',')[0].trim();
+        }
+      }
+      
+      // Create or update host
+      const host = await upsertHostByIp({
+        scanId: nmapScan.id,
+        ipAddress,
+        name: hostname,
+        macAddress
+      });
+      
+      // Parse and store ports
+      await db.delete(ports).where(eq(ports.hostId, host.id));
+      
+      const portMatches = nmapOutput.matchAll(/(\d+)\/tcp\s+open\s+(\S+)/g);
+      const openPorts = [];
+      for (const match of Array.from(portMatches)) {
+        const portNumber = parseInt(match[1]);
+        const service = match[2];
+        openPorts.push(portNumber);
+        
+        await db.insert(ports).values({
+          hostId: host.id,
+          portNumber,
+          protocol: 'tcp',
+          service,
+          state: 'open'
+        });
+      }
+      
+      res.json({
+        isOnline: true,
+        device: {
+          ...host,
+          vendor,
+          osType,
+          ports: openPorts,
+          details: { nmapOutput }
+        }
+      });
+    } catch (error) {
+      console.error('Failed to scan device:', error);
+      res.status(500).json({ message: 'Failed to scan device', error: String(error) });
+    }
+  });
+
   // Scan a device for vulnerabilities (best-effort via nmap vuln scripts)
   app.post(apiRouter('/scan/vulnerabilities'), scanNetworkLimiter, async (req: Request, res: Response) => {
     try {
@@ -733,6 +837,228 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       res.status(500).json({ message: 'Failed to create/update setting', error: String(error) });
+    }
+  });
+
+  // ===== Packet Capture Routes =====
+  
+  // Note: Packet capture requires elevated privileges and is typically
+  // handled by the Electron app's IPC handlers. These endpoints provide
+  // a way to track capture sessions and store captured packets.
+  
+  // Start packet capture session
+  app.post(apiRouter('/packets/capture/start'), async (req: Request, res: Response) => {
+    try {
+      const { interface: iface, filter } = req.body;
+      
+      if (!iface) {
+        return res.status(400).json({ message: 'Network interface is required' });
+      }
+      
+      console.log(`Starting packet capture on interface ${iface}...`);
+      
+      // Create a capture session
+      const [session] = await db.insert(captureSession).values({
+        interface: iface,
+        filter: filter || '',
+        status: 'running',
+        startTime: new Date()
+      }).returning();
+      
+      // Note: Actual packet capture should be handled by:
+      // 1. Electron app using native tcpdump/libpcap via IPC
+      // 2. Backend using child_process to spawn tcpdump (requires root)
+      // This endpoint just creates the session record
+      
+      res.json({
+        sessionId: session.id,
+        message: 'Packet capture session started. Use Electron IPC or backend tcpdump for actual capture.',
+        session
+      });
+    } catch (error) {
+      console.error('Failed to start packet capture:', error);
+      res.status(500).json({ message: 'Failed to start packet capture', error: String(error) });
+    }
+  });
+  
+  // Stop packet capture session
+  app.post(apiRouter('/packets/capture/stop'), async (req: Request, res: Response) => {
+    try {
+      const { sessionId } = req.body;
+      
+      if (!sessionId) {
+        return res.status(400).json({ message: 'Session ID is required' });
+      }
+      
+      console.log(`Stopping packet capture session ${sessionId}...`);
+      
+      // Update the capture session
+      const [session] = await db.update(captureSession)
+        .set({
+          status: 'completed',
+          endTime: new Date()
+        })
+        .where(eq(captureSession.id, sessionId))
+        .returning();
+      
+      if (!session) {
+        return res.status(404).json({ message: 'Capture session not found' });
+      }
+      
+      // Get packet count
+      const sessionPackets = await db.select().from(packets).where(eq(packets.sessionId, sessionId));
+      
+      await db.update(captureSession)
+        .set({ packetCount: sessionPackets.length })
+        .where(eq(captureSession.id, sessionId));
+      
+      res.json({
+        sessionId: session.id,
+        message: 'Packet capture session stopped',
+        packetCount: sessionPackets.length,
+        session
+      });
+    } catch (error) {
+      console.error('Failed to stop packet capture:', error);
+      res.status(500).json({ message: 'Failed to stop packet capture', error: String(error) });
+    }
+  });
+  
+  // Analyze captured traffic
+  app.post(apiRouter('/packets/analyze'), async (req: Request, res: Response) => {
+    try {
+      const { sessionId } = req.body;
+      
+      if (!sessionId) {
+        return res.status(400).json({ message: 'Session ID is required' });
+      }
+      
+      console.log(`Analyzing traffic for session ${sessionId}...`);
+      
+      // Get all packets for this session
+      const sessionPackets = await db.select().from(packets).where(eq(packets.sessionId, sessionId));
+      
+      if (sessionPackets.length === 0) {
+        return res.json({
+          anomalies: [],
+          statistics: {
+            packetCount: 0,
+            totalSize: 0,
+            protocolDistribution: {},
+            topPorts: [],
+            topDestinations: []
+          }
+        });
+      }
+      
+      // Calculate statistics
+      const protocolDistribution: Record<string, number> = {};
+      const portCounts: Record<number, number> = {};
+      const destinationCounts: Record<string, number> = {};
+      let totalSize = 0;
+      
+      for (const packet of sessionPackets) {
+        // Protocol distribution
+        const protocol = packet.protocol || 'Unknown';
+        protocolDistribution[protocol] = (protocolDistribution[protocol] || 0) + 1;
+        
+        // Port counts
+        if (packet.destinationPort) {
+          portCounts[packet.destinationPort] = (portCounts[packet.destinationPort] || 0) + 1;
+        }
+        
+        // Destination counts
+        destinationCounts[packet.destinationIp] = (destinationCounts[packet.destinationIp] || 0) + 1;
+        
+        // Total size
+        totalSize += packet.size || 0;
+      }
+      
+      // Get top ports
+      const topPorts = Object.entries(portCounts)
+        .map(([port, count]) => ({ port: parseInt(port), count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+      
+      // Get top destinations
+      const topDestinations = Object.entries(destinationCounts)
+        .map(([ip, count]) => ({ ip, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+      
+      // Detect anomalies (basic heuristics)
+      const anomalies: string[] = [];
+      
+      // Check for port scanning (many different destination ports from same source)
+      const sourceIpPorts = new Map<string, Set<number>>();
+      for (const packet of sessionPackets) {
+        if (!sourceIpPorts.has(packet.sourceIp)) {
+          sourceIpPorts.set(packet.sourceIp, new Set());
+        }
+        if (packet.destinationPort) {
+          sourceIpPorts.get(packet.sourceIp)!.add(packet.destinationPort);
+        }
+      }
+      
+      for (const [sourceIp, ports] of sourceIpPorts.entries()) {
+        if (ports.size > 50) {
+          anomalies.push(`Possible port scan detected from ${sourceIp} (${ports.size} different ports)`);
+        }
+      }
+      
+      // Check for excessive traffic to single destination
+      for (const { ip, count } of topDestinations) {
+        const percentage = (count / sessionPackets.length) * 100;
+        if (percentage > 50) {
+          anomalies.push(`High concentration of traffic to ${ip} (${percentage.toFixed(1)}%)`);
+        }
+      }
+      
+      res.json({
+        anomalies,
+        statistics: {
+          packetCount: sessionPackets.length,
+          totalSize,
+          protocolDistribution,
+          topPorts,
+          topDestinations
+        }
+      });
+    } catch (error) {
+      console.error('Failed to analyze traffic:', error);
+      res.status(500).json({ message: 'Failed to analyze traffic', error: String(error) });
+    }
+  });
+  
+  // Generate test packet (for development/testing)
+  app.post(apiRouter('/packets/generate'), async (req: Request, res: Response) => {
+    try {
+      const { sourceIp, destinationIp, sourcePort, destinationPort, protocol, sessionId } = req.body;
+      
+      if (!sourceIp || !destinationIp) {
+        return res.status(400).json({ message: 'Source and destination IP addresses are required' });
+      }
+      
+      // Generate a test packet
+      const [packet] = await db.insert(packets).values({
+        sessionId: sessionId || null,
+        sourceIp,
+        destinationIp,
+        sourcePort: sourcePort || Math.floor(Math.random() * 65535),
+        destinationPort: destinationPort || 80,
+        protocol: protocol || 'TCP',
+        size: Math.floor(Math.random() * 1500) + 64, // Random size between 64-1564 bytes
+        timestamp: new Date(),
+        data: {
+          test: true,
+          generated: new Date().toISOString()
+        }
+      }).returning();
+      
+      res.json(packet);
+    } catch (error) {
+      console.error('Failed to generate packet:', error);
+      res.status(500).json({ message: 'Failed to generate packet', error: String(error) });
     }
   });
 
