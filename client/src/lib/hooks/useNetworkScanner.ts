@@ -29,38 +29,59 @@ export const useNetworkScanner = () => {
             target: cidr,
           });
 
-          // Parse the nmap results
-          // This is a simplified example - in a real app, you'd want to parse
-          // the nmap output more thoroughly
-          const foundIPs = results.data
-            .match(/\d+\.\d+\.\d+\.\d+/g) || [];
+          // Parse the nmap output properly to extract real device information
+          const nmapOutput = results.data;
+          const devices: Device[] = [];
+          
+          // Parse nmap output to extract host information
+          const hostBlocks = nmapOutput.split(/Nmap scan report for /);
+          
+          for (const block of hostBlocks) {
+            if (!block.trim()) continue;
+            
+            // Extract IP address and hostname
+            const ipMatch = block.match(/^(?:([^\s]+) \()?([0-9.]+)\)?/);
+            if (!ipMatch) continue;
+            
+            const initialHostname = ipMatch[1] || null;
+            const ipAddress = ipMatch[2];
+            
+            // Extract MAC address
+            const macMatch = block.match(/MAC Address: ([0-9A-F:]{17})/i);
+            const macAddress = macMatch ? macMatch[1] : null;
+            
+            // Extract vendor info from MAC line
+            const vendorMatch = block.match(/MAC Address: [0-9A-F:]+ \(([^)]+)\)/i);
+            const vendor = vendorMatch ? vendorMatch[1] : 'Unknown';
+            
+            // Extract open ports
+            const portMatches = block.matchAll(/(\d+)\/tcp\s+open\s+(\S+)/g);
+            const ports: number[] = [];
+            for (const match of portMatches) {
+              ports.push(parseInt(match[1]));
+            }
+            
+            // Check if host is up
+            const isUp = block.includes('Host is up') || !block.includes('Host seems down');
+            
+            devices.push({
+              id: devices.length + 1,
+              ipAddress,
+              macAddress,
+              name: initialHostname || `Device at ${ipAddress}`,
+              lastSeen: new Date(),
+              deviceType: 'unknown',
+              vendor,
+              osType: null,
+              ports,
+              status: isUp ? 'online' : 'offline',
+              details: { nmapOutput: block.trim() }
+            });
+          }
 
-          // Create a mock result similar to what the server would return
-          const mockDevices = foundIPs.map((ip: string, index: number) => ({
-            id: index + 1,
-            ipAddress: ip,
-            macAddress: '00:00:00:00:00:00', // Placeholder
-            lastSeen: new Date(),
-            deviceType: 'unknown',
-            deviceName: `Device at ${ip}`,
-            vendor: 'Unknown',
-            osType: null,
-            ports: [],
-            status: 'online',
-            details: {}
-          }));
-
-          // Send to server to store in database
-          await apiRequest('POST', '/api/scan/network', {
-            cidr,
-            scannedDevices: mockDevices
-          });
-
-          return {
-            sessionId: 1,
-            devicesFound: mockDevices.length,
-            devices: mockDevices
-          };
+          // Send to server to store in database - let server handle this
+          const response = await apiRequest('POST', '/api/scan/network', { cidr });
+          return await response.json();
         }
 
         // Web mode: use server-side scanning
@@ -92,8 +113,9 @@ export const useNetworkScanner = () => {
           });
 
           // Parse the nmap results to determine if device is online
-          const isOnline = results.data.includes('Host is up') ||
-                           !results.data.includes('Host seems down');
+          const nmapOutput = results.data;
+          const isOnline = nmapOutput.includes('Host is up') ||
+                           !nmapOutput.includes('Host seems down');
 
           if (!isOnline) {
             return {
@@ -101,38 +123,65 @@ export const useNetworkScanner = () => {
             };
           }
 
-          // Try to extract details from comprehensive scan
-          // This is simplified - you would want much more thorough parsing
-            const ports: number[] = (results.data.match(/(\d+)\/tcp\s+open/g) || [])
-            .map((p: string): number => parseInt(p.split('/')[0]));
-
-          const osMatches = results.data.match(/OS:\s*(.*?)(?:\n|$)/);
-          const osType = osMatches ? osMatches[1].trim() : null;
+          // Extract detailed device information from comprehensive scan
+          
+          // Extract MAC address
+          const macMatch = nmapOutput.match(/MAC Address: ([0-9A-F:]{17})/i);
+          const macAddress = macMatch ? macMatch[1] : null;
+          
+          // Extract vendor info
+          const vendorMatch = nmapOutput.match(/MAC Address: [0-9A-F:]+ \(([^)]+)\)/i);
+          const vendor = vendorMatch ? vendorMatch[1] : 'Unknown';
+          
+          // Extract open ports with service names
+          const ports: number[] = [];
+          const portMatches = nmapOutput.matchAll(/(\d+)\/tcp\s+open\s+(\S+)/g);
+          for (const match of portMatches) {
+            ports.push(parseInt(match[1]));
+          }
+          
+          // Extract OS detection results
+          let osType = null;
+          const osMatch = nmapOutput.match(/OS details:\s*(.+?)(?:\n|$)/i);
+          if (osMatch) {
+            osType = osMatch[1].trim();
+          } else {
+            // Try alternate OS detection format
+            const osGuessMatch = nmapOutput.match(/Aggressive OS guesses:\s*(.+?)(?:\n|$)/i);
+            if (osGuessMatch) {
+              osType = osGuessMatch[1].split(',')[0].trim();
+            }
+          }
+          
+          // Extract hostname if available
+          const deviceHostnameMatch = nmapOutput.match(/Nmap scan report for ([^\s(]+)/);
+          const hostname = deviceHostnameMatch ? deviceHostnameMatch[1] : null;
 
           const deviceInfo = {
             ipAddress,
-            macAddress: '00:00:00:00:00:00', // Placeholder
+            macAddress,
+            name: hostname && hostname !== ipAddress ? hostname : `Device at ${ipAddress}`,
             lastSeen: new Date(),
             deviceType: 'unknown',
-            deviceName: `Device at ${ipAddress}`,
-            vendor: 'Unknown',
+            vendor,
             osType,
             ports,
             status: 'online',
-            details: { nmapOutput: results.data }
+            details: { nmapOutput }
           };
 
-          // Send to server to store in database
-          const response = await apiRequest('POST', '/api/scan/device', {
-            ipAddress,
-            deviceInfo
+          // Use the standard network scan endpoint which handles persistence
+          // Note: The server's /api/scan/network endpoint handles individual hosts too
+          const networkScanResult = await apiRequest('POST', '/api/scan/network', {
+            cidr: `${ipAddress}/32` // Single host scan
           });
 
-          const serverResponse = await response.json();
+          const scanResponse = await networkScanResult.json();
+          const device = scanResponse.devices?.[0] || deviceInfo;
 
           return {
             isOnline: true,
-            device: serverResponse.device || deviceInfo
+            device
           };
         }
 

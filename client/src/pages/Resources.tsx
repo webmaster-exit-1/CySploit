@@ -14,6 +14,7 @@ const Resources: React.FC = () => {
           title="Security Resources"
           src="/pentools-styled-apis.html"
           className="w-full h-full rounded-lg border border-gray-800 bg-black"
+          sandbox="allow-scripts allow-same-origin"
         />
       </div>
     </>

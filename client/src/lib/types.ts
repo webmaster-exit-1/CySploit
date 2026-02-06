@@ -44,9 +44,9 @@ export interface Packet {
   protocol?: string;
   sourcePort?: number;
   destinationPort?: number;
-  size?: number;
+  length?: number; // Renamed from size to match schema
   timestamp: string;
-  data?: Record<string, unknown>;
+  data?: string; // JSON string in database
 }
 
 // Network scanner types
