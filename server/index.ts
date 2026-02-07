@@ -1,10 +1,48 @@
 import express, { type NextFunction, type Request, Response } from "express";
+import helmet from "helmet";
+import cors from "cors";
 import { registerRoutes } from "./routes.js";
 import { registerShodanRoutes } from "./routes/shodanRoutes.js";
 import { registerMetasploitRoutes } from "./routes/metasploitRoutes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
 
 const app = express();
+
+// Security headers middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Required for Vite dev mode and A-Frame
+      styleSrc: ["'self'", "'unsafe-inline'"], // Required for inline styles
+      imgSrc: ["'self'", "data:", "https:", "http:"], // Allow external images
+      connectSrc: ["'self'", "ws:", "wss:", "https:", "http:"], // WebSocket and API connections
+      frameSrc: ["'self'"], // Allow same-origin iframes
+      fontSrc: ["'self'", "data:"], // Allow fonts
+      objectSrc: ["'none'"], // Disable plugins
+      mediaSrc: ["'self'"],
+      workerSrc: ["'self'", "blob:"], // Required for web workers
+      childSrc: ["'self'", "blob:"], // Required for web workers
+      formAction: ["'self'"],
+      frameAncestors: ["'self'"],
+      baseUri: ["'self'"],
+      manifestSrc: ["'self'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false, // Disable for external resources
+  crossOriginResourcePolicy: { policy: "cross-origin" } // Allow cross-origin resources
+}));
+
+// CORS configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? ['http://localhost:5000'] // In production, only allow same origin
+    : ['http://localhost:5000', 'http://localhost:5173'], // In development, allow Vite dev server
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

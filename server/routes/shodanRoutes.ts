@@ -1,4 +1,5 @@
 import { Express, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import { db } from '../db';
 import { settings, shodanSearches } from '@shared/schema';
 import { eq } from 'drizzle-orm';
@@ -12,8 +13,26 @@ const asRecord = (value: unknown): Record<string, unknown> | null => {
  * Register all Shodan-related routes
  */
 export function registerShodanRoutes(app: Express) {
+  // Rate limiter for Shodan API calls (to protect our API key usage)
+  const shodanLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 100, // Limit each IP to 100 requests per hour
+    message: 'Too many Shodan requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Rate limiter for Shodan searches (more restrictive)
+  const shodanSearchLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 20, // Limit each IP to 20 searches per hour
+    message: 'Too many Shodan searches from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
   // Get Shodan API key info (without revealing the key)
-  app.get('/api/shodan/info', async (_req: Request, res: Response) => {
+  app.get('/api/shodan/info', shodanLimiter, async (_req: Request, res: Response) => {
     try {
       // Check if Shodan API key is configured
       const [apiKeySetting] = await db.select().from(settings).where(eq(settings.key, 'SHODAN_API_KEY'));
@@ -68,7 +87,7 @@ export function registerShodanRoutes(app: Express) {
   });
 
   // Get host information from Shodan
-  app.get('/api/shodan/host/:ip', async (req: Request, res: Response) => {
+  app.get('/api/shodan/host/:ip', shodanSearchLimiter, async (req: Request, res: Response) => {
     try {
       const { ip } = req.params;
 
@@ -128,7 +147,7 @@ export function registerShodanRoutes(app: Express) {
   });
 
   // Search Shodan
-  app.post('/api/shodan/search', async (req: Request, res: Response) => {
+  app.post('/api/shodan/search', shodanSearchLimiter, async (req: Request, res: Response) => {
     try {
       const { query } = req.body;
 
@@ -192,7 +211,7 @@ export function registerShodanRoutes(app: Express) {
   });
 
   // Get CVE details from Shodan
-  app.get('/api/shodan/cve/:cveId', async (req: Request, res: Response) => {
+  app.get('/api/shodan/cve/:cveId', shodanSearchLimiter, async (req: Request, res: Response) => {
     try {
       const { cveId } = req.params;
 
