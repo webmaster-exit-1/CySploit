@@ -45,7 +45,18 @@ const { pool: _pool, db: _db } = createPoolAndDb();
 
 export const pool = _pool;
 
-// Export db — always non-null at the type level so existing code compiles.
-// When DATABASE_URL is missing, API routes will fail at query time with a
-// descriptive error caught by the Express error handler.
-export const db = _db as NonNullable<typeof _db>;
+// When DATABASE_URL is missing _db is null.  We export a Proxy so that any
+// property access (e.g. db.select(), db.insert()) throws a descriptive error
+// at the call‑site rather than a cryptic "Cannot read properties of null".
+// The proxy is typed as NonNullable so existing code compiles unchanged.
+const dbProxy = _db ?? new Proxy({} as NonNullable<typeof _db>, {
+  get(_target, prop) {
+    throw new Error(
+      `Database is not configured (DATABASE_URL is not set). ` +
+      `Cannot access db.${String(prop)}. ` +
+      `Set DATABASE_URL in your .env file to enable database features.`
+    );
+  },
+});
+
+export const db: NonNullable<typeof _db> = dbProxy as NonNullable<typeof _db>;
