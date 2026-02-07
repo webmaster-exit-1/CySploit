@@ -164,6 +164,14 @@ npm run db:migrate           # Migrate database entries into database
 ./run-cysploit.sh            # Execute the client and server connected to our database
 ```
 
+## Documentation
+
+- **[BUILD.md](BUILD.md)** - Comprehensive guide to building CySploit for various platforms
+- **[DATABASE_SETUP.md](DATABASE_SETUP.md)** - Database setup and troubleshooting guide
+- **[METASPLOIT_RPC_SETUP.md](METASPLOIT_RPC_SETUP.md)** - Metasploit integration setup
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+- **[RELEASE.md](RELEASE.md)** - Release process and CI/CD information
+
 ## Configuration
 
 ### Shodan API

@@ -20,11 +20,9 @@ cysploit-dist/
 # Vite's default cache directory, can sometimes be `.vite` in the root or inside `node_modules`
 
 # Drizzle ORM migrations
-# Typically, migration files *should* be version controlled as they represent
-# the history of your database schema. However, if your workflow involves
-# always generating them from scratch or using a different strategy, you might ignore them.
-# For most projects, DO NOT ignore this. I'm listing it for completeness of generated folders.
-migrations/
+# Migration files SHOULD be version controlled as they represent
+# the history of your database schema.
+# migrations/
 
 # Electron-builder output
 # The `dist/` directory is already listed above, which electron-builder uses by default.
