@@ -1,4 +1,5 @@
 import { Express, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import { db } from '../db';
 import { settings } from '@shared/schema';
 import { eq } from 'drizzle-orm';
@@ -21,8 +22,26 @@ type ConsoleReadResponse = {
  * Register all Metasploit-related routes
  */
 export function registerMetasploitRoutes(app: Express) {
+  // Rate limiter for Metasploit operations
+  const metasploitLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 50, // Limit each IP to 50 requests per windowMs
+    message: 'Too many Metasploit requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Rate limiter for sensitive operations (scans and executions)
+  const metasploitSensitiveLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // Limit each IP to 10 sensitive operations per windowMs
+    message: 'Too many Metasploit operations from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
   // Initialize Metasploit database connection
-  app.post('/api/metasploit/init-db', async (req: Request, res: Response) => {
+  app.post('/api/metasploit/init-db', metasploitSensitiveLimiter, async (req: Request, res: Response) => {
     try {
       const { host, port, username, password } = req.body;
 
@@ -81,7 +100,7 @@ export function registerMetasploitRoutes(app: Express) {
   });
 
   // Get Metasploit connection status
-  app.get('/api/metasploit/status', async (_req: Request, res: Response) => {
+  app.get('/api/metasploit/status', metasploitLimiter, async (_req: Request, res: Response) => {
     try {
       // Check if we have connection settings
       const [hostSetting] = await db.select().from(settings).where(eq(settings.key, 'metasploit.host'));
@@ -143,7 +162,7 @@ export function registerMetasploitRoutes(app: Express) {
   });
 
   // Connect to Metasploit RPC
-  app.post('/api/metasploit/connect', async (req: Request, res: Response) => {
+  app.post('/api/metasploit/connect', metasploitSensitiveLimiter, async (req: Request, res: Response) => {
     try {
       const { host, port, username, password } = req.body;
 
@@ -179,7 +198,7 @@ export function registerMetasploitRoutes(app: Express) {
   });
 
   // Run Metasploit scan
-  app.post('/api/metasploit/scan', async (req: Request, res: Response) => {
+  app.post('/api/metasploit/scan', metasploitSensitiveLimiter, async (req: Request, res: Response) => {
     try {
       const { target, scanType } = req.body;
 
@@ -208,7 +227,7 @@ export function registerMetasploitRoutes(app: Express) {
   });
 
   // Execute Metasploit module
-  app.post('/api/metasploit/execute', async (req: Request, res: Response) => {
+  app.post('/api/metasploit/execute', metasploitSensitiveLimiter, async (req: Request, res: Response) => {
     try {
       // Handle both direct command execution and module execution
       const { command, moduleName, moduleType, options } = req.body;
@@ -304,7 +323,7 @@ export function registerMetasploitRoutes(app: Express) {
   });
 
   // Get Metasploit modules
-  app.get('/api/metasploit/modules', async (req: Request, res: Response) => {
+  app.get('/api/metasploit/modules', metasploitLimiter, async (req: Request, res: Response) => {
     try {
       const moduleType = req.query.type as string;
       const result = await getMetasploitModules(moduleType);
@@ -325,7 +344,7 @@ export function registerMetasploitRoutes(app: Express) {
   });
 
   // Get Metasploit sessions
-  app.get('/api/metasploit/sessions', async (_req: Request, res: Response) => {
+  app.get('/api/metasploit/sessions', metasploitLimiter, async (_req: Request, res: Response) => {
     try {
       const result = await getMetasploitSessions();
 
