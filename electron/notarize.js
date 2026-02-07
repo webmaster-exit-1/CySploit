@@ -12,7 +12,8 @@
  */
 
 const { notarize } = require('@electron/notarize');
-const { build } = require('../electron-builder.json');
+
+const APP_ID = 'com.pentools.cysploit';
 
 exports.default = async function notarizing(context) {
   const { electronPlatformName, appOutDir } = context;
@@ -41,7 +42,7 @@ exports.default = async function notarizing(context) {
 
   try {
     await notarize({
-      appBundleId: build.appId,
+      appBundleId: APP_ID,
       appPath: `${appOutDir}/${appName}.app`,
       appleId: process.env.APPLE_ID,
       appleIdPassword: process.env.APPLE_ID_PASSWORD,

@@ -3,10 +3,14 @@ import { Pool as PgPool } from 'pg';
 import { drizzle as drizzleNeon } from 'drizzle-orm/neon-serverless';
 import { drizzle as drizzlePg } from 'drizzle-orm/node-postgres';
 import ws from 'ws';
-import * as schema from '@shared/schema';
+import * as schema from '../shared/schema';
 
 if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL must be set. Did you forget to provision a database?');
+  console.warn(
+    'WARNING: DATABASE_URL is not set. Database features will be unavailable.\n' +
+    'Set DATABASE_URL in your .env file to enable database connectivity.\n' +
+    'Example: DATABASE_URL=postgresql://cysploit:cysploit@localhost:5432/cysploit'
+  );
 }
 
 function isNeonDatabaseUrl(databaseUrl: string): boolean {
@@ -20,18 +24,28 @@ function isNeonDatabaseUrl(databaseUrl: string): boolean {
   }
 }
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL ?? '';
 
-// Drizzle driver selection:
-// - Neon serverless driver for Neon-hosted databases (WebSocket transport)
-// - node-postgres for local/docker/self-hosted Postgres
-export const pool = isNeonDatabaseUrl(databaseUrl)
-  ? (() => {
-      neonConfig.webSocketConstructor = ws;
-      return new NeonPool({ connectionString: databaseUrl });
-    })()
-  : new PgPool({ connectionString: databaseUrl });
+function createPoolAndDb() {
+  if (!databaseUrl) {
+    return { pool: null, db: null };
+  }
 
-export const db = isNeonDatabaseUrl(databaseUrl)
-  ? drizzleNeon(pool as NeonPool, { schema })
-  : drizzlePg(pool as PgPool, { schema });
+  if (isNeonDatabaseUrl(databaseUrl)) {
+    neonConfig.webSocketConstructor = ws;
+    const neonPool = new NeonPool({ connectionString: databaseUrl });
+    return { pool: neonPool, db: drizzleNeon(neonPool, { schema }) };
+  }
+
+  const pgPool = new PgPool({ connectionString: databaseUrl });
+  return { pool: pgPool, db: drizzlePg(pgPool, { schema }) };
+}
+
+const { pool: _pool, db: _db } = createPoolAndDb();
+
+export const pool = _pool;
+
+// Export db — always non-null at the type level so existing code compiles.
+// When DATABASE_URL is missing, API routes will fail at query time with a
+// descriptive error caught by the Express error handler.
+export const db = _db as NonNullable<typeof _db>;

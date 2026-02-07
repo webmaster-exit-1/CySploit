@@ -1,7 +1,6 @@
 const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
-const express = require('express');
 const { spawn, exec } = require('child_process');
 const isDev = require('electron-is-dev');
 const fs = require('fs');
@@ -81,29 +80,36 @@ function startServer() {
         env: { ...process.env, DB_CONNECTED: dbConnected ? 'true' : 'false' }
       });
     } else {
-      // Production: use the bundled server
-      const server = express();
-      const serverPath = path.join(__dirname, '..', 'dist');
+      // Production: use the bundled server from extraResources
+      const serverPath = app.isPackaged
+        ? path.join(process.resourcesPath, 'server')
+        : path.join(__dirname, '..', 'server-build');
 
-      try {
-        const serverModule = require(path.join(serverPath, 'index.js'));
-        serverModule.default(server);
-      } catch (error) {
-        console.error('Error loading server module:', error);
-        // Fallback to direct execution
-        serverProcess = spawn('node', [path.join(serverPath, 'index.js')], {
+      const serverScript = path.join(serverPath, 'index.js');
+
+      if (!fs.existsSync(serverScript)) {
+        console.error('Server script not found at:', serverScript);
+        // Fallback to dist directory
+        const fallbackPath = path.join(__dirname, '..', 'dist', 'index.js');
+        if (fs.existsSync(fallbackPath)) {
+          serverProcess = spawn('node', [fallbackPath], {
+            cwd: path.join(__dirname, '..'),
+            stdio: 'inherit',
+            shell: true,
+            env: { ...process.env, NODE_ENV: 'production', DB_CONNECTED: dbConnected ? 'true' : 'false' }
+          });
+        } else {
+          console.error('No server script found. Server will not start.');
+          return resolve();
+        }
+      } else {
+        serverProcess = spawn('node', [serverScript], {
           cwd: path.join(__dirname, '..'),
           stdio: 'inherit',
           shell: true,
           env: { ...process.env, NODE_ENV: 'production', DB_CONNECTED: dbConnected ? 'true' : 'false' }
         });
       }
-
-      server.listen(5000, () => {
-        console.log('Express server started on port 5000');
-        resolve();
-      });
-      return;
     }
 
     // Wait for server to start
@@ -140,19 +146,10 @@ async function createWindow() {
     // In development mode, use the development server
     startUrl = 'http://localhost:5000';
   } else {
-    // In production mode, load from the local file system
-    // Check if we're running from AppImage or direct Electron
-    const clientIndexPath = path.join(__dirname, '..', 'client', 'index.html');
-    console.log('Checking for client index.html at:', clientIndexPath);
-
-    if (fs.existsSync(clientIndexPath)) {
-      startUrl = `file://${clientIndexPath}`;
-      console.log('Loading app from:', startUrl);
-    } else {
-      // Fallback to the server URL
-      startUrl = 'http://localhost:5000';
-      console.log('Client index.html not found, falling back to localhost server');
-    }
+    // In production mode, the Express server serves the client.
+    // Always use the server URL for production to ensure API routes work.
+    startUrl = 'http://localhost:5000';
+    console.log('Loading app from server:', startUrl);
   }
 
   mainWindow.loadURL(startUrl);
@@ -228,7 +225,7 @@ async function createWindow() {
             dialog.showMessageBox(mainWindow, {
               title: 'About CySploit',
               message: 'CySploit - Cybersecurity Analysis Platform',
-              detail: `Version: 2.0.1\nElectron: ${process.versions.electron}\nNode: ${process.versions.node}\nChrome: ${process.versions.chrome}\n\n© ${new Date().getFullYear()} CySploit Team`
+              detail: `Version: 2.0.5\nElectron: ${process.versions.electron}\nNode: ${process.versions.node}\nChrome: ${process.versions.chrome}\n\n© ${new Date().getFullYear()} CySploit Team`
             });
           }
         }

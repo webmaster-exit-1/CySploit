@@ -139,7 +139,7 @@ contextBridge.exposeInMainWorld(
     // Get version information
     getVersions: () => {
       return {
-        app: '2.0.1', // App version
+        app: '2.0.5', // App version
         electron: process.versions.electron,
         node: process.versions.node,
         chrome: process.versions.chrome

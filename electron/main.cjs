@@ -52,7 +52,11 @@ function startBackendServer() {
       console.log('[Electron Main] In development, server is expected to be running via "npm run dev".');
       setTimeout(resolve, 3000);
     } else {
-      const serverScriptPath = path.join(__dirname, '..', 'server', 'index.js');
+      // In production, the server is bundled as an extraResource.
+      // electron-builder places extraResources under process.resourcesPath.
+      const serverScriptPath = app.isPackaged
+        ? path.join(process.resourcesPath, 'server', 'index.js')
+        : path.join(__dirname, '..', 'server-build', 'index.js');
       console.log(`[Electron Main] Production mode. Forking server script: ${serverScriptPath}`);
 
       if (!fs.existsSync(serverScriptPath)) {
@@ -137,17 +141,10 @@ async function createWindow() {
     startUrl = serverBaseUrl;
     console.log(`[Electron Main] Development mode. Loading URL: ${startUrl}`);
   } else {
-    const clientIndexPath = path.join(__dirname, '..', 'dist', 'public', 'index.html');
-    console.log(`[Electron Main] Production mode. Checking for client index.html at: ${clientIndexPath}`);
-
-    if (fs.existsSync(clientIndexPath)) {
-      startUrl = `file://${clientIndexPath}`;
-      console.log(`[Electron Main] Loading app from file: ${startUrl}`);
-    } else {
-      console.error(`[Electron Main] Client index.html not found at: ${clientIndexPath}. Falling back to server URL.`);
-      startUrl = serverBaseUrl;
-      dialog.showErrorBox("Client Files Missing", `Could not find client/index.html at ${clientIndexPath}. Attempting to load from server.`);
-    }
+    // In production, the Express server serves the built client files.
+    // Always use the server URL to ensure API routes work correctly.
+    startUrl = serverBaseUrl;
+    console.log(`[Electron Main] Production mode. Loading URL: ${startUrl}`);
   }
 
   mainWindow.loadURL(startUrl).catch(err => {
