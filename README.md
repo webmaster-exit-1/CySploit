@@ -171,7 +171,6 @@ npm run db:migrate           # Migrate database entries into database
 - **[METASPLOIT_RPC_SETUP.md](METASPLOIT_RPC_SETUP.md)** - Metasploit integration setup
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 - **[RELEASE.md](RELEASE.md)** - Release process and CI/CD information
-- **[TODO.md](TODO.md)** - Complete roadmap and feature completion checklist
 
 ## Configuration
 
