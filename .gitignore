@@ -2,6 +2,7 @@
 node_modules/
 npm-debug.log*
 yarn-error.log*
+yarn.lock
 pnpm-debug.log*
 package-lock.json
 pnpm-lock.yaml
@@ -9,6 +10,7 @@ pnpm-lock.yaml
 # Build output
 dist/
 server-build/
+release/
 cysploit-dist/
 # The `build/` directory might be created by Vite if you changed its outDir,
 # or by other tools. If Vite outputs to `dist/public`, then `dist/` above covers it.

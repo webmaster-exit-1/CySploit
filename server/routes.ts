@@ -5,7 +5,7 @@ import { networkInterfaces } from 'os';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { db } from './db';
-import { hosts, nmapScans, captureSession, vulnerabilities, packets, ports, settings } from '@shared/schema';
+import { hosts, nmapScans, captureSession, vulnerabilities, packets, ports, settings } from '../shared/schema';
 import { eq } from 'drizzle-orm';
 
 const execAsync = promisify(execFile);
@@ -89,6 +89,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
     message: { message: 'Too many requests, please try again later.' }
+  });
+
+  // ===== Health Check Route =====
+  app.get(apiRouter('/health'), async (_req: Request, res: Response) => {
+    const dbConfigured = !!process.env.DATABASE_URL;
+    let dbConnected = false;
+
+    if (dbConfigured) {
+      try {
+        // Simple query to test database connectivity
+        await db.select().from(settings).limit(1);
+        dbConnected = true;
+      } catch {
+        dbConnected = false;
+      }
+    }
+
+    res.json({
+      status: 'ok',
+      database: {
+        configured: dbConfigured,
+        connected: dbConnected,
+      },
+      version: '2.0.5',
+    });
   });
 
   // ===== Network Scanner Routes =====

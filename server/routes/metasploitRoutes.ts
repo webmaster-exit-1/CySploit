@@ -1,7 +1,7 @@
 import { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { db } from '../db';
-import { settings } from '@shared/schema';
+import { settings } from '../../shared/schema';
 import { eq } from 'drizzle-orm';
 import {
   initializeMetasploitDbConnection,

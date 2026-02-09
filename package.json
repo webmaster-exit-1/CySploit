@@ -140,33 +140,5 @@
     "vite": "^5.2.0",
     "vitest": "^4.0.18",
     "wait-on": "^9.0.3"
-  },
-  "build": {
-    "appId": "com.cysploit.app",
-    "productName": "CySploit",
-    "directories": {
-      "output": "dist",
-      "buildResources": "build-resources"
-    },
-    "icon": "build-resources/icons/icon.png",
-    "files": [
-      "electron/**/*",
-      "server/**/*",
-      "client/dist/**/*",
-      "package.json",
-      "package-lock.json"
-    ],
-    "extraResources": [
-      "assets/**"
-    ],
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
-      "icon": "build-resources/icons/icon.png",
-      "category": "Security",
-      "maintainer": "echohellosuperuser@member.fsf.org"
-    }
   }
 }

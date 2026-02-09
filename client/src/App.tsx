@@ -106,15 +106,30 @@ function Router() {
       </Route>
 
       <Route path="/pentools">
-        <PenTools />
+        <PageLayout
+          toggleMobileSidebar={toggleMobileSidebar}
+          isMobileSidebarOpen={isMobileSidebarOpen}
+        >
+          <PenTools />
+        </PageLayout>
       </Route>
 
       <Route path="/shodan">
-        <ShodanSearch />
+        <PageLayout
+          toggleMobileSidebar={toggleMobileSidebar}
+          isMobileSidebarOpen={isMobileSidebarOpen}
+        >
+          <ShodanSearch />
+        </PageLayout>
       </Route>
 
       <Route path="/metasploit-console">
-        <MetasploitConsole />
+        <PageLayout
+          toggleMobileSidebar={toggleMobileSidebar}
+          isMobileSidebarOpen={isMobileSidebarOpen}
+        >
+          <MetasploitConsole />
+        </PageLayout>
       </Route>
 
       <Route path="/resources">

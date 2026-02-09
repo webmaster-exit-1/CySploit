@@ -3,10 +3,14 @@ import { Pool as PgPool } from 'pg';
 import { drizzle as drizzleNeon } from 'drizzle-orm/neon-serverless';
 import { drizzle as drizzlePg } from 'drizzle-orm/node-postgres';
 import ws from 'ws';
-import * as schema from '@shared/schema';
+import * as schema from '../shared/schema';
 
 if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL must be set. Did you forget to provision a database?');
+  console.warn(
+    'WARNING: DATABASE_URL is not set. Database features will be unavailable.\n' +
+    'Set DATABASE_URL in your .env file to enable database connectivity.\n' +
+    'Example: DATABASE_URL=postgresql://cysploit:cysploit@localhost:5432/cysploit'
+  );
 }
 
 function isNeonDatabaseUrl(databaseUrl: string): boolean {
@@ -20,18 +24,39 @@ function isNeonDatabaseUrl(databaseUrl: string): boolean {
   }
 }
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL ?? '';
 
-// Drizzle driver selection:
-// - Neon serverless driver for Neon-hosted databases (WebSocket transport)
-// - node-postgres for local/docker/self-hosted Postgres
-export const pool = isNeonDatabaseUrl(databaseUrl)
-  ? (() => {
-      neonConfig.webSocketConstructor = ws;
-      return new NeonPool({ connectionString: databaseUrl });
-    })()
-  : new PgPool({ connectionString: databaseUrl });
+function createPoolAndDb() {
+  if (!databaseUrl) {
+    return { pool: null, db: null };
+  }
 
-export const db = isNeonDatabaseUrl(databaseUrl)
-  ? drizzleNeon(pool as NeonPool, { schema })
-  : drizzlePg(pool as PgPool, { schema });
+  if (isNeonDatabaseUrl(databaseUrl)) {
+    neonConfig.webSocketConstructor = ws;
+    const neonPool = new NeonPool({ connectionString: databaseUrl });
+    return { pool: neonPool, db: drizzleNeon(neonPool, { schema }) };
+  }
+
+  const pgPool = new PgPool({ connectionString: databaseUrl });
+  return { pool: pgPool, db: drizzlePg(pgPool, { schema }) };
+}
+
+const { pool: _pool, db: _db } = createPoolAndDb();
+
+export const pool = _pool;
+
+// When DATABASE_URL is missing _db is null.  We export a Proxy so that any
+// property access (e.g. db.select(), db.insert()) throws a descriptive error
+// at the call‑site rather than a cryptic "Cannot read properties of null".
+// The proxy is typed as NonNullable so existing code compiles unchanged.
+const dbProxy = _db ?? new Proxy({} as NonNullable<typeof _db>, {
+  get(_target, prop) {
+    throw new Error(
+      `Database is not configured (DATABASE_URL is not set). ` +
+      `Cannot access db.${String(prop)}. ` +
+      `Set DATABASE_URL in your .env file to enable database features.`
+    );
+  },
+});
+
+export const db: NonNullable<typeof _db> = dbProxy as NonNullable<typeof _db>;

@@ -1,7 +1,7 @@
 import { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { db } from '../db';
-import { settings, shodanSearches } from '@shared/schema';
+import { settings, shodanSearches } from '../../shared/schema';
 import { eq } from 'drizzle-orm';
 
 const asRecord = (value: unknown): Record<string, unknown> | null => {

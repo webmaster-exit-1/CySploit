@@ -19,15 +19,10 @@ const MetasploitConsole: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
 
-  // Initialize Metasploit console and connect to database
+  // Initialize Metasploit console — check connection status using saved settings
   useEffect(() => {
-    // Make a real Metasploit initialization call
-    fetch('/api/metasploit/init-db', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
+    // Check Metasploit connection status (uses saved settings from DB)
+    fetch('/api/metasploit/status')
       .then(response => {
         if (!response.ok) {
           throw new Error(`Server returned ${response.status}`);
@@ -35,20 +30,30 @@ const MetasploitConsole: React.FC = () => {
         return response.json();
       })
       .then(data => {
-        if (data.error) {
-          setOutput(prev => [
-            ...prev,
-            `[-] Error: ${data.error}`,
-            'Please check your Metasploit settings and try again.',
-            '',
-            'msf6 > '
-          ]);
-        } else {
-          // Use the real response data
+        if (data.connected) {
           setOutput(prev => [
             ...prev,
             'Connected to PostgreSQL database.',
             data.message || 'Metasploit Framework loaded successfully.',
+            data.version ? `[*] Metasploit version: ${JSON.stringify(data.version)}` : '',
+            '',
+            'msf6 > '
+          ].filter(Boolean));
+        } else if (data.configured) {
+          setOutput(prev => [
+            ...prev,
+            `[-] ${data.message || 'Could not connect to Metasploit RPC.'}`,
+            '[*] Metasploit RPC is configured but not reachable.',
+            '[*] Make sure msfrpcd is running. You can still type commands.',
+            '',
+            'msf6 > '
+          ]);
+        } else {
+          setOutput(prev => [
+            ...prev,
+            '[-] Metasploit RPC not configured.',
+            '[*] Please configure Metasploit connection in Settings → API Keys.',
+            '[*] You need to set host, port, username, and password.',
             '',
             'msf6 > '
           ]);
@@ -56,11 +61,11 @@ const MetasploitConsole: React.FC = () => {
         setIsInitialized(true);
       })
       .catch(error => {
-        console.error('Error initializing Metasploit:', error);
+        console.error('Error checking Metasploit status:', error);
         setOutput(prev => [
           ...prev,
           `[-] Error: ${error.message}`,
-          'Failed to initialize Metasploit. Please check your settings.',
+          'Failed to check Metasploit status. Please check your settings.',
           '',
           'msf6 > '
         ]);
