@@ -136,7 +136,7 @@ describe('NeonBorder Component', () => {
 
 ## 🎯 Test Coverage Goals
 
-As defined in TODO.md, our coverage targets are:
+Our coverage targets are:
 
 - **Minimum Coverage:** 70%
 - **Target Coverage:** >80%
@@ -237,7 +237,7 @@ The setup file includes:
 
 ## 📊 What to Test Next
 
-Based on TODO.md priorities, the next areas to add tests:
+The next areas to add tests:
 
 ### Phase 1: Core Utilities (High Priority)
 - [ ] Network scanner utilities (`server/services/networkService.ts`)
@@ -329,7 +329,6 @@ Tests are ready to be integrated into GitHub Actions CI/CD pipeline:
 - [Jest-DOM Matchers](https://github.com/testing-library/jest-dom)
 
 ### Internal Documentation
-- [TODO.md](TODO.md) - Testing Infrastructure section (#1)
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 
 ---
@@ -381,7 +380,6 @@ When contributing to CySploit:
 
 - **GitHub Issues:** https://github.com/webmaster-exit-1/CySploit/issues
 - **Email:** echohellosuperuser@member.fsf.org
-- **Documentation:** See [TODO.md](TODO.md) for testing roadmap
 
 ---
 

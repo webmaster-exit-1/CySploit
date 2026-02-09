@@ -93,7 +93,9 @@ The following vulnerabilities were successfully fixed via `npm audit fix`:
 - ✅ CORS and rate limiting on API endpoints
 - ✅ PostgreSQL with parameterized queries (Drizzle ORM)
 
-### TODO (From TODO.md Security Hardening Section)
+### Security Hardening Tasks
+
+The following security tasks are planned:
 - [ ] Add HTTPS/TLS for production deployments
 - [ ] Implement Content Security Policy (CSP) headers
 - [ ] Add helmet.js for security headers
@@ -117,7 +119,7 @@ The following vulnerabilities were successfully fixed via `npm audit fix`:
 2. **Medium-term (Next Quarter):**
    - [ ] Evaluate vite 7.x upgrade path
    - [ ] Research alternative 3D visualization libraries
-   - [ ] Complete security hardening tasks from TODO.md
+   - [ ] Complete security hardening tasks
 
 3. **Long-term (Next Major Version):**
    - [ ] Plan breaking dependency updates
@@ -128,7 +130,6 @@ The following vulnerabilities were successfully fixed via `npm audit fix`:
 
 ## References
 
-- [TODO.md Security Hardening Section](TODO.md#3-security-hardening)
 - [npm audit documentation](https://docs.npmjs.com/cli/v8/commands/npm-audit)
 - [GitHub Advisory Database](https://github.com/advisories)
 
