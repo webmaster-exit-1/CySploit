@@ -116,13 +116,13 @@ jobs:
           fetch-depth: 0
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: release-artifacts
           path: ./artifacts
 
       - name: Download Electron artifacts
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: electron-artifacts
           path: ./artifacts
