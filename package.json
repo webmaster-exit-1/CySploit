@@ -17,7 +17,7 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "preview": "npm run build && node dist/server/index.js",
+    "preview": "npm run build && node server-build/server/index.js",
     "electron": "electron .",
     "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5000 && npm run electron\"",
     "build:electron": "npm run build && electron-builder",
