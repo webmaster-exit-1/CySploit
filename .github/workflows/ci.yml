@@ -81,7 +81,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Electron app
+      - name: Download build artifacts
+        uses: actions/download-artifact@v6.0.0
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Package Electron app
         run: npm run build:electron
 
       - name: Upload Electron artifacts

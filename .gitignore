@@ -27,9 +27,6 @@ appimagetool-*.AppImage
 # the history of your database schema.
 # migrations/
 
-# Electron-builder output
-release/
-
 # Environment variables
 .env
 .env.*

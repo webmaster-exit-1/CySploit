@@ -7,6 +7,7 @@ const fs = require('fs');
 const os = require('os');
 const net = require('net');
 const { Client } = require('pg');
+const { version: APP_VERSION } = require('../package.json');
 
 // Keep a global reference of the window object to avoid garbage collection
 let mainWindow;
@@ -203,7 +204,7 @@ async function createWindow() {
             dialog.showMessageBox(mainWindow, {
               title: 'About CySploit',
               message: 'CySploit - Cybersecurity Analysis Platform',
-              detail: `Version: 2.0.5\nElectron: ${process.versions.electron}\nNode: ${process.versions.node}\nChrome: ${process.versions.chrome}\n\n© ${new Date().getFullYear()} CySploit Team`
+              detail: `Version: ${APP_VERSION}\nElectron: ${process.versions.electron}\nNode: ${process.versions.node}\nChrome: ${process.versions.chrome}\n\n© ${new Date().getFullYear()} CySploit Team`
             });
           }
         }

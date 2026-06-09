@@ -6,6 +6,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
 npm run build
-npx electron-builder build --publish never
+npm run build:electron
 
 echo "Electron artifacts are available in ./release"

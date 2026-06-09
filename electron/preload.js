@@ -3,6 +3,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 const os = require('os');
 const { exec } = require('child_process');
 const util = require('util');
+const path = require('path');
+const { version: APP_VERSION } = require(path.join(__dirname, '..', 'package.json'));
 const execPromise = util.promisify(exec);
 
 /**
@@ -139,7 +141,7 @@ contextBridge.exposeInMainWorld(
     // Get version information
     getVersions: () => {
       return {
-        app: '2.0.5', // App version
+        app: APP_VERSION,
         electron: process.versions.electron,
         node: process.versions.node,
         chrome: process.versions.chrome

@@ -51,8 +51,8 @@ npm run build:electron
 ```
 
 This creates:
-- **AppImage** (Linux): `dist/CySploit-{version}.AppImage`
-- **deb package** (Debian/Ubuntu): `dist/cysploit_{version}_amd64.deb`
+- **AppImage** (Linux): `release/CySploit-{version}.AppImage`
+- **deb package** (Debian/Ubuntu): `release/cysploit_{version}_amd64.deb`
 
 The builds are created in the `release/` directory.
 
@@ -184,15 +184,17 @@ Features:
 After a successful build, you'll find:
 
 ```
+dist/
+├── public/                          # Built web application (Vite output)
+│   ├── index.html
+│   └── assets/
+└── server/                          # Built server code (tsc output)
+    └── index.js
+
 release/
 ├── CySploit-2.0.5.AppImage          # Linux AppImage (portable)
 ├── cysploit_2.0.5_amd64.deb         # Debian/Ubuntu package
-├── linux-unpacked/                  # Unpacked Linux build
-├── public/                          # Built web application
-│   ├── index.html
-│   └── assets/
-└── server/                          # Built server code
-    └── index.js
+└── linux-unpacked/                  # Unpacked Linux build
 ```
 
 ## Installation
