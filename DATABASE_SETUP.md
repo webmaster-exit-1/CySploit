@@ -6,7 +6,7 @@ This guide will help you set up the PostgreSQL database for CySploit.
 
 - PostgreSQL 12 or later
 - Node.js 18 or later
-- npm or yarn
+- npm
 
 ## Automated Setup
 

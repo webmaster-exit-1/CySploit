@@ -7,6 +7,8 @@ import { registerMetasploitRoutes } from "./routes/metasploitRoutes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
 
 const app = express();
+const port = Number(process.env.PORT) || 5000;
+const localhostOrigin = `http://localhost:${port}`;
 
 // Security headers middleware
 app.use(helmet({
@@ -36,8 +38,8 @@ app.use(helmet({
 // CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
-    ? ['http://localhost:5000'] // In production, only allow same origin
-    : ['http://localhost:5000', 'http://localhost:5173'], // In development, allow Vite dev server
+    ? [localhostOrigin] // In production, only allow same origin
+    : [localhostOrigin, 'http://localhost:5173'], // In development, allow Vite dev server
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -118,10 +120,7 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
+  // Serve API and client from a single port.
   server.listen({
     port,
     host: "0.0.0.0",

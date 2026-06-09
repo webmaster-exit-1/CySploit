@@ -71,7 +71,7 @@ echo "Test 3: Checking PostgreSQL container..."
 if docker ps | grep -q "cysploit-db"; then
     test_pass "PostgreSQL container is running"
     # Test database connection
-    if docker exec cysploit-db-1 psql -U cysploit -d cysploit_db -c "SELECT 1;" &> /dev/null; then
+    if docker exec cysploit-db-1 psql -U cysploit -d cysploit -c "SELECT 1;" &> /dev/null; then
         test_pass "Database connection successful"
     else
         test_fail "Cannot connect to database"
@@ -89,11 +89,11 @@ tables_found=0
 
 if docker ps | grep -q "cysploit-db"; then
     for table in "${expected_tables[@]}"; do
-        if docker exec cysploit-db-1 psql -U cysploit -d cysploit_db -c "\dt" | grep -q "$table"; then
-            test_pass "Table '$table' exists in cysploit_db"
+        if docker exec cysploit-db-1 psql -U cysploit -d cysploit -c "\dt" | grep -q "$table"; then
+            test_pass "Table '$table' exists in cysploit"
             ((tables_found++))
         else
-            test_fail "Table '$table' does not exist in cysploit_db"
+            test_fail "Table '$table' does not exist in cysploit"
         fi
     done
     
@@ -111,7 +111,7 @@ echo ""
 echo "Test 4.5: Checking Metasploit database integration..."
 if docker ps | grep -q "cysploit-db"; then
     # Check if msf_db exists
-    if docker exec cysploit-db-1 psql -U cysploit -d cysploit_db -c "\l" | grep -q "msf_db"; then
+    if docker exec cysploit-db-1 psql -U cysploit -d cysploit -c "\l" | grep -q "msf_db"; then
         test_pass "Metasploit database 'msf_db' exists"
     else
         test_fail "Metasploit database 'msf_db' does not exist"
@@ -236,10 +236,10 @@ else
 fi
 
 # Check server build
-if [ -d "server-build" ]; then
-    test_pass "Server build directory exists (server-build)"
+if [ -d "dist/server" ]; then
+    test_pass "Server build directory exists (dist/server)"
     
-    if [ -f "server-build/server/index.js" ]; then
+    if [ -f "dist/server/index.js" ]; then
         test_pass "Server index.js exists"
     else
         test_fail "Server index.js does not exist"

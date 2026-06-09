@@ -23,32 +23,32 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '20'
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Check for outdated packages
         id: outdated
         run: |
           echo "Checking for outdated packages..."
-          yarn outdated || true
+          npm outdated || true
 
-      - name: Run yarn audit
+      - name: Run npm audit
         id: audit
         run: |
           echo "Running security audit..."
-          yarn audit --level=moderate || true
+          npm audit --audit-level=moderate || true
 
       - name: Check build status
         run: |
           echo "Verifying build..."
-          yarn build
+          npm run build
 
       - name: Check lint status
         run: |
           echo "Verifying lint..."
-          yarn lint
+          npm run lint
 
       - name: Summary
         run: |

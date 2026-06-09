@@ -8,7 +8,7 @@ CySploit uses a shared PostgreSQL instance to support both the CySploit applicat
 ### PostgreSQL Container
 The Docker Compose configuration creates a single PostgreSQL 17.4 instance with two separate databases:
 
-1. **cysploit_db** - Main CySploit application database
+1. **cysploit** - Main CySploit application database
    - User: `cysploit`
    - Password: `cysploit`
    - Contains tables: devices, sessions, packets, settings, users, vulnerabilities
@@ -22,7 +22,7 @@ The Docker Compose configuration creates a single PostgreSQL 17.4 instance with 
 
 ```bash
 # CySploit Database
-DATABASE_URL=postgresql://cysploit:cysploit@localhost:5432/cysploit_db
+DATABASE_URL=postgresql://cysploit:cysploit@localhost:5432/cysploit
 
 # Metasploit Database
 MSF_DATABASE_URL=postgresql://msf_user:msf_password@localhost:5432/msf_db
@@ -46,18 +46,18 @@ The initialization script (`scripts/init-metasploit-db.sh`) runs automatically a
 
 Check that both databases exist:
 ```bash
-docker exec cysploit-db-1 psql -U cysploit -d cysploit_db -c "\l"
+docker exec cysploit-db-1 psql -U cysploit -d cysploit -c "\l"
 ```
 
 Expected output should show:
-- `cysploit_db`
+- `cysploit`
 - `msf_db`
 
 ### 3. Test Database Connections
 
 **CySploit Database:**
 ```bash
-docker exec cysploit-db-1 psql -U cysploit -d cysploit_db -c "SELECT 1;"
+docker exec cysploit-db-1 psql -U cysploit -d cysploit -c "SELECT 1;"
 ```
 
 **Metasploit Database:**
@@ -212,7 +212,7 @@ The RPC connection is configured separately in the application settings.
 
 ```bash
 # Backup CySploit database
-docker exec cysploit-db-1 pg_dump -U cysploit cysploit_db > cysploit_backup.sql
+docker exec cysploit-db-1 pg_dump -U cysploit cysploit > cysploit_backup.sql
 
 # Backup Metasploit database
 docker exec cysploit-db-1 pg_dump -U msf_user msf_db > msf_backup.sql
@@ -222,7 +222,7 @@ docker exec cysploit-db-1 pg_dump -U msf_user msf_db > msf_backup.sql
 
 ```bash
 # Restore CySploit database
-docker exec -i cysploit-db-1 psql -U cysploit -d cysploit_db < cysploit_backup.sql
+docker exec -i cysploit-db-1 psql -U cysploit -d cysploit < cysploit_backup.sql
 
 # Restore Metasploit database
 docker exec -i cysploit-db-1 psql -U msf_user -d msf_db < msf_backup.sql
@@ -294,7 +294,7 @@ Add these to your `.env` file:
 
 ```bash
 # CySploit Database
-DATABASE_URL=postgresql://cysploit:cysploit@localhost:5432/cysploit_db
+DATABASE_URL=postgresql://cysploit:cysploit@localhost:5432/cysploit
 
 # Metasploit Database
 MSF_DATABASE_URL=postgresql://msf_user:msf_password@localhost:5432/msf_db

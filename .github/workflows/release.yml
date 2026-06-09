@@ -30,16 +30,16 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '20'
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Run linter
-        run: yarn lint
+        run: npm run lint
 
       - name: Build project
-        run: yarn build
+        run: npm run build
 
       - name: Create build archive
         run: |
@@ -70,16 +70,16 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '20'
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Build project first
-        run: yarn build
+        run: npm run build
 
       - name: Build Electron app
-        run: yarn build:electron
+        run: npm run build:electron
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
@@ -87,7 +87,7 @@ jobs:
       - name: Check if Electron build succeeded
         id: electron_check
         run: |
-          if [ -d "dist" ] && (ls dist/*.AppImage 2>/dev/null || ls dist/*.deb 2>/dev/null); then
+          if [ -d "release" ] && (ls release/*.AppImage 2>/dev/null || ls release/*.deb 2>/dev/null); then
             echo "electron_built=true" >> $GITHUB_OUTPUT
           else
             echo "electron_built=false" >> $GITHUB_OUTPUT
@@ -100,8 +100,8 @@ jobs:
         with:
           name: electron-artifacts
           path: |
-            dist/*.AppImage
-            dist/*.deb
+            release/*.AppImage
+            release/*.deb
           retention-days: 30
 
   create-release:

@@ -7,7 +7,7 @@
         environment:
           POSTGRES_USER: cysploit
           POSTGRES_PASSWORD: cysploit
-          POSTGRES_DB: cysploit_db
+          POSTGRES_DB: cysploit
           # Create additional database for Metasploit
           POSTGRES_MULTIPLE_DATABASES: msf_db
         ports:

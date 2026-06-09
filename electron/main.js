@@ -1,44 +1,43 @@
 const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
-const { spawn, exec } = require('child_process');
+const { spawn } = require('child_process');
 const isDev = require('electron-is-dev');
 const fs = require('fs');
 const os = require('os');
 const net = require('net');
-const util = require('util');
-const execPromise = util.promisify(exec);
+const { Client } = require('pg');
 
 // Keep a global reference of the window object to avoid garbage collection
 let mainWindow;
 let serverProcess;
 let dbConnected = false;
+const APP_PORT = Number(process.env.PORT) || 5000;
+const SERVER_BASE_URL = `http://localhost:${APP_PORT}`;
 
 console.log(`[env] DATABASE_URL ${process.env.DATABASE_URL ? 'set' : 'missing'}`);
 
 // Check if PostgreSQL is available and connected
 function checkDatabase() {
-  return new Promise((resolve, reject) => {
-    const dbUrl = process.env.DATABASE_URL;
-    if (!dbUrl) {
-      console.warn('DATABASE_URL is not set. Skipping DB connectivity check.');
-      dbConnected = false;
-      return resolve(false);
-    }
+  const dbUrl = process.env.DATABASE_URL;
+  if (!dbUrl) {
+    console.warn('DATABASE_URL is not set. Skipping DB connectivity check.');
+    dbConnected = false;
+    return Promise.resolve(false);
+  }
 
-    // Try to connect to the database
-    exec(`node -e "const { Client } = require('pg'); const client = new Client('${dbUrl}'); client.connect().then(() => { console.log('Connected'); client.end(); process.exit(0); }).catch(err => { console.error(err); process.exit(1); })"`, (error, stdout, stderr) => {
-      if (error) {
-        console.error('Database connection failed:', stderr);
-        dbConnected = false;
-        resolve(false);
-      } else {
-        console.log('Database connection successful:', stdout);
-        dbConnected = true;
-        resolve(true);
-      }
+  const client = new Client({ connectionString: dbUrl });
+  return client.connect()
+    .then(() => client.end())
+    .then(() => {
+      dbConnected = true;
+      return true;
+    })
+    .catch((error) => {
+      console.error('Database connection failed:', error?.message || error);
+      dbConnected = false;
+      return false;
     });
-  });
 }
 
 // Start Express server
@@ -49,7 +48,7 @@ function startServer() {
     // In development, if the server is already running (e.g. started by `npm run dev`),
     // do not spawn a second instance.
     if (isDev) {
-      const probe = net.createConnection({ host: '127.0.0.1', port: 5000 });
+      const probe = net.createConnection({ host: '127.0.0.1', port: APP_PORT });
       const alreadyRunning = await new Promise((r) => {
         probe.once('connect', () => {
           probe.end();
@@ -59,7 +58,7 @@ function startServer() {
       });
 
       if (alreadyRunning) {
-        console.log('Express server already running on port 5000.');
+        console.log(`Express server already running on port ${APP_PORT}.`);
         // Still check DB so UI can reflect status
         await checkDatabase();
         return resolve();
@@ -76,40 +75,26 @@ function startServer() {
       serverProcess = spawn('npm', ['run', 'server'], {
         cwd: path.join(__dirname, '..'),
         stdio: 'inherit',
-        shell: true,
         env: { ...process.env, DB_CONNECTED: dbConnected ? 'true' : 'false' }
       });
     } else {
       // Production: use the bundled server from extraResources
       const serverPath = app.isPackaged
         ? path.join(process.resourcesPath, 'server')
-        : path.join(__dirname, '..', 'server-build');
+        : path.join(__dirname, '..', 'dist', 'server');
 
       const serverScript = path.join(serverPath, 'index.js');
 
       if (!fs.existsSync(serverScript)) {
         console.error('Server script not found at:', serverScript);
-        // Fallback to dist directory
-        const fallbackPath = path.join(__dirname, '..', 'dist', 'index.js');
-        if (fs.existsSync(fallbackPath)) {
-          serverProcess = spawn('node', [fallbackPath], {
-            cwd: path.join(__dirname, '..'),
-            stdio: 'inherit',
-            shell: true,
-            env: { ...process.env, NODE_ENV: 'production', DB_CONNECTED: dbConnected ? 'true' : 'false' }
-          });
-        } else {
-          console.error('No server script found. Server will not start.');
-          return resolve();
-        }
-      } else {
-        serverProcess = spawn('node', [serverScript], {
-          cwd: path.join(__dirname, '..'),
-          stdio: 'inherit',
-          shell: true,
-          env: { ...process.env, NODE_ENV: 'production', DB_CONNECTED: dbConnected ? 'true' : 'false' }
-        });
+        return resolve();
       }
+
+      serverProcess = spawn('node', [serverScript], {
+        cwd: path.join(__dirname, '..'),
+        stdio: 'inherit',
+        env: { ...process.env, NODE_ENV: 'production', DB_CONNECTED: dbConnected ? 'true' : 'false' }
+      });
     }
 
     // Wait for server to start
@@ -133,22 +118,15 @@ async function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      sandbox: false, // Disable sandbox for advanced network operations
+      sandbox: true,
       webSecurity: true,
       preload: path.join(__dirname, 'preload.js')
     }
   });
 
   // Load the app
-  let startUrl;
-
-  if (isDev) {
-    // In development mode, use the development server
-    startUrl = 'http://localhost:5000';
-  } else {
-    // In production mode, the Express server serves the client.
-    // Always use the server URL for production to ensure API routes work.
-    startUrl = 'http://localhost:5000';
+  const startUrl = SERVER_BASE_URL;
+  if (!isDev) {
     console.log('Loading app from server:', startUrl);
   }
 
@@ -207,13 +185,13 @@ async function createWindow() {
         {
           label: 'Documentation',
           click: async () => {
-            await shell.openExternal('https://github.com/yourusername/cysploit/wiki');
+            await shell.openExternal('https://github.com/webmaster-exit-1/CySploit/wiki');
           }
         },
         {
           label: 'Report Issue',
           click: async () => {
-            await shell.openExternal('https://github.com/yourusername/cysploit/issues');
+            await shell.openExternal('https://github.com/webmaster-exit-1/CySploit/issues');
           }
         },
         { type: 'separator' },
@@ -274,6 +252,19 @@ let nmapProcess = null;
 let tcpdumpProcess = null;
 let metasploitProcess = null;
 
+function sanitizeByPattern(value, pattern) {
+  const candidate = String(value ?? '').trim();
+  return pattern.test(candidate) ? candidate : '';
+}
+
+/**
+ * Allow only host/domain/IP-safe scan targets.
+ * This blocks shell metacharacters and unexpected delimiters.
+ */
+function sanitizeTarget(value) {
+  return sanitizeByPattern(value, /^[a-zA-Z0-9:._/-]+$/);
+}
+
 // Handle nmap scanning requests
 ipcMain.on('runNmap', (event, options) => {
   if (nmapProcess) {
@@ -284,7 +275,11 @@ ipcMain.on('runNmap', (event, options) => {
   console.log('Starting nmap scan with options:', options);
 
   // Validate the target IP/range to prevent command injection
-  const target = options.target.replace(/[;&|`$(){}[\]<>\\]/g, '');
+  const target = sanitizeTarget(options?.target);
+  if (!target) {
+    event.sender.send('nmapResults', { type: 'error', data: 'Invalid scan target.' });
+    return;
+  }
 
   // Build the nmap command with appropriate options
   let nmapArgs = [];
@@ -296,10 +291,14 @@ ipcMain.on('runNmap', (event, options) => {
   } else if (options.scanType === 'os') {
     nmapArgs = ['-O', target];
   } else if (options.scanType === 'ports') {
-    const ports = options.ports.replace(/[;&|`$(){}[\]<>\\]/g, '');
+    const ports = sanitizeByPattern(options?.ports, /^[0-9,\-]+$/);
+    if (!ports) {
+      event.sender.send('nmapResults', { type: 'error', data: 'Invalid port list.' });
+      return;
+    }
     nmapArgs = ['-p', ports, target];
   } else if (options.scanType === 'comprehensive') {
-    nmapArgs = ['-sS', '-sU', '-T4', '-A', '-v', '-PE', '-PP', '-PS80,443', '-PA3389', '-PU40125', '-PY', '-g 53', '--script "default or vuln"', target];
+    nmapArgs = ['-sS', '-sU', '-T4', '-A', '-v', '-PE', '-PP', '-PS80,443', '-PA3389', '-PU40125', '-PY', '-g', '53', '--script', 'default or vuln', target];
   } else {
     // Default scan
     nmapArgs = ['-sV', target];
@@ -307,7 +306,7 @@ ipcMain.on('runNmap', (event, options) => {
 
   // If sudo is needed, check if we're root or have sudo access
   // For security reasons, we don't automatically use sudo
-  nmapProcess = spawn('nmap', nmapArgs, { shell: true });
+  nmapProcess = spawn('nmap', nmapArgs);
 
   let output = '';
   let errorOutput = '';
@@ -347,8 +346,17 @@ ipcMain.on('capturePackets', (event, options) => {
   console.log('Starting packet capture with options:', options);
 
   // Validate the interface and filter to prevent command injection
-  const iface = options.interface.replace(/[;&|`$(){}[\]<>\\]/g, '');
-  const filter = options.filter ? options.filter.replace(/[;&|`$(){}[\]<>\\]/g, '') : '';
+  const iface = sanitizeByPattern(options?.interface, /^[a-zA-Z0-9_.:-]+$/);
+  if (!iface) {
+    event.sender.send('packetCaptureStarted', {
+      success: false,
+      error: 'Invalid network interface'
+    });
+    return;
+  }
+  const filter = options?.filter
+    ? sanitizeByPattern(options.filter, /^[a-zA-Z0-9_.:/\-\s()&|=<>!]+$/)
+    : '';
 
   // Create a temporary file to store the captured packets
   const captureFile = path.join(os.tmpdir(), `capture_${Date.now()}.pcap`);
@@ -376,10 +384,10 @@ ipcMain.on('capturePackets', (event, options) => {
   if (isWindows) {
     // On Windows, we'd typically use WinPcap/Npcap
     // For simplicity, assume it's installed and accessible
-    tcpdumpProcess = spawn('tcpdump', tcpdumpArgs, { shell: true });
+    tcpdumpProcess = spawn('tcpdump', tcpdumpArgs);
   } else if (isElevated) {
     // If we're running as root, no sudo needed
-    tcpdumpProcess = spawn('tcpdump', tcpdumpArgs, { shell: true });
+    tcpdumpProcess = spawn('tcpdump', tcpdumpArgs);
   } else {
     // For Linux/macOS, we need sudo but should verify permissions first
     // We don't automatically use sudo for security reasons
@@ -470,12 +478,16 @@ ipcMain.on('runVulnerabilityScan', (event, options) => {
   console.log('Starting vulnerability scan with options:', options);
 
   // Validate the target to prevent command injection
-  const target = options.target.replace(/[;&|`$(){}[\]<>\\]/g, '');
+  const target = sanitizeTarget(options?.target);
+  if (!target) {
+    event.sender.send('vulnerabilityScanResults', { type: 'error', data: 'Invalid scan target.' });
+    return;
+  }
 
   // Use nmap NSE scripts for vulnerability scanning
   const nmapArgs = ['-sV', '--script', 'vuln', target];
 
-  const nmapProcess = spawn('nmap', nmapArgs, { shell: true });
+  const nmapProcess = spawn('nmap', nmapArgs);
 
   let output = '';
   let errorOutput = '';
@@ -508,7 +520,7 @@ ipcMain.on('connectMetasploit', (event, options) => {
   console.log('Connecting to Metasploit RPC:', options);
 
   // This is just a check to see if Metasploit is installed and available
-  const checkProcess = spawn('which', ['msfconsole'], { shell: true });
+  const checkProcess = spawn('which', ['msfconsole']);
 
   checkProcess.on('close', (code) => {
     if (code === 0) {

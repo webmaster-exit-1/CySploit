@@ -54,7 +54,7 @@ echo "Test 3: Checking Metasploit database..."
 # Get the container name dynamically
 CONTAINER_NAME=$(docker ps --format "{{.Names}}" | grep cysploit-db | head -1)
 if [ -n "$CONTAINER_NAME" ]; then
-    if docker exec "$CONTAINER_NAME" psql -U cysploit -d cysploit_db -c "\l" 2>/dev/null | grep -q "msf_db"; then
+    if docker exec "$CONTAINER_NAME" psql -U cysploit -d cysploit -c "\l" 2>/dev/null | grep -q "msf_db"; then
         test_pass "msf_db database exists"
     else
         test_fail "msf_db database does not exist"

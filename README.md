@@ -41,8 +41,8 @@
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/cysploit.git
-   cd cysploit
+   git clone https://github.com/webmaster-exit-1/CySploit.git
+   cd CySploit
    ```
 
 2. Set up environment variables:
@@ -113,7 +113,7 @@ You can build CySploit as a standalone desktop application for Linux, Windows, o
    ./build-electron.sh
    ```
 
-3. The packaged application will be created in the `/dist` directory
+3. The packaged application will be created in the `/release` directory
 
 #### Build AppImage (Linux)
 
@@ -241,7 +241,7 @@ To download the latest release, visit the [Releases page](https://github.com/web
 
 ## License
 
-Copyright © 2025 CySploit Team - All rights reserved
+Copyright © 2025 CySploit Contributors
 
 ## Acknowledgments
 

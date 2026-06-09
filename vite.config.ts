@@ -8,6 +8,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default (async (): Promise<UserConfig> => {
+  const backendPort = process.env.PORT || "5000";
+
   const plugins = [
     react(),
   ];
@@ -32,7 +34,7 @@ export default (async (): Promise<UserConfig> => {
       // proxy API calls to the Express backend (port 5000).
       proxy: {
         "/api": {
-          target: "http://localhost:5000",
+          target: `http://localhost:${backendPort}`,
           changeOrigin: true,
         },
       },
