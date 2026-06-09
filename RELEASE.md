@@ -170,6 +170,18 @@ Format: `MAJOR.MINOR.PATCH` (e.g., `2.0.1`)
 
 6. **Test releases** before announcing them to users
 
+## Pre-release Checklist
+
+Before creating a tag or running a manual release:
+
+- [ ] `npm ci`
+- [ ] `npm run lint`
+- [ ] `npm run build`
+- [ ] `npm run build:electron`
+- [ ] Verify `release/*.AppImage` and `release/*.deb` are present
+- [ ] Smoke-test the desktop artifact on a clean Linux environment
+- [ ] Confirm README/BUILD/RELEASE docs and `package.json` version are in sync
+
 ## Rollback Procedure
 
 If a release has issues:

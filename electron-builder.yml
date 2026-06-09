@@ -1,6 +1,6 @@
 appId: com.pentools.cysploit
 productName: CySploit
-copyright: Copyright © 2025 PenTools Security
+copyright: Copyright © 2025 CySploit Contributors
 directories:
   output: release # Electron-builder output (separate from Vite's dist/)
   buildResources: build-resources
@@ -12,7 +12,7 @@ files:
   - node_modules/**/* # Project dependencies
   - package.json
 extraResources:
-  - from: server-build # Server built by tsc
+  - from: dist/server # Server built by tsc
     to: server
     filter:
       - "**/*"

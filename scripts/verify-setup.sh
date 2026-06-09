@@ -147,7 +147,7 @@ if npm run build >/dev/null 2>&1; then
     success "Build successful"
     
     # Check if build artifacts exist
-    if [ -d dist/public ] && [ -f server-build/server/index.js ]; then
+    if [ -d dist/public ] && [ -f dist/server/index.js ]; then
         success "Build artifacts created"
     else
         error "Build artifacts missing"

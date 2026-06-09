@@ -6,8 +6,8 @@ CySploit is currently under active development. We provide security updates for 
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.x.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 2.x.x   | :white_check_mark: |
+| < 2.0   | :x:                |
 
 ## Reporting a Vulnerability
 
@@ -41,7 +41,7 @@ CySploit implements the following security measures:
 
 1. **API Key Protection**: We ensure API keys (like Shodan API keys) are never stored in version control or bundled with releases
 2. **Secure Local Storage**: Sensitive credentials are stored securely in the system's keychain/credential manager where available
-3. **Automatic Updates**: The desktop application includes an auto-update mechanism to deliver security patches
+3. **Desktop Runtime Isolation**: Electron runs with `contextIsolation` enabled, `nodeIntegration` disabled, and sandbox enabled
 4. **Dependency Scanning**: Regular automated scanning of dependencies for known vulnerabilities
 5. **Code Scanning**: Static code analysis to identify potential security issues
 
@@ -58,3 +58,9 @@ When security vulnerabilities are reported, we follow this disclosure process:
 ## Security Requirements
 
 CySploit is a security tool, and as such, may require elevated permissions to perform certain operations, especially in the desktop version. We are committed to requesting only the minimum permissions necessary for each feature to function correctly.
+
+### Minimum Privilege Guidance
+
+- Run CySploit as a regular user by default.
+- Elevated/root execution is only required for packet capture and some low-level scan modes.
+- CySploit will surface a warning when elevated permissions are required and will not silently escalate privileges.

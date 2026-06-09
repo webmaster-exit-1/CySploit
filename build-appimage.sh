@@ -34,7 +34,7 @@ if [ -e node_modules/node-libcurl/build/Makefile ]; then
     echo "Fix it by running:" >&2
     echo "  sudo chown -R $USER:$USER node_modules/node-libcurl" >&2
     echo "Or, for a full cleanup:" >&2
-    echo "  sudo rm -rf node_modules package-lock.json && npm install" >&2
+    echo "  sudo rm -rf node_modules && npm install" >&2
     exit 1
   fi
 fi
@@ -43,8 +43,8 @@ echo "Building client + server bundles..."
 npm run build
 
 echo "Packaging Linux AppImage..."
-# Uses electron-builder.yml for configuration and outputs to ./dist
+# Uses electron-builder.yml for configuration and outputs to ./release
 npx electron-builder build --linux AppImage --publish never
 
 echo ""
-echo "Done. Check the ./dist directory for the generated .AppImage."
+echo "Done. Check the ./release directory for the generated .AppImage."

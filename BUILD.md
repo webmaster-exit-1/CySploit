@@ -54,7 +54,7 @@ This creates:
 - **AppImage** (Linux): `dist/CySploit-{version}.AppImage`
 - **deb package** (Debian/Ubuntu): `dist/cysploit_{version}_amd64.deb`
 
-The builds are created in the `dist/` directory.
+The builds are created in the `release/` directory.
 
 ### 3. AppImage Only
 
@@ -97,7 +97,7 @@ The Electron build is configured in `electron-builder.yml`:
 appId: com.pentools.cysploit
 productName: CySploit
 directories:
-  output: dist
+  output: release
   buildResources: build-resources
 files:
   - dist/public/**/*
@@ -184,7 +184,7 @@ Features:
 After a successful build, you'll find:
 
 ```
-dist/
+release/
 ├── CySploit-2.0.5.AppImage          # Linux AppImage (portable)
 ├── cysploit_2.0.5_amd64.deb         # Debian/Ubuntu package
 ├── linux-unpacked/                  # Unpacked Linux build
@@ -253,7 +253,7 @@ If electron-builder fails with permission errors:
 sudo chown -R $USER:$USER node_modules
 
 # Or clean and reinstall
-sudo rm -rf node_modules package-lock.json
+sudo rm -rf node_modules
 npm install
 ```
 
@@ -339,8 +339,8 @@ jobs:
         with:
           name: CySploit-builds
           path: |
-            dist/*.AppImage
-            dist/*.deb
+            release/*.AppImage
+            release/*.deb
 ```
 
 ## Performance Optimization

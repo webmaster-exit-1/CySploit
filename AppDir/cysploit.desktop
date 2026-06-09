@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=CySploit
-Comment=Cybersecurity Analysis Platform
-Exec=AppRun
-Icon=cysploit
-Type=Application
-Categories=Development;Security;
-Terminal=false
-StartupWMClass=cysploit

@@ -8,7 +8,7 @@ echo "Script running from: $SCRIPT_DIR"
 cd "$SCRIPT_DIR" || exit 1
 
 # Set PostgreSQL connection string
-export DATABASE_URL="${DATABASE_URL:-postgresql://cysploit:cysploit@localhost:5432/cysploit_db}"
+export DATABASE_URL="${DATABASE_URL:-postgresql://cysploit:cysploit@localhost:5432/cysploit}"
 
 # Try to locate the AppImage
 APPIMAGE=""
@@ -59,9 +59,7 @@ if ! file "$APPIMAGE" | grep -q "AppImage"; then
     exit 1
 fi
 
-echo "Starting CySploit application with --no-sandbox..."
-# Run the CySploit AppImage with the --no-sandbox flag and the database URL
-"$APPIMAGE" --no-sandbox
+echo "Starting CySploit application..."
+"$APPIMAGE"
 # The DATABASE_URL is an environment variable and should be inherited by the AppImage process.
 # No need to pass it as "DATABASE_URL=$DATABASE_URL" before the command if it's already exported or set for the script.
-
