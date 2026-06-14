@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react"
 import { DayPicker, type ChevronProps } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
@@ -10,6 +10,12 @@ export type CalendarProps = React.ComponentProps<typeof DayPicker>
 function CalendarChevron({ orientation, className }: ChevronProps) {
   if (orientation === "left") {
     return <ChevronLeft className={cn("h-4 w-4", className)} />;
+  }
+  if (orientation === "up") {
+    return <ChevronUp className={cn("h-4 w-4", className)} />;
+  }
+  if (orientation === "down") {
+    return <ChevronDown className={cn("h-4 w-4", className)} />;
   }
   return <ChevronRight className={cn("h-4 w-4", className)} />;
 }
