@@ -47,6 +47,7 @@ node dist/server/index.js
 Build the desktop application:
 
 ```bash
+npm run build
 npm run build:electron
 ```
 

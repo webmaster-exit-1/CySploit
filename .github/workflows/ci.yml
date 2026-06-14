@@ -85,7 +85,7 @@ jobs:
         uses: actions/download-artifact@v6.0.0
         with:
           name: build-artifacts
-          path: dist/
+          path: .
 
       - name: Package Electron app
         run: npm run build:electron
