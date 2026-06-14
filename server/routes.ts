@@ -1046,7 +1046,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      for (const [sourceIp, ports] of sourceIpPorts.entries()) {
+      for (const [sourceIp, ports] of Array.from(sourceIpPorts.entries())) {
         if (ports.size > 50) {
           anomalies.push(`Possible port scan detected from ${sourceIp} (${ports.size} different ports)`);
         }

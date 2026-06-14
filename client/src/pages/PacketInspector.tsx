@@ -367,7 +367,7 @@ const PacketInspector: React.FC = () => {
                             {formatProtocol(packet.protocol || 'Unknown')}
                           </Badge>
                         </TableCell>
-                        <TableCell>{packet.size || 0} bytes</TableCell>
+                        <TableCell>{packet.length || 0} bytes</TableCell>
                       </TableRow>
                     );
                   })}
@@ -402,7 +402,7 @@ const PacketInspector: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-gray-400">Size:</p>
-                      <p className="font-mono">{selectedPacket.size || 0} bytes</p>
+                      <p className="font-mono">{selectedPacket.length || 0} bytes</p>
                     </div>
                     <div>
                       <p className="text-gray-400">Source:</p>

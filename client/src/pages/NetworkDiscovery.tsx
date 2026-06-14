@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useNetworkScanner } from '@/lib/hooks/useNetworkScanner';
-import { NetworkInterface, NetworkScanResult } from '@/lib/types';
+import { Device, NetworkInterface, NetworkScanResult } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Helmet } from 'react-helmet';
 import NeonBorder from '@/components/common/NeonBorder';
@@ -329,7 +329,7 @@ const NetworkDiscovery: React.FC = () => {
                     </TableCell>
                     <TableCell>
                         {device.openPorts && device.openPorts.length > 0 ? (
-                          device.openPorts.map((port) => (
+                          device.openPorts.map((port: number) => (
                             <Badge key={port} variant="outline" className="text-xs">
                               {port}
                             </Badge>
@@ -366,7 +366,7 @@ const NetworkDiscovery: React.FC = () => {
           <CardHeader>
             <CardTitle className="font-rajdhani">Last Scan Results</CardTitle>
             <CardDescription>
-              Network scan results for {scanResults.cidr || cidrRange}
+              Network scan results for {cidrRange}
             </CardDescription>
           </CardHeader>
           <CardContent>

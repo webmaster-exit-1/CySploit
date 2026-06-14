@@ -44,10 +44,10 @@ const NetworkMapping: React.FC = () => {
     nodes.push({
       id: `device-${routerDevice.id}`,
       label: routerDevice.deviceName || 'Router',
-      type: routerDevice.deviceType || 'router',
+      type: (routerDevice.deviceType as NetworkNode['type']) || 'router',
       ipAddress: routerDevice.ipAddress,
       isOnline: routerDevice.isOnline,
-      data: routerDevice
+      data: { ...routerDevice } as Record<string, unknown>
     });
 
     // Add all other devices and link to the router or other devices based on layout
@@ -57,10 +57,10 @@ const NetworkMapping: React.FC = () => {
       nodes.push({
         id: `device-${device.id}`,
         label: device.deviceName || `Device-${device.id}`,
-        type: device.deviceType || 'unknown',
+        type: (device.deviceType as NetworkNode['type']) || 'unknown',
         ipAddress: device.ipAddress,
         isOnline: device.isOnline,
-        data: device
+        data: { ...device } as Record<string, unknown>
       });
 
       if (mapLayout === 'force-directed') {
