@@ -75,10 +75,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build project first
-        run: npm run build
+      - name: Download build artifacts
+        uses: actions/download-artifact@v6.0.0
+        with:
+          name: release-artifacts
+          path: dist-tmp/
 
-      - name: Build Electron app
+      - name: Restore dist from archive
+        run: |
+          mkdir -p dist
+          tar -xzf dist-tmp/cysploit-dist.tar.gz
+
+      - name: Package Electron app
         run: npm run build:electron
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
