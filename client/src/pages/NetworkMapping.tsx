@@ -15,6 +15,13 @@ import { Progress } from '@/components/ui/progress';
 import { useVulnerabilityScanner } from '@/lib/hooks/useVulnerabilityScanner';
 import type { Vulnerability } from '@/lib/types';
 
+const isNetworkNodeType = (deviceType?: string): deviceType is NetworkNode['type'] =>
+  deviceType === 'router' ||
+  deviceType === 'computer' ||
+  deviceType === 'iot' ||
+  deviceType === 'server' ||
+  deviceType === 'unknown';
+
 const NetworkMapping: React.FC = () => {
   const { devices, isLoadingDevices, scanNetworkMutation } = useNetworkScanner();
   const { vulnerabilities } = useVulnerabilityScanner();
@@ -44,10 +51,10 @@ const NetworkMapping: React.FC = () => {
     nodes.push({
       id: `device-${routerDevice.id}`,
       label: routerDevice.deviceName || 'Router',
-      type: (routerDevice.deviceType as NetworkNode['type']) || 'router',
+      type: isNetworkNodeType(routerDevice.deviceType) ? routerDevice.deviceType : 'router',
       ipAddress: routerDevice.ipAddress,
       isOnline: routerDevice.isOnline,
-      data: { ...routerDevice } as Record<string, unknown>
+      data: routerDevice as unknown as Record<string, unknown>
     });
 
     // Add all other devices and link to the router or other devices based on layout
@@ -57,10 +64,10 @@ const NetworkMapping: React.FC = () => {
       nodes.push({
         id: `device-${device.id}`,
         label: device.deviceName || `Device-${device.id}`,
-        type: (device.deviceType as NetworkNode['type']) || 'unknown',
+        type: isNetworkNodeType(device.deviceType) ? device.deviceType : 'unknown',
         ipAddress: device.ipAddress,
         isOnline: device.isOnline,
-        data: { ...device } as Record<string, unknown>
+        data: device as unknown as Record<string, unknown>
       });
 
       if (mapLayout === 'force-directed') {
