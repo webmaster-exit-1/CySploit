@@ -96,7 +96,7 @@ export interface NetworkNode {
   type: 'router' | 'computer' | 'iot' | 'server' | 'unknown';
   ipAddress: string;
   isOnline: boolean;
-  data?: Record<string, unknown>;
+  data?: Device | Record<string, unknown>;
 }
 
 export interface NetworkLink {
