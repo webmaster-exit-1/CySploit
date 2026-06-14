@@ -15,6 +15,13 @@ import { Progress } from '@/components/ui/progress';
 import { useVulnerabilityScanner } from '@/lib/hooks/useVulnerabilityScanner';
 import type { Vulnerability } from '@/lib/types';
 
+const isNetworkNodeType = (deviceType?: string): deviceType is NetworkNode['type'] =>
+  deviceType === 'router' ||
+  deviceType === 'computer' ||
+  deviceType === 'iot' ||
+  deviceType === 'server' ||
+  deviceType === 'unknown';
+
 const NetworkMapping: React.FC = () => {
   const { devices, isLoadingDevices, scanNetworkMutation } = useNetworkScanner();
   const { vulnerabilities } = useVulnerabilityScanner();
@@ -44,7 +51,7 @@ const NetworkMapping: React.FC = () => {
     nodes.push({
       id: `device-${routerDevice.id}`,
       label: routerDevice.deviceName || 'Router',
-      type: routerDevice.deviceType || 'router',
+      type: isNetworkNodeType(routerDevice.deviceType) ? routerDevice.deviceType : 'router',
       ipAddress: routerDevice.ipAddress,
       isOnline: routerDevice.isOnline,
       data: routerDevice
@@ -57,7 +64,7 @@ const NetworkMapping: React.FC = () => {
       nodes.push({
         id: `device-${device.id}`,
         label: device.deviceName || `Device-${device.id}`,
-        type: device.deviceType || 'unknown',
+        type: isNetworkNodeType(device.deviceType) ? device.deviceType : 'unknown',
         ipAddress: device.ipAddress,
         isOnline: device.isOnline,
         data: device

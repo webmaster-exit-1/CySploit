@@ -55,7 +55,7 @@ export const useNetworkScanner = () => {
             const vendor = vendorMatch ? vendorMatch[1] : 'Unknown';
             
             // Extract open ports
-            const portMatches = block.matchAll(/(\d+)\/tcp\s+open\s+(\S+)/g);
+            const portMatches = Array.from(block.matchAll(/(\d+)\/tcp\s+open\s+(\S+)/g));
             const ports: number[] = [];
             for (const match of portMatches) {
               ports.push(parseInt(match[1]));
@@ -67,14 +67,14 @@ export const useNetworkScanner = () => {
             devices.push({
               id: devices.length + 1,
               ipAddress,
-              macAddress,
-              name: initialHostname || `Device at ${ipAddress}`,
-              lastSeen: new Date(),
+              macAddress: macAddress || '',
+              deviceName: initialHostname || `Device at ${ipAddress}`,
+              lastSeen: new Date().toISOString(),
               deviceType: 'unknown',
               vendor,
-              osType: null,
-              ports,
-              status: isUp ? 'online' : 'offline',
+              osType: undefined,
+              openPorts: ports,
+              isOnline: isUp,
               details: { nmapOutput: block.trim() }
             });
           }
@@ -135,13 +135,13 @@ export const useNetworkScanner = () => {
           
           // Extract open ports with service names
           const ports: number[] = [];
-          const portMatches = nmapOutput.matchAll(/(\d+)\/tcp\s+open\s+(\S+)/g);
+          const portMatches = Array.from(nmapOutput.matchAll(/(\d+)\/tcp\s+open\s+(\S+)/g));
           for (const match of portMatches) {
             ports.push(parseInt(match[1]));
           }
           
           // Extract OS detection results
-          let osType = null;
+          let osType: string | undefined = undefined;
           const osMatch = nmapOutput.match(/OS details:\s*(.+?)(?:\n|$)/i);
           if (osMatch) {
             osType = osMatch[1].trim();
@@ -157,16 +157,17 @@ export const useNetworkScanner = () => {
           const deviceHostnameMatch = nmapOutput.match(/Nmap scan report for ([^\s(]+)/);
           const hostname = deviceHostnameMatch ? deviceHostnameMatch[1] : null;
 
-          const deviceInfo = {
+          const deviceInfo: Device = {
+            id: 0,
             ipAddress,
-            macAddress,
-            name: hostname && hostname !== ipAddress ? hostname : `Device at ${ipAddress}`,
-            lastSeen: new Date(),
+            macAddress: macAddress || '',
+            deviceName: hostname && hostname !== ipAddress ? hostname : `Device at ${ipAddress}`,
+            lastSeen: new Date().toISOString(),
             deviceType: 'unknown',
             vendor,
             osType,
-            ports,
-            status: 'online',
+            openPorts: ports,
+            isOnline: true,
             details: { nmapOutput }
           };
 
