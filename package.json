@@ -87,7 +87,7 @@
     "react-force-graph": "^1.44.0",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.50.0",
-    "react-resizable-panels": "^2.0.0",
+    "react-resizable-panels": "^4.11.2",
     "react-router-dom": "^7.13.0",
     "recharts": "^2.12.0",
     "tailwind-merge": "^2.2.2",
